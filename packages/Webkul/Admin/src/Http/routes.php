@@ -261,6 +261,10 @@ Route::group(['middleware' => ['web', 'admin_locale']], function () {
                     'view' => 'admin::catalog.products.index',
                 ])->name('admin.catalog.products.index');
 
+                Route::get('/products/inventory/{id}', 'Webkul\Product\Http\Controllers\ProductController@inventory')->defaults('_config', [
+                    'view' => 'admin::catalog.products.inventory',
+                ])->name('admin.catalog.products.inventory');
+
                 Route::get('/products/create', 'Webkul\Product\Http\Controllers\ProductController@create')->defaults('_config', [
                     'view' => 'admin::catalog.products.create',
                 ])->name('admin.catalog.products.create');
@@ -341,7 +345,7 @@ Route::group(['middleware' => ['web', 'admin_locale']], function () {
                 ])->name('admin.catalog.categories.massdelete');
 
                 Route::post('/categories/product/count', 'Webkul\Category\Http\Controllers\CategoryController@categoryProductCount')->name('admin.catalog.categories.product.count');
-                
+
 
                 // Catalog Attribute Routes
                 Route::get('/attributes', 'Webkul\Attribute\Http\Controllers\AttributeController@index')->defaults('_config', [
@@ -533,6 +537,9 @@ Route::group(['middleware' => ['web', 'admin_locale']], function () {
             Route::get('/inventory_sources', 'Webkul\Inventory\Http\Controllers\InventorySourceController@index')->defaults('_config', [
                 'view' => 'admin::settings.inventory_sources.index',
             ])->name('admin.inventory_sources.index');
+            Route::get('/inventory_sources/inventories', 'Webkul\Inventory\Http\Controllers\InventorySourceController@inventories')->defaults('_config', [
+                'view' => 'admin::settings.inventory_sources.inventories',
+            ])->name('admin.inventory_sources.inventories');
 
             Route::get('/inventory_sources/create', 'Webkul\Inventory\Http\Controllers\InventorySourceController@create')->defaults('_config', [
                 'view' => 'admin::settings.inventory_sources.create',

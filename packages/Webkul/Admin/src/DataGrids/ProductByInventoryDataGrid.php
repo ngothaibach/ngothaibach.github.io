@@ -7,7 +7,7 @@ use Webkul\Core\Models\Channel;
 use Webkul\Ui\DataGrid\DataGrid;
 use Illuminate\Support\Facades\DB;
 
-class ProductDataGrid extends DataGrid
+class ProductByInventoryDataGrid extends DataGrid
 {
     protected $sortOrder = 'desc';
 
@@ -45,6 +45,11 @@ class ProductDataGrid extends DataGrid
         }
     }
 
+    public function setInventory($id)
+    {
+        $this->inventery = $id;
+    }
+
     public function prepareQueryBuilder()
     {
         if ($this->channel === 'all') {
@@ -63,10 +68,11 @@ class ProductDataGrid extends DataGrid
         $queryBuilder = DB::table('product_flat')
             ->leftJoin('products', 'product_flat.product_id', '=', 'products.id')
             ->leftJoin('attribute_families', 'products.attribute_family_id', '=', 'attribute_families.id')
-            ->leftJoin('product_inventories', 'product_flat.product_id', '=', 'product_inventories.product_id')
+            ->join('product_inventories', 'product_flat.product_id', '=', 'product_inventories.product_id')
             ->select(
                 'product_flat.locale',
                 'product_flat.channel',
+                'product_inventories.inventory_source_id as inventery',
                 'product_flat.product_id',
                 'products.sku as product_sku',
                 'product_flat.product_number',
@@ -80,6 +86,8 @@ class ProductDataGrid extends DataGrid
 
         $queryBuilder->groupBy('product_flat.product_id', 'product_flat.locale', 'product_flat.channel');
 
+        $queryBuilder->where('product_inventories.inventory_source_id', $this->inventery);
+        $queryBuilder->where('product_inventories.qty', ">", 0);
         $queryBuilder->whereIn('product_flat.locale', $whereInLocales);
         $queryBuilder->whereIn('product_flat.channel', $whereInChannels);
 
@@ -90,6 +98,7 @@ class ProductDataGrid extends DataGrid
         $this->addFilter('status', 'product_flat.status');
         $this->addFilter('product_type', 'products.type');
         $this->addFilter('attribute_family', 'attribute_families.name');
+        $this->addFilter('inventery', 'product_inventories.inventory_source_id');
 
         $this->setQueryBuilder($queryBuilder);
     }
@@ -135,6 +144,15 @@ class ProductDataGrid extends DataGrid
         $this->addColumn([
             'index'      => 'attribute_family',
             'label'      => trans('admin::app.datagrid.attribute-family'),
+            'type'       => 'string',
+            'searchable' => true,
+            'sortable'   => true,
+            'filterable' => true,
+        ]);
+
+        $this->addColumn([
+            'index'      => 'inventery',
+            'label'      => trans('inventery'),
             'type'       => 'string',
             'searchable' => true,
             'sortable'   => true,

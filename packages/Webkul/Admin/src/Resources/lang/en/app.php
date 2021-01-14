@@ -953,10 +953,10 @@ return [
         ],
 
         'customers' => [
-            'add-title' => 'Add Customer',
+            'add-title' => 'Add Customer EN language DEBUG',
             'edit-title' => 'Edit Customer',
             'title' => 'Customers',
-            'first_name' => 'First Name',
+            'first_name' => 'First Name Test',
             'last_name' => 'Last Name',
             'gender' => 'Gender',
             'email' => 'Email',

@@ -45,6 +45,16 @@ class InventorySourceController extends Controller
     }
 
     /**
+     * Display a listing of the resource with view product capability.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function inventories()
+    {
+        return view($this->_config['view']);
+    }
+
+    /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\View\View
@@ -163,7 +173,7 @@ class InventorySourceController extends Controller
                 return response()->json(['message' => true], 200);
             } catch (\Exception $e) {
                 report($e);
-                
+
                 session()->flash('error', trans('admin::app.response.delete-failed', ['name' => 'Inventory source']));
             }
         }

@@ -34,7 +34,7 @@
                     {!! view_render_event('bagisto.admin.customers.create.before') !!}
 
                     <div class="control-group" :class="[errors.has('first_name') ? 'has-error' : '']">
-                        <label for="first_name" class="required">{{ __('admin::app.customers.customers.first_name') }}</label>
+                        <label for="first_name" class="required">{{ __('admin::app.customers.customers.first_name') }} AAAA</label>
                         <input type="text" class="control" name="first_name" v-validate="'required'" value="{{ old('first_name') }}" data-vv-as="&quot;{{ __('shop::app.customer.signup-form.firstname') }}&quot;">
                         <span class="control-error" v-if="errors.has('first_name')">@{{ errors.first('first_name') }}</span>
                     </div>
@@ -42,7 +42,7 @@
                     {!! view_render_event('bagisto.admin.customers.create.first_name.after') !!}
 
                     <div class="control-group" :class="[errors.has('last_name') ? 'has-error' : '']">
-                        <label for="last_name" class="required">{{ __('admin::app.customers.customers.last_name') }}</label>
+                        <label for="first_name" class="required">{{ __('admin::app.customers.customers.last_name') }}</label>
                         <input type="text" class="control" name="last_name" v-validate="'required'" value="{{ old('last_name') }}" data-vv-as="&quot;{{ __('shop::app.customer.signup-form.lastname') }}&quot;">
                         <span class="control-error" v-if="errors.has('last_name')">@{{ errors.first('last_name') }}</span>
                     </div>
