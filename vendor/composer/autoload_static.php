@@ -139,6 +139,7 @@ class ComposerStaticInit143c6aabe936a34da7bf7552786b24e4
             'Webkul\\PackageGenerator\\' => 24,
             'Webkul\\Marketing\\' => 17,
             'Webkul\\Inventory\\' => 17,
+            'Webkul\\Exchange\\' => 16,
             'Webkul\\DebugBar\\' => 16,
             'Webkul\\DataFaker\\Database\\Factories\\' => 36,
             'Webkul\\DataFaker\\' => 17,
@@ -420,6 +421,10 @@ class ComposerStaticInit143c6aabe936a34da7bf7552786b24e4
         'Webkul\\Inventory\\' => 
         array (
             0 => __DIR__ . '/../..' . '/packages/Webkul/Inventory/src',
+        ),
+        'Webkul\\Exchange\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/packages/Webkul/Exchange/src',
         ),
         'Webkul\\DebugBar\\' => 
         array (
@@ -1880,6 +1885,7 @@ class ComposerStaticInit143c6aabe936a34da7bf7552786b24e4
         'Barryvdh\\Debugbar\\Middleware\\InjectDebugbar' => __DIR__ . '/..' . '/barryvdh/laravel-debugbar/src/Middleware/InjectDebugbar.php',
         'Barryvdh\\Debugbar\\ServiceProvider' => __DIR__ . '/..' . '/barryvdh/laravel-debugbar/src/ServiceProvider.php',
         'Barryvdh\\Debugbar\\Storage\\FilesystemStorage' => __DIR__ . '/..' . '/barryvdh/laravel-debugbar/src/Storage/FilesystemStorage.php',
+        'Barryvdh\\Debugbar\\Storage\\SocketStorage' => __DIR__ . '/..' . '/barryvdh/laravel-debugbar/src/Storage/SocketStorage.php',
         'Barryvdh\\Debugbar\\Support\\Clockwork\\ClockworkCollector' => __DIR__ . '/..' . '/barryvdh/laravel-debugbar/src/Support/Clockwork/ClockworkCollector.php',
         'Barryvdh\\Debugbar\\Support\\Clockwork\\Converter' => __DIR__ . '/..' . '/barryvdh/laravel-debugbar/src/Support/Clockwork/Converter.php',
         'Barryvdh\\Debugbar\\SymfonyHttpDriver' => __DIR__ . '/..' . '/barryvdh/laravel-debugbar/src/SymfonyHttpDriver.php',
@@ -2877,6 +2883,7 @@ class ComposerStaticInit143c6aabe936a34da7bf7552786b24e4
         'Egulias\\EmailValidator\\Warning\\Warning' => __DIR__ . '/..' . '/egulias/email-validator/src/Warning/Warning.php',
         'ElasticAdapter\\Documents\\Document' => __DIR__ . '/..' . '/babenkoivan/elastic-adapter/src/Documents/Document.php',
         'ElasticAdapter\\Documents\\DocumentManager' => __DIR__ . '/..' . '/babenkoivan/elastic-adapter/src/Documents/DocumentManager.php',
+        'ElasticAdapter\\Indices\\Alias' => __DIR__ . '/..' . '/babenkoivan/elastic-adapter/src/Indices/Alias.php',
         'ElasticAdapter\\Indices\\Index' => __DIR__ . '/..' . '/babenkoivan/elastic-adapter/src/Indices/Index.php',
         'ElasticAdapter\\Indices\\IndexManager' => __DIR__ . '/..' . '/babenkoivan/elastic-adapter/src/Indices/IndexManager.php',
         'ElasticAdapter\\Indices\\Mapping' => __DIR__ . '/..' . '/babenkoivan/elastic-adapter/src/Indices/Mapping.php',
@@ -8838,12 +8845,14 @@ class ComposerStaticInit143c6aabe936a34da7bf7552786b24e4
         'Webkul\\Admin\\DataGrids\\EventDataGrid' => __DIR__ . '/../..' . '/packages/Webkul/Admin/src/DataGrids/EventDataGrid.php',
         'Webkul\\Admin\\DataGrids\\ExchangeRatesDataGrid' => __DIR__ . '/../..' . '/packages/Webkul/Admin/src/DataGrids/ExchangeRatesDataGrid.php',
         'Webkul\\Admin\\DataGrids\\InventorySourcesDataGrid' => __DIR__ . '/../..' . '/packages/Webkul/Admin/src/DataGrids/InventorySourcesDataGrid.php',
+        'Webkul\\Admin\\DataGrids\\InventorySourcesProductsDataGrid' => __DIR__ . '/../..' . '/packages/Webkul/Admin/src/DataGrids/InventorySourcesProductsDataGrid.php',
         'Webkul\\Admin\\DataGrids\\LocalesDataGrid' => __DIR__ . '/../..' . '/packages/Webkul/Admin/src/DataGrids/LocalesDataGrid.php',
         'Webkul\\Admin\\DataGrids\\NewsLetterDataGrid' => __DIR__ . '/../..' . '/packages/Webkul/Admin/src/DataGrids/NewsLetterDataGrid.php',
         'Webkul\\Admin\\DataGrids\\OrderDataGrid' => __DIR__ . '/../..' . '/packages/Webkul/Admin/src/DataGrids/OrderDataGrid.php',
         'Webkul\\Admin\\DataGrids\\OrderInvoicesDataGrid' => __DIR__ . '/../..' . '/packages/Webkul/Admin/src/DataGrids/OrderInvoicesDataGrid.php',
         'Webkul\\Admin\\DataGrids\\OrderRefundDataGrid' => __DIR__ . '/../..' . '/packages/Webkul/Admin/src/DataGrids/OrderRefundDataGrid.php',
         'Webkul\\Admin\\DataGrids\\OrderShipmentsDataGrid' => __DIR__ . '/../..' . '/packages/Webkul/Admin/src/DataGrids/OrderShipmentsDataGrid.php',
+        'Webkul\\Admin\\DataGrids\\ProductByInventoryDataGrid' => __DIR__ . '/../..' . '/packages/Webkul/Admin/src/DataGrids/ProductByInventoryDataGrid.php',
         'Webkul\\Admin\\DataGrids\\ProductDataGrid' => __DIR__ . '/../..' . '/packages/Webkul/Admin/src/DataGrids/ProductDataGrid.php',
         'Webkul\\Admin\\DataGrids\\RolesDataGrid' => __DIR__ . '/../..' . '/packages/Webkul/Admin/src/DataGrids/RolesDataGrid.php',
         'Webkul\\Admin\\DataGrids\\SliderDataGrid' => __DIR__ . '/../..' . '/packages/Webkul/Admin/src/DataGrids/SliderDataGrid.php',
@@ -9205,6 +9214,10 @@ class ComposerStaticInit143c6aabe936a34da7bf7552786b24e4
         'Webkul\\DataFaker\\Repositories\\RelatedProductRepository' => __DIR__ . '/..' . '/bagisto/laravel-datafaker/src/Repositories/RelatedProductRepository.php',
         'Webkul\\DebugBar\\DataCollector\\ModuleCollector' => __DIR__ . '/../..' . '/packages/Webkul/DebugBar/src/DataCollector/ModuleCollector.php',
         'Webkul\\DebugBar\\Providers\\DebugBarServiceProvider' => __DIR__ . '/../..' . '/packages/Webkul/DebugBar/src/Providers/DebugBarServiceProvider.php',
+        'Webkul\\Exchange\\Http\\Controllers\\Admin\\ExchangeController' => __DIR__ . '/../..' . '/packages/Webkul/Exchange/src/Http/Controllers/Admin/ExchangeController.php',
+        'Webkul\\Exchange\\Http\\Controllers\\Shop\\ExchangeController' => __DIR__ . '/../..' . '/packages/Webkul/Exchange/src/Http/Controllers/Shop/ExchangeController.php',
+        'Webkul\\Exchange\\Providers\\ExchangeServiceProvider' => __DIR__ . '/../..' . '/packages/Webkul/Exchange/src/Providers/ExchangeServiceProvider.php',
+        'Webkul\\Exchange\\Providers\\ModuleServiceProvider' => __DIR__ . '/../..' . '/packages/Webkul/Exchange/src/Providers/ModuleServiceProvider.php',
         'Webkul\\Inventory\\Contracts\\InventorySource' => __DIR__ . '/../..' . '/packages/Webkul/Inventory/src/Contracts/InventorySource.php',
         'Webkul\\Inventory\\Database\\Seeders\\DatabaseSeeder' => __DIR__ . '/../..' . '/packages/Webkul/Inventory/src/Database/Seeders/DatabaseSeeder.php',
         'Webkul\\Inventory\\Database\\Seeders\\InventoryTableSeeder' => __DIR__ . '/../..' . '/packages/Webkul/Inventory/src/Database/Seeders/InventoryTableSeeder.php',

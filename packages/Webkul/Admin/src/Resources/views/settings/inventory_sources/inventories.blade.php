@@ -8,7 +8,7 @@
     <div class="content">
         <div class="page-header">
             <div class="page-title">
-                <h1>{{ __('admin::app.settings.inventory_sources.title') }} - VPT</h1>
+                <h1>Danh sách kho</h1>
             </div>
 
             <div class="page-action">

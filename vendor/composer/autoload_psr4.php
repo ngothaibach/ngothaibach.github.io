@@ -28,6 +28,7 @@ return array(
     'Webkul\\PackageGenerator\\' => array($vendorDir . '/bagisto/bagisto-package-generator/src'),
     'Webkul\\Marketing\\' => array($baseDir . '/packages/Webkul/Marketing/src'),
     'Webkul\\Inventory\\' => array($baseDir . '/packages/Webkul/Inventory/src'),
+    'Webkul\\Exchange\\' => array($baseDir . '/packages/Webkul/Exchange/src'),
     'Webkul\\DebugBar\\' => array($baseDir . '/packages/Webkul/DebugBar/src'),
     'Webkul\\DataFaker\\Database\\Factories\\' => array($vendorDir . '/bagisto/laravel-datafaker/database/factories'),
     'Webkul\\DataFaker\\' => array($vendorDir . '/bagisto/laravel-datafaker/src'),

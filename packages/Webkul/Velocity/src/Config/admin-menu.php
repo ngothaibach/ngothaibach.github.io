@@ -5,7 +5,7 @@ return [
         'key'        => 'velocity',
         'name'       => 'velocity::app.admin.layouts.velocity',
         'route'      => 'velocity.admin.content.index',
-        'sort'       => 5,
+        'sort'       => 11,
         'icon-class' => 'velocity-icon',
     ], [
         'key'        => 'velocity.meta-data',

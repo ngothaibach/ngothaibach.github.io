@@ -21,7 +21,7 @@
         "astrotomic/laravel-translatable": "^11.0.0",
         "aws/aws-sdk-php": "^3.171",
         "babenkoivan/elastic-scout-driver": "^1.1",
-        "bagisto/bagisto-package-generator": "9999999-dev",
+        "bagisto/bagisto-package-generator": "dev-master",
         "bagisto/laravel-datafaker": "dev-master",
         "bagistobrasil/bagisto-product-social-share": "^0.1.2",
         "barryvdh/laravel-debugbar": "^3.1",
@@ -113,7 +113,8 @@
         "Webkul\\BookingProduct\\": "packages/Webkul/BookingProduct/src",
         "Webkul\\SocialLogin\\": "packages/Webkul/SocialLogin/src",
         "Webkul\\DebugBar\\": "packages/Webkul/DebugBar/src",
-        "Webkul\\Marketing\\": "packages/Webkul/Marketing/src"
+        "Webkul\\Marketing\\": "packages/Webkul/Marketing/src",
+        "Webkul\\Exchange\\": "packages/Webkul/Exchange/src"
       }
     },
 

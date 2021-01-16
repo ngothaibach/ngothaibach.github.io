@@ -8,7 +8,7 @@
     <div class="content" style="height: 100%;">
         <div class="page-header">
             <div class="page-title">
-                <h1>{{ __('admin::app.catalog.products.title') }} VPT</h1>
+                <h1>Tồn kho</h1>
             </div>
 
             <div class="page-action">

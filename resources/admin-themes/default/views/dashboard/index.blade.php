@@ -9,7 +9,7 @@
     <div class="content full-page dashboard">
         <div class="page-header">
             <div class="page-title">
-                <h1>{{ __('admin::app.dashboard.title') }} DEBUG</h1>
+                <h1>{{ __('admin::app.dashboard.title') }}</h1>
             </div>
 
             <div class="page-action">

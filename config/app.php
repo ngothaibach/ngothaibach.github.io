@@ -90,7 +90,7 @@ return [
     |
     */
 
-    'locale' => env('APP_LOCALE', 'en'),
+    'locale' => env('APP_LOCALE', 'vi'),
 
     /*
     |--------------------------------------------------------------------------
@@ -103,7 +103,7 @@ return [
     |
     */
 
-    'fallback_locale' => 'en',
+    'fallback_locale' => 'vi',
 
     /*
     |--------------------------------------------------------------------------
@@ -282,6 +282,7 @@ return [
         Webkul\SocialLogin\Providers\SocialLoginServiceProvider::class,
         Webkul\DebugBar\Providers\DebugBarServiceProvider::class,
         Webkul\Marketing\Providers\MarketingServiceProvider::class,
+        Webkul\Exchange\Providers\ExchangeServiceProvider::class,
     ],
 
     /*

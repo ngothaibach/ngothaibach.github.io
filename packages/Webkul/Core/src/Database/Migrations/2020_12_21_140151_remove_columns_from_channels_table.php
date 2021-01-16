@@ -13,14 +13,14 @@ class RemoveColumnsFromChannelsTable extends Migration
      */
     public function up()
     {
-        Schema::table('channels', function (Blueprint $table) {
-            $table->dropColumn('name');
-            $table->dropColumn('description');
-            $table->dropColumn('home_page_content');
-            $table->dropColumn('footer_content');
-            $table->dropColumn('maintenance_mode_text');
-            $table->dropColumn('home_seo');
-        });
+        // Schema::table('channels', function (Blueprint $table) {
+        //     $table->dropColumn('name');
+        //     $table->dropColumn('description');
+        //     $table->dropColumn('home_page_content');
+        //     $table->dropColumn('footer_content');
+        //     $table->dropColumn('maintenance_mode_text');
+        //     $table->dropColumn('home_seo');
+        // });
     }
 
     /**

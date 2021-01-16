@@ -2,12 +2,6 @@
 
 return [
     [
-        'key'        => 'dashboard',
-        'name'       => 'admin::app.layouts.dashboard',
-        'route'      => 'admin.dashboard.index',
-        'sort'       => 1,
-        'icon-class' => 'dashboard-icon',
-    ], [
         'key'        => 'sales',
         'name'       => 'admin::app.layouts.sales',
         'route'      => 'admin.sales.orders.index',

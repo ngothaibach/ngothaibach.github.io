@@ -74,7 +74,7 @@ class RequestCriteria implements CriteriaInterface
                     if (isset($searchData[$field])) {
                         $value = ($condition == "like" || $condition == "ilike") ? "%{$searchData[$field]}%" : $searchData[$field];
                     } else {
-                        if (!is_null($search) && $condition !== 'in') {
+                        if (!is_null($search) && !in_array($condition,['in','between'])) {
                             $value = ($condition == "like" || $condition == "ilike") ? "%{$search}%" : $search;
                         }
                     }
@@ -91,6 +91,12 @@ class RequestCriteria implements CriteriaInterface
                             $value = null;
                         }
                     }
+                    if($condition === 'between'){
+                        $value = explode(',',$value);
+                        if(count($value) < 2){
+                            $value = null;
+                        }
+                    }
                     $modelTableName = $query->getModel()->getTable();
                     if ( $isFirstField || $modelForceAndWhere ) {
                         if (!is_null($value)) {
@@ -98,6 +104,8 @@ class RequestCriteria implements CriteriaInterface
                                 $query->whereHas($relation, function($query) use($field,$condition,$value) {
                                     if($condition === 'in'){
                                         $query->whereIn($field,$value);
+                                    }elseif($condition === 'between'){
+                                        $query->whereBetween($field,$value);
                                     }else{
                                         $query->where($field,$condition,$value);
                                     }
@@ -105,6 +113,8 @@ class RequestCriteria implements CriteriaInterface
                             } else {
                                 if($condition === 'in'){
                                     $query->whereIn($modelTableName.'.'.$field,$value);
+                                }elseif($condition === 'between'){
+                                    $query->whereBetween($modelTableName.'.'.$field,$value);
                                 }else{
                                     $query->where($modelTableName.'.'.$field,$condition,$value);
                                 }
@@ -117,6 +127,8 @@ class RequestCriteria implements CriteriaInterface
                                 $query->orWhereHas($relation, function($query) use($field,$condition,$value) {
                                     if($condition === 'in'){
                                         $query->whereIn($field,$value);
+                                    }elseif($condition === 'between'){
+                                        $query->whereBetween($field, $value);
                                     }else{
                                         $query->where($field,$condition,$value);
                                     }
@@ -124,6 +136,8 @@ class RequestCriteria implements CriteriaInterface
                             } else {
                                 if($condition === 'in'){
                                     $query->orWhereIn($modelTableName.'.'.$field, $value);
+                                }elseif($condition === 'between'){
+                                    $query->whereBetween($modelTableName.'.'.$field,$value);
                                 }else{
                                     $query->orWhere($modelTableName.'.'.$field, $condition, $value);
                                 }
@@ -190,9 +204,16 @@ class RequestCriteria implements CriteriaInterface
             $sortColumn = $split[1];
 
             $split = explode(':', $sortTable);
-            if(count($split) > 1) {
+            $localKey = '.id';
+            if (count($split) > 1) {
                 $sortTable = $split[0];
+
+                $commaExp = explode(',', $split[1]);
                 $keyName = $table.'.'.$split[1];
+                if (count($commaExp) > 1) {
+                    $keyName = $table.'.'.$commaExp[0];
+                    $localKey = '.'.$commaExp[1];
+                }
             } else {
                 /*
                  * If you do not define which column to use as a joining column on current table, it will
@@ -206,7 +227,7 @@ class RequestCriteria implements CriteriaInterface
             }
 
             $model = $model
-                ->leftJoin($sortTable, $keyName, '=', $sortTable.'.id')
+                ->leftJoin($sortTable, $keyName, '=', $sortTable.$localKey)
                 ->orderBy($sortColumn, $sortedBy)
                 ->addSelect($table.'.*');
         } else {
