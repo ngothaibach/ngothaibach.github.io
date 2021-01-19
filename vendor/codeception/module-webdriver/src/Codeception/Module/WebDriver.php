@@ -200,7 +200,7 @@ use Facebook\WebDriver\WebDriverSelect;
  *
  * ## Configuration
  *
- * * `url` *required* - Starting URL for your app.
+ * * `url` *required* - Base URL for your app (amOnPage opens URLs relative to this setting).
  * * `browser` *required* - Browser to launch.
  * * `host` - Selenium server host (127.0.0.1 by default).
  * * `port` - Selenium server port (4444 by default).
@@ -215,6 +215,8 @@ use Facebook\WebDriver\WebDriverSelect;
  * * `pageload_timeout` - amount of time to wait for a page load to complete before throwing an error (default 0 seconds).
  * * `http_proxy` - sets http proxy server url for testing a remote server.
  * * `http_proxy_port` - sets http proxy server port
+ * * `ssl_proxy` - sets ssl(https) proxy server url for testing a remote server.
+ * * `ssl_proxy_port` - sets ssl(https) proxy server port
  * * `debug_log_entries` - how many selenium entries to print with `debugWebDriverLogs` or on fail (0 by default).
  * * `log_js_errors` - Set to true to include possible JavaScript to HTML report, or set to false (default) to deactivate.
  *
@@ -391,7 +393,7 @@ class WebDriver extends CodeceptionModule implements
 
     /**
      * Change capabilities of WebDriver. Should be executed before starting a new browser session.
-     * This method expects a function to be passed which returns array or [WebDriver Desired Capabilities](https://github.com/php-webdriver/php-webdriver/blob/community/lib/Remote/DesiredCapabilities.php) object.
+     * This method expects a function to be passed which returns array or [WebDriver Desired Capabilities](https://github.com/php-webdriver/php-webdriver/blob/main/lib/Remote/DesiredCapabilities.php) object.
      * Additional [Chrome options](https://github.com/php-webdriver/php-webdriver/wiki/ChromeOptions) (like adding extensions) can be passed as well.
      *
      * ```php
@@ -739,6 +741,20 @@ class WebDriver extends CodeceptionModule implements
         }
     }
 
+    public function _saveElementScreenshot($selector, $filename)
+    {
+        if (!isset($this->webDriver)) {
+            $this->debug('WebDriver::_saveElementScreenshot method has been called when webDriver is not set');
+            return;
+        }
+        try {
+            $this->matchFirstOrFail($this->webDriver, $selector)->takeElementScreenshot($filename);
+        } catch (\Exception $e) {
+            $this->debug('Unable to retrieve element screenshot from Selenium : ' . $e->getMessage());
+            return;
+        }
+    }
+
     public function _findElements($locator)
     {
         return $this->match($this->webDriver, $locator);
@@ -786,6 +802,34 @@ class WebDriver extends CodeceptionModule implements
         }
         $screenName = $debugDir . DIRECTORY_SEPARATOR . $name . '.png';
         $this->_saveScreenshot($screenName);
+        $this->debugSection('Screenshot Saved', "file://$screenName");
+    }
+
+    /**
+     * Takes a screenshot of an element of the current window and saves it to `tests/_output/debug`.
+     *
+     * ``` php
+     * <?php
+     * $I->amOnPage('/user/edit');
+     * $I->makeElementScreenshot('#dialog', 'edit_page');
+     * // saved to: tests/_output/debug/edit_page.png
+     * $I->makeElementScreenshot('#dialog');
+     * // saved to: tests/_output/debug/2017-05-26_14-24-11_4b3403665fea6.png
+     * ```
+     *
+     * @param $name
+     */
+    public function makeElementScreenshot($selector, $name = null)
+    {
+        if (empty($name)) {
+            $name = uniqid(date("Y-m-d_H-i-s_"));
+        }
+        $debugDir = codecept_log_dir() . 'debug';
+        if (!is_dir($debugDir)) {
+            mkdir($debugDir, 0777);
+        }
+        $screenName = $debugDir . DIRECTORY_SEPARATOR . $name . '.png';
+        $this->_saveElementScreenshot($selector, $screenName);
         $this->debugSection('Screenshot Saved', "file://$screenName");
     }
 
@@ -1504,7 +1548,7 @@ class WebDriver extends CodeceptionModule implements
             $this->initialWindowSize();
         } catch (WebDriverCurlException $e) {
             codecept_debug('Curl error: ' . $e->getMessage());
-            throw new ConnectionException("Can't connect to Webdriver at {$this->wdHost}. Please make sure that Selenium Server or PhantomJS is running.");
+            throw new ConnectionException("Can't connect to WebDriver at {$this->wdHost}. Make sure that ChromeDriver, GeckoDriver or Selenium Server is running.");
         }
     }
 
