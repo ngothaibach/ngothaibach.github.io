@@ -22,10 +22,11 @@ class CreateExchangeNotesTable extends Migration
             $table->integer('supplier_id')->unsigned();
             $table->integer('from_inventory_source_id')->unsigned();
             $table->integer('to_inventory_source_id')->unsigned();
-            $table->date('created_date');
-            $table->date('updated_date');
-            $table->date('transfer_date');
-            $table->date('receipt_date');
+            $table->date('created_date')->nullable();
+            $table->date('updated_date')->nullable();
+            $table->date('transfer_date')->nullable();
+            $table->date('receipt_date')->nullable();
+            $table->string('note')->nullable();
         });
     }
 

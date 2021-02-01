@@ -24,12 +24,20 @@ import SwatchPicker from './components/swatch-picker';
 import Debounce from './directives/debounce';
 import OverlayLoader from './components/overlay-loader';
 import VTooltip from 'v-tooltip';
+import Datepicker from 'vuejs-datepicker';
+//Import v-from
+import { Form, HasError, AlertError } from 'vform'
+window.Form = Form;
+Vue.component(HasError.name, HasError)
+Vue.component(AlertError.name, AlertError)
 
 VTooltip.options.defaultDelay = 0;
 
 Vue.directive('tooltip', VTooltip.VTooltip)
 
 Vue.config.productionTip = false;
+
+Vue.component('vuejs-datepicker', Datepicker);
 
 Vue.component('flash-wrapper', FlashWrapper);
 Vue.component('flash', Flash);

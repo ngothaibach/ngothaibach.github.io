@@ -15,7 +15,9 @@ if (mix.inProduction()) {
 mix.setPublicPath(publicPath).mergeManifest();
 mix.disableNotifications();
 
-mix.js([__dirname + '/src/Resources/assets/js/app.js'], 'js/app.js')
+console.info("GO TO webpack.mix.js of Exchange package");
+
+mix.js([__dirname + '/src/Resources/assets/js/app.js'], 'js/admin.js')
     .copyDirectory(__dirname + '/src/Resources/assets/images', publicPath + "/images")
     .sass(__dirname + '/src/Resources/assets/sass/admin.scss', 'css/admin.css')
     .sass(__dirname + '/src/Resources/assets/sass/default.scss', 'css/default.css')

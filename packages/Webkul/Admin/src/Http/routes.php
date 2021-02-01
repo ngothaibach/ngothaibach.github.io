@@ -312,6 +312,8 @@ Route::group(['middleware' => ['web', 'admin_locale']], function () {
 
                 Route::get('products/search-simple-products', 'Webkul\Product\Http\Controllers\ProductController@searchSimpleProducts')->name('admin.catalog.products.search_simple_product');
 
+                Route::get('products/live-search-products', 'Webkul\Product\Http\Controllers\ProductController@liveSearchSimpleProducts')->name('admin.catalog.products.live-search-products');
+
                 Route::get('/products/{id}/{attribute_id}', 'Webkul\Product\Http\Controllers\ProductController@download')->defaults('_config', [
                     'view' => 'admin.catalog.products.edit',
                 ])->name('admin.catalog.products.file.download');

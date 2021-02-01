@@ -4,6 +4,7 @@ namespace Webkul\Product\Helpers;
 
 use Illuminate\Support\Facades\Storage;
 use Webkul\Product\Repositories\ProductRepository;
+use Illuminate\Support\Facades\DB;
 
 class ProductImage extends AbstractProduct
 {
@@ -114,5 +115,17 @@ class ProductImage extends AbstractProduct
         }
 
         return $this->getProductBaseImage($product);
+    }
+
+    public function getProductImageById($product_id)
+    {
+        $product_images = DB::table('product_images')
+            ->where('product_id', $product_id)
+            ->select('product_images.id', 'product_images.path')            
+            ->get();
+
+        if ($product_images != null) {
+            return $product_images;
+        }
     }
 }

@@ -17,6 +17,7 @@ use Webkul\Product\Models\ProductAttributeValueProxy;
 use Webkul\Attribute\Repositories\AttributeRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 
 class ProductRepository extends Repository
 {
@@ -492,9 +493,11 @@ class ProductRepository extends Repository
             $locale = request()->get('locale') ?: app()->getLocale();
 
             return $query->distinct()
-                ->addSelect('product_flat.*')
+                ->addSelect('product_flat.*', 
+                    DB::raw('(select path as featured_image from product_images where product_images.product_id  = product_flat.product_id limit 1) as featured_image'))
                 ->addSelect('product_flat.product_id as id')
                 ->leftJoin('products', 'product_flat.product_id', '=', 'products.id')
+                ->leftJoin('product_images', 'product_images.product_id', '=', 'products.id')
                 ->where('products.type', 'simple')
                 ->where('product_flat.channel', $channel)
                 ->where('product_flat.locale', $locale)

@@ -457,4 +457,16 @@ class ProductController extends Controller
             $this->productRepository->searchSimpleProducts(request()->input('query'))
         );
     }
+
+    /**
+     * Search simple products
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function liveSearchSimpleProducts()
+    {
+        return response()->json(
+            $this->productRepository->searchSimpleProducts(request()->input('key'))
+        );
+    }
 }

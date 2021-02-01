@@ -22,8 +22,11 @@ class ExchangeServiceProvider extends ServiceProvider
 
         $this->loadTranslationsFrom(__DIR__ . '/../Resources/lang', 'exchange');
 
+        // $this->publishes([
+        //     __DIR__ . '/../../publishable/assets' => public_path('themes/default/assets'),
+        // ], 'public');
         $this->publishes([
-            __DIR__ . '/../../publishable/assets' => public_path('themes/default/assets'),
+            __DIR__ . '/../../publishable/assets' => public_path('vendor/webkul/exchange/assets'),
         ], 'public');
 
         $this->loadViewsFrom(__DIR__ . '/../Resources/views', 'exchange');

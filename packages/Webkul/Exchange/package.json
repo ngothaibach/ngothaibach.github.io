@@ -17,5 +17,11 @@
     "sass-loader": "^8.0.2",
     "vue": "^2.6.10",
     "vue-template-compiler": "^2.6.11"
+  },
+  "dependencies": {
+    "luxon": "^1.25.0",
+    "vue-datetime": "^1.0.0-beta.14",
+    "vuejs-datepicker": "^1.6.2",
+    "weekstart": "^1.0.1"
   }
 }

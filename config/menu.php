@@ -15,15 +15,15 @@ return [
             'sort' => 3,
             'icon-class' => 'cms-icon',
         ],[
-            'key' => 'exchange.list_receipt_notes',
+            'key' => 'exchange.list_purchases',
             'name' => 'Nhập hàng',
-            'route' => 'exchange.admin.list_receipt_notes',
+            'route' => 'admin.exchange.purchase-order.list',
             'sort' => 1,
             'icon-class' => 'cms-icon',
         ],[
-            'key' => 'exchange.list_transfer_notes',
+            'key' => 'exchange.list_transfer',
             'name' => 'Chuyển hàng',
-            'route' => 'exchange.admin.list_transfer_notes',
+            'route' => 'admin.exchange.transfer.list',
             'sort' => 2,
             'icon-class' => 'cms-icon',
         ],[

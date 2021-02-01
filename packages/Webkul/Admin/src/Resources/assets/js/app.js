@@ -5,6 +5,8 @@ import ar from 'vee-validate/dist/locale/ar';
 
 import './bootstrap';
 
+console.error("Webkul/Admin->app.js");
+
 window.Vue = Vue;
 window.VeeValidate = VeeValidate;
 
