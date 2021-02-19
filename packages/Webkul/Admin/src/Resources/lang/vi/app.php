@@ -475,8 +475,8 @@ return [
 
     'catalog' => [
         'products' => [
-            'title' => 'Products',
-            'add-product-btn-title' => 'Add Product',
+            'title' => 'Sản phẩm',
+            'add-product-btn-title' => 'Thêm mới sản phẩm',
             'add-title' => 'Add Product',
             'edit-title' => 'Edit Product',
             'save-btn-title' => 'Save Product',
