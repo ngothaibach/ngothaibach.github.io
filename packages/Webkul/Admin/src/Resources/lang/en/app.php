@@ -328,7 +328,7 @@ return [
 
     'sales' => [
         'orders' => [
-            'title' => 'Orders',
+            'title' => 'Đơn hàng',
             'view-title' => 'Order #:order_id',
             'cancel-btn-title' => 'Cancel',
             'shipment-btn-title' => 'Ship',

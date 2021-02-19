@@ -39,6 +39,12 @@ return [
             'sort'       => 4,
             'icon-class' => 'catalog-icon',
         ], [
+            'key' => 'exchange.list_orders',
+            'name' => 'Bán hàng',
+            'route' => 'admin.exchange.orders.list',
+            'sort' => 5,
+            'icon-class' => 'cms-icon',
+        ], [
             'key'        => 'catalog.products',
             'name'       => 'admin::app.layouts.products',
             'route'      => 'admin.catalog.products.index',
@@ -64,13 +70,13 @@ return [
             'icon-class' => '',
         ],[
             'key'        => 'sales',
-            'name'       => 'admin::app.layouts.sales',
+            'name'       => 'POS',
             'route'      => 'admin.sales.orders.index',
             'sort'       => 5,
             'icon-class' => 'sales-icon',
         ], [
             'key'        => 'sales.orders',
-            'name'       => 'admin::app.layouts.orders',
+            'name'       => 'Bán hàng',
             'route'      => 'admin.sales.orders.index',
             'sort'       => 1,
             'icon-class' => '',

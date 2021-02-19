@@ -26,4 +26,12 @@ Route::group(['middleware' => ['web', 'admin']], function () {
     Route::get('/admin/transfer/list', 'Webkul\Exchange\Http\Controllers\Admin\ExchangeController@list_transfers')->defaults('_config', [
         'view' => 'exchange::admin.transfer.index',
     ])->name('admin.exchange.transfer.list');
+    //minhpd
+    Route::get('/admin/orders/list', 'Webkul\Exchange\Http\Controllers\Admin\ExchangeController@list_orders')->defaults('_config', [
+        'view' => 'exchange::admin.orders.index',
+    ])->name('admin.exchange.orders.list');
+    Route::get('/admin/orders/create', 'Webkul\Exchange\Http\Controllers\Admin\ExchangeController@create_orders')->defaults('_config', [
+        'view' => 'exchange::admin.orders.create',
+    ])->name('admin.exchange.orders.create');
+    Route::post('admin/orders/store', 'Webkul\Exchange\Http\Controllers\Admin\ExchangeController@store_orders')->name('admin.orders.store');
 });

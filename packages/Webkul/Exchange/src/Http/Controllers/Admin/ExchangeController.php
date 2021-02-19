@@ -10,6 +10,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Webkul\Exchange\Repositories\ExchangeNoteRepository;
 use Webkul\Exchange\Repositories\ProductExchangeNoteRepository;
 use Webkul\Product\Repositories\ProductInventoryRepository;
+use Webkul\Sales\Repositories\OrderRepository;
 use Illuminate\Support\Facades\DB;
 
 class ExchangeController extends Controller
@@ -45,17 +46,26 @@ class ExchangeController extends Controller
     protected $productInventoryRepository;
 
     /**
+     * OrderRepository object
+     *
+     * @var \Webkul\Sales\Repositories\OrderRepository;
+     */
+    protected $orderRepository;
+
+    /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct(ExchangeNoteRepository $exchangeNoteRepository, ProductExchangeNoteRepository $productExchangeNoteRepository, ProductInventoryRepository $productInventoryRepository)
+    public function __construct(ExchangeNoteRepository $exchangeNoteRepository, ProductExchangeNoteRepository $productExchangeNoteRepository, ProductInventoryRepository $productInventoryRepository, OrderRepository $orderRepository )
     {
         $this->exchangeNoteRepository = $exchangeNoteRepository;
 
         $this->productExchangeNoteRepository = $productExchangeNoteRepository;
 
         $this->productInventoryRepository = $productInventoryRepository;
+
+        $this->orderRepository = $orderRepository;
 
         $this->middleware('admin');
 
@@ -270,5 +280,62 @@ class ExchangeController extends Controller
     public function destroy($id)
     {
 
+    }
+
+    //minhpd
+    public function list_orders()
+    {
+        $receipt_notes = DB::table('exchange_notes')
+        ->join('suppliers', 'suppliers.id', '=', 'exchange_notes.supplier_id')
+        ->join('inventory_sources', 'inventory_sources.id', '=', 'exchange_notes.to_inventory_source_id')
+        ->join('admins', 'admins.id', '=', 'exchange_notes.created_user_id')
+        ->select('exchange_notes.id', 'exchange_notes.created_date', 'exchange_notes.note', 'exchange_notes.status', 'exchange_notes.receipt_date', 'suppliers.name as supplier', 'inventory_sources.name as inventory', 'admins.name as created_user')
+        ->where('type', '=', 'receipt')
+        ->orderBy('id', 'desc')
+        ->get()->toArray();
+        return view($this->_config['view'], compact('receipt_notes'));
+    }
+
+    public function create_orders()
+    {
+        // Get user list
+        $users = DB::table('admins')->select('id', 'name')->get();
+
+        // Get inventory sources
+        $inventory_sources = DB::table('inventory_sources')->select('id', 'name')->get();
+
+        // Get inventory sources
+        $suppliers = DB::table('suppliers')->select('id', 'name')->get();
+
+        return view($this->_config['view'], compact('users', 'inventory_sources', 'suppliers'));
+    }
+
+    public function store_orders()
+    {
+        $ordersData = [
+            'status' => "temporary",
+            'type' => request()->type,
+            'customer_first_name' => isset(request()->user) ? request()->user : 0,
+            // 'receipt_user_id' => isset(request()->user) ? request()->user : 0,
+            'created_at' => request()->created_date,
+            'updated_at' => request()->updated_date,
+            'discount_percent'=> 999,
+            'discount_amount' => 999,
+            'grand_total'=> request()->price_total,
+            'base_grand_total'=> request()->price_total,
+            'grand_total_invoiced'=> request()->price_total,
+            'base_grand_total_invoiced'=> request()->price_total,
+        ];
+
+        $orders = $this->orderRepository->create($ordersData);
+
+        session()->flash('success', trans('admin::app.settings.inventory_sources.create-success'));
+
+        return response()->json(
+            [
+                'success' => true,
+                'message' => 'Save susscessfully',
+            ]
+        );
     }
 }
