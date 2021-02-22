@@ -62,21 +62,25 @@
                 <div class="col-4">
                     <h2>Thông tin đặt hàng</h2>
                     <div class="mb-3">
+                        <label for="exampleFormControlInput2" class="form-label">Khách hàng</label>
                         <div class="row">
-                            <div class="col-5">
+                            <div class="col-12">
                                 <select v-model="form.user" name="user" class="form-control" aria-label="User">
                                 @foreach ($users as $user)
                                     @if (auth()->guard('admin')->user()->id == $user->id)
-                                        <option value="{{ $user->id }}" selected>{{ $user->name }}</option>
+                                        <option value="{{ $user->id }}" selected>{{ $user->first_name }} {{ $user->last_name }}</option>
                                     @else
-                                        <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                        <option value="{{ $user->id }}" >{{ $user->first_name }} {{ $user->last_name }}</option>
                                     @endif
                                 @endforeach
                                 </select>
                             </div>
-                            <div class="col-7">
-                                <vuejs-datepicker v-model="form.created_date"></vuejs-datepicker>
-                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="created_time" class="form-label">Thời gian</label>
+                        <div class="col-5">
+                            <vuejs-datepicker v-model="form.created_date"></vuejs-datepicker>
                         </div>
                     </div>
                     <!--<div class="mb-3">
@@ -108,16 +112,16 @@
                         <input v-model="form.status" type="text" disable=true class="form-control" id="exampleFormControlInput1" placeholder="{{ __('admin::app.vpt.inventory.status') }}" readonly>
                     </div> -->
                     <div class="mb-3">
-                        {{ __('admin::app.vpt.inventory.total-of-price') }}: <span v-text="form.price_total"></span> {{ __('admin::app.vpt.inventory.vnd') }}
+                        {{ __('admin::app.vpt.inventory.total-of-price') }}: <span v-text="form.price_total"></span>
                     </div>
                     <div class="mb-3">
                         <label for="exampleFormControlInput1" class="form-label">{{ __('admin::app.vpt.inventory.discount') }}</label>
                         <div class="row">
                             <div class="col-7">
-                                <input type="text" disable=true class="form-control" id="exampleFormControlInput1">
+                                <input type="number" disable=true class="form-control" v-model="form.discount" id="exampleFormControlInput1" v-on:change="update_discount">
                             </div>
                             <div class="col-4">
-                                <select class="form-control" aria-label="User" >
+                                <select class="form-control" aria-label="User" v-model="form.discount_type" v-on:change="update_discount_type" >
                                     <option value="1">{{ __('admin::app.vpt.inventory.vnd') }}</option>
                                     <option value="2">%</option>
                                 </select>
@@ -126,16 +130,16 @@
                     </div>
                     <div class="mb-3">
                         Thu khác: 
-                        <input type="number" id="collection_diff">
+                        <input type="number" id="collection_diff" v-model="form.collection_diff" v-on:change="fn_update_collection_diff">
                     </div>
 
                     <div class="mb-3">
-                        Khách cần trả: <span v-text="form.price_total"></span> 
+                        Khách cần trả: <span v-text="form.price_must_paid"></span> 
                     </div>
 
                     <div class="mb-3">
                         Khách thanh toán: 
-                        <input type="number" id="customer_paid">
+                        <input type="number" id="customer_paid" v-model="form.customer_paid" v-on:change="fn_update_customer_paid">
                     </div>
 
                     <div class="mb-3">
@@ -148,8 +152,8 @@
                     </div>
                     <div class="mb-3">
                         <!--<button v-on:click="save()" type="button" class="btn btn-primary">In</button>
-                        <button type="submit" class="btn btn-success">Đặt hàng</button>-->
-                        <button type="button" class="btn btn-primary">In</button>
+                        <button type="submit" class="btn btn-success">Đặt hàng</button>
+                        <button type="button" class="btn btn-primary">In</button>-->
                         <button v-on:click="save()" type="button" class="btn btn-primary">Đặt hàng</button>
                     </div>
                 </div>
@@ -185,10 +189,13 @@
                         note_code: null,
                         order_code: null,
                         status: "{{ __('admin::app.vpt.inventory.temp-save') }}",
-                        note: "",
+                        notes: "",
                         collection_diff: 0,
+                        price_must_paid: 0,
                         customer_paid: 0,
                         customer_remain: 0,
+                        discount: 0,
+                        discount_type: 1,
                     }),
                 };
             },
@@ -209,33 +216,86 @@
                     this.form.added_products.push(added_item);
                     this.results = [];
                     this.form.price_total = parseInt(this.form.price_total) + parseInt(result.price);
+                    if (this.form.discount != 0) {
+                        if  (this.form.discount_type == 1) {
+                            this.form.price_must_paid = this.form.price_total - this.form.discount ;
+                        } else {
+                            this.form.price_must_paid = this.form.price_total - ((this.form.discount * this.form.price_total)/100);
+                        }
+                    } else {
+                        this.form.price_must_paid = this.form.price_total ;
+                    }
                 },
                 remove_product: function (item) {
                     this.form.added_products.splice(this.form.added_products.indexOf(item), 1);
-                    this.form.price_total = parseInt(this.form.price_total) - parseInt(item.price);
+                    this.form.price_total = parseInt(this.form.price_total) - (parseInt(item.price) * item.qty);
+                    if (this.form.discount != 0) {
+                        if  (this.form.discount_type == 1) {
+                            this.form.price_must_paid = this.form.price_total - this.form.discount ;
+                        } else {
+                            this.form.price_must_paid = this.form.price_total - ((this.form.discount * this.form.price_total)/100) ;
+                        }
+                    } else {
+                        this.form.price_must_paid = this.form.price_total ;
+                    }
                 },
                 update_price: function() {
                     this.form.price_total = 0;
+                    this.form.price_must_paid = 0;
                     for(let i = 0;i < this.form.added_products.length; i++) {
                         this.form.price_total += parseInt(this.form.added_products[i].qty) * parseInt(this.form.added_products[i].price);
                     }
+                    if (this.form.discount != 0) {
+                        if  (this.form.discount_type == 1) {
+                            this.form.price_must_paid = this.form.price_total - this.form.discount ;
+                        } else {
+                            this.form.price_must_paid = this.form.price_total - ((this.form.discount * this.form.price_total)/100) ;
+                        }
+                    } else {
+                        this.form.price_must_paid = this.form.price_total ;
+                    }
+                },
+                update_discount_type: function() {
+                    this.form.discount = 0;
+                    this.form.price_must_paid = this.form.price_total ;
+                    this.form.collection_diff = 0;
+                },
+                update_discount: function() {
+                    if(this.form.discount_type == 1){
+                        this.form.price_must_paid = this.form.price_total - this.form.discount ;
+                    } else {
+                        this.form.price_must_paid = this.form.price_total - ((this.form.discount * this.form.price_total)/100) ;
+                    }
+                },
+                fn_update_customer_paid: function () {
+                    this.form.customer_remain = this.form.customer_paid - this.form.price_must_paid ;
+                },
+                fn_update_collection_diff: function(){
+                    if(this.form.collection_diff == ""){
+                        this.form.collection_diff = 0;
+                    } else {
+                        this.form.price_must_paid = parseInt(this.form.price_must_paid) + parseInt(this.form.collection_diff); 
+                    }
                 },
                 save () {
-                    this.form.post("{{ route('admin.orders.store') }}")
+                    if(this.form.price_must_paid != 0 ) {
+                        this.form.post("{{ route('admin.orders.store') }}")
                         .then(( response ) => {
-
                             // var attr = document.getElementById("text");
                             // attr.innerHTML = response.data.message;
                             console.error(response);
                             if (response.data.success == true) {
                                 console.error("save orders successfull");
-                                window.location.href = "{{ route('admin.exchange.orders.list') }}";
+                                // window.location.href = "{{ route('admin.exchange.orders.list') }}";
+                                window.location.href = "{{ route('admin.sales.orders.index') }}";
                             } else {
                                 console.debug("save orders NOT successfull");
                             }
-
-
                         })
+                    } else {
+                        alert('Bạn chưa nhập đủ thông tin ');
+                    }
+                    
                 },
                 submit: function () {
                     axios.get("{{ route('admin.orders.store') }}", { params: { form_data: this.form_data } })

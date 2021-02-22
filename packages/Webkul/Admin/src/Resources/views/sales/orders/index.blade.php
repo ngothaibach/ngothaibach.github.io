@@ -14,6 +14,12 @@
             </div>
 
             <div class="page-action">
+                <a href="{{ route('admin.exchange.orders.create') }}" class="btn btn-lg btn-primary">
+                    Tạo đơn
+                </a>
+            </div>
+            
+            <div class="page-action">
                 <div class="export-import" @click="showModal('downloadDataGrid')">
                     <i class="export-icon"></i>
                     <span>
@@ -22,6 +28,7 @@
                     </span>
                 </div>
             </div>
+            
         </div>
 
         <div class="page-content">
