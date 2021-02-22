@@ -317,12 +317,12 @@ return [
         ],
 
         'sessions' => [
-            'title' => 'Sign In',
+            'title' => 'Sign In 1',
             'email' => 'Email',
             'password' => 'Password',
             'forget-password-link-title' => 'Forget Password ?',
             'remember-me' => 'Remember Me',
-            'submit-btn-title' => 'Sign In'
+            'submit-btn-title' => 'Sign In 1'
         ]
     ],
 
@@ -475,9 +475,9 @@ return [
 
     'catalog' => [
         'products' => [
-            'title' => 'Products',
-            'add-product-btn-title' => 'Add Product',
-            'add-title' => 'Add Product',
+            'title' => 'Products 1',
+            'add-product-btn-title' => 'Add Product 1',
+            'add-title' => 'Add Product 1',
             'edit-title' => 'Edit Product',
             'save-btn-title' => 'Save Product',
             'general' => 'General',
