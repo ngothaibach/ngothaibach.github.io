@@ -1461,5 +1461,42 @@ return [
             'accepted-currencies-info' => 'Add currency code comma seperated e.g. USD,INR,...',
             'buy-now-button-display' => 'Allow customers to directly buy products'
        ]
+    ],
+    'vpt' => [
+        'inventory' => [
+            'receipt-notes' => 'Phiếu nhập',
+            'add-receipt-note' => 'Nhập hàng',
+            'code' => 'Mã',
+            'name' => 'Tên',
+            'price' => 'Giá',
+            'qty' => 'Số lượng',
+            'remain' => 'Tồn kho',
+            'delete' => 'Xóa',
+            'no-data' => 'Không có dữ liệu',
+            'receipt-note-info' => 'Thông tin phiếu nhập',
+            'supplier' => 'Nhà cung cấp',
+            'inventory-source' => 'Chi nhánh',
+            'receipt-note-code' => 'Mã phiếu nhập',
+            'order-code' => 'Mã đặt hàng',
+            'status' => 'Trạng thái',
+            'total-of-price' => 'Tổng tiền',
+            'vnd' => 'VNĐ',
+            'discount' => 'Giảm giá',
+            'note' => 'Ghi chú',
+            'finish' => 'Hoàn thành',
+            'temp-save' => 'Lưu tạm',
+            'date' => "Thời gian",
+            'transfer' => "Chuyển hàng",
+            'transfer-info' => "Thông tin phiếu chuyển",
+            'transfer-note' => 'Phiếu chuyển',
+            'transfer-code' => 'Mã phiếu chuyển',
+            'from-inventory-source' => 'Từ chi nhánh',
+            'to-inventory-source' => 'Tới chi nhánh',
+            'total-of-qty' => 'Tổng số lượng',
+            'image' => 'Ảnh'
+        ],
+        'attribute_group_1' => "Thông tin chung",
+        'attribute_group_2' => "Mô tả sản phẩm",
+        'attribute_group_4' => "Giá sản phẩm"
     ]
 ];

@@ -132,23 +132,23 @@ class ProductDataGrid extends DataGrid
             'filterable' => true,
         ]);
 
-        $this->addColumn([
-            'index'      => 'attribute_family',
-            'label'      => trans('admin::app.datagrid.attribute-family'),
-            'type'       => 'string',
-            'searchable' => true,
-            'sortable'   => true,
-            'filterable' => true,
-        ]);
+        // $this->addColumn([
+        //     'index'      => 'attribute_family',
+        //     'label'      => trans('admin::app.datagrid.attribute-family'),
+        //     'type'       => 'string',
+        //     'searchable' => true,
+        //     'sortable'   => true,
+        //     'filterable' => true,
+        // ]);
 
-        $this->addColumn([
-            'index'      => 'product_type',
-            'label'      => trans('admin::app.datagrid.type'),
-            'type'       => 'string',
-            'sortable'   => true,
-            'searchable' => true,
-            'filterable' => true,
-        ]);
+        // $this->addColumn([
+        //     'index'      => 'product_type',
+        //     'label'      => trans('admin::app.datagrid.type'),
+        //     'type'       => 'string',
+        //     'sortable'   => true,
+        //     'searchable' => true,
+        //     'filterable' => true,
+        // ]);
 
         $this->addColumn([
             'index'      => 'status',
