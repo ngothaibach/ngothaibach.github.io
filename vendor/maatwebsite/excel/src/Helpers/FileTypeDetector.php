@@ -28,8 +28,10 @@ class FileTypeDetector
         }
 
         if (null === $type && trim($extension) === '') {
-            throw new NoTypeDetectedException();
+            // throw new NoTypeDetectedException();
         }
+
+
 
         return config('excel.extension_detector.' . strtolower($extension));
     }

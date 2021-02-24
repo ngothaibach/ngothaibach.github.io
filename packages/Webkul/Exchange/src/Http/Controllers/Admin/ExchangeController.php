@@ -1,6 +1,7 @@
 <?php
 
 namespace Webkul\Exchange\Http\Controllers\Admin;
+use Illuminate\Support\Facades\Log;
 
 use Illuminate\Routing\Controller;
 use Illuminate\Http\Request;
@@ -11,6 +12,10 @@ use Webkul\Exchange\Repositories\ExchangeNoteRepository;
 use Webkul\Exchange\Repositories\ProductExchangeNoteRepository;
 use Webkul\Product\Repositories\ProductInventoryRepository;
 use Illuminate\Support\Facades\DB;
+use Webkul\Exchange\Http\Imports\ImportExcel;
+use Excel;
+use Webkul\Exchange\Http\Models\ImportProduct;
+use Webkul\Exchange\Models\ExchangeNote;
 
 class ExchangeController extends Controller
 {
@@ -69,6 +74,9 @@ class ExchangeController extends Controller
      */
     public function index()
     {
+        error_log('Some message here.');
+
+        // var_dump('xxxxxx');
         return view($this->_config['view']);
     }
 
@@ -87,6 +95,12 @@ class ExchangeController extends Controller
         ->where('type', '=', 'receipt')
         ->orderBy('id', 'desc')
         ->get()->toArray();
+
+        // $data = DB::table('exchange_notes')->get()->toJson();
+        // echo $data;
+
+        // $receipt_notes = DB::table('exchange_notes')->orderBy('id', 'DESC')->get()->toArray();
+
         return view($this->_config['view'], compact('receipt_notes'));
     }
 
@@ -245,6 +259,59 @@ class ExchangeController extends Controller
      * @param  int  $id
      * @return \Illuminate\View\View
      */
+
+    public function import_excel(Request $request){
+        if($request->hasFile('select_file')){ 
+            $path = $request->file('select_file')->getRealPath();
+            Excel::import(new ImportExcel, $path);
+            // echo $request->file('select_file');
+        return back()->with('success', 'Excel Data Imported successfully.');
+
+        }
+        return back()->with('success', 'File Not Empty.');
+
+       
+    }
+    // public function import_excel(Request $request){
+    //     $this->validate($request, [
+    //         'select_file'  => 'required|mimes:xls,xlsx'
+    //        ]);
+      
+    //        $path = $request->file('select_file')->getRealPath();
+      
+    //        $data = Excel::import(new ExchangeNote,$path);
+    //        if($data->count() > 0)
+    //        {
+    //         foreach($data->toArray() as $key => $value)
+    //         {
+    //          foreach($value as $row)
+    //          {
+    //           $insert_data[] = array(
+    //            'id'  => $row['id'],
+    //            'type'   => $row['type'],
+    //            'status'   => $row['status'],
+    //            'created_user_id'    => $row['created_user_id'],
+    //            'receipt_user_id'  => $row['receipt_user_id'],
+    //            'supplier_id'   => $row['supplier_id'],
+    //            'from_inventory_source_id'   => $row['from_inventory_source_id'],
+    //            'to_inventory_source_id'   => $row['to_inventory_source_id'],
+    //            'created_date'   => $row['created_date'],
+    //            'updated_date'   => $row['updated_date'],
+    //            'transfer_date'   => $row['transfer_date'],
+    //            'receipt_date'   => $row['receipt_date'],
+    //            'note'   => $row['note'],
+    //           );
+    //          }
+    //         }
+      
+    //         if(!empty($insert_data))
+    //         {
+    //          DB::table('exchange_notes')->insert($insert_data);
+    //         }
+    //        }
+    //        return back()->with('success', 'Excel Data Imported successfully.');
+    //       }
+
     public function edit($id)
     {
         return view($this->_config['view']);

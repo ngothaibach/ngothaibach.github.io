@@ -17,11 +17,23 @@
             </a>
         </div>
     </div>
+    
+    {{-- Import Data --}}
+    <form action="{{url('/admin/transfer/import-csv')}}" method="POST" enctype="multipart/form-data">
+        @csrf
+      <input type="file" name="select_file" accept=".xlsx, .xls, .csv"/><br>
+     <input type="submit" value="Import file Excel" name="import_csv" class="btn btn-success">
+      </form>
+    {{-- Import Data --}}
+
     <div class="page-content">
         <vpt-list-receipt-notes></vpt-list-receipt-notes>
     </div>
 </div>
 @stop
+
+
+
 
 @push('scripts')
     <script type="text/x-template" id="vpt-list-receipt-notes-template">
