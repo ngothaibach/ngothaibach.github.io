@@ -61,15 +61,45 @@
                 @csrf()
 
                 <input name="_method" type="hidden" value="PUT">
+                <?php
 
+                    // Hide some unused attributes
+                    $hidden_attribute_groups = array(
+                        "Meta Description",
+                        "Shipping"
+                    );                    
+                    $hidden_attributes = array(
+                        "guest_checkout", 
+                        "size", 
+                        "color", 
+                        "depth", 
+                        "height",
+                        "width",
+                        "meta_keywords",
+                        "meta_title",
+                        "special_price_to",
+                        "special_price_from",
+                        "special_price",
+                        "status",
+                        "visible_individually",
+                        "featured",
+                        "new",
+                        "tax_category_id",
+                    );
+                ?>
                 @foreach ($product->attribute_family->attribute_groups as $index => $attributeGroup)
+                    <?php
+                        if (in_array($attributeGroup->name, $hidden_attribute_groups)) {
+                            continue;
+                        }
+                    ?>
                     <?php $customAttributes = $product->getEditableAttributes($attributeGroup); ?>
 
                     @if (count($customAttributes))
 
                         {!! view_render_event('bagisto.admin.catalog.product.edit_form_accordian.' . $attributeGroup->name . '.before', ['product' => $product]) !!}
 
-                        <accordian :title="'{{ __($attributeGroup->name) }}'"
+                        <accordian :title="'{{ __('admin::app.vpt.attribute_group_'.$attributeGroup->id) }}'"
                                    :active="{{$index == 0 ? 'true' : 'false'}}">
                             <div slot="body">
                                 {!! view_render_event('bagisto.admin.catalog.product.edit_form_accordian.' . $attributeGroup->name . '.controls.before', ['product' => $product]) !!}
@@ -77,6 +107,15 @@
                                 @foreach ($customAttributes as $attribute)
 
                                     <?php
+                                        if ($attribute->code == "status") { 
+                                            ?>
+                                            <input type="hidden"  id="{{ $attribute->code }}" name="{{ $attribute->code }}" value="1">
+                                            <?php
+                                        }
+                                        if (in_array($attribute->code, $hidden_attributes)) {
+                                            continue;
+                                        }
+                                        
                                         if ($attribute->code == 'guest_checkout' && ! core()->getConfigData('catalog.products.guest-checkout.allow-guest-checkout')) {
                                             continue;
                                         }
@@ -117,7 +156,7 @@
                                                 {{ $attribute->admin_name }}
 
                                                 @if ($attribute->type == 'price')
-                                                    <span class="currency-code">({{ core()->currencySymbol(core()->getBaseCurrencyCode()) }})</span>
+                                                    <!-- <span class="currency-code">({{ core()->currencySymbol(core()->getBaseCurrencyCode()) }})</span> -->
                                                 @endif
 
                                                 <?php
@@ -133,7 +172,7 @@
                                                 ?>
 
                                                 @if (count($channel_locale))
-                                                    <span class="locale">[{{ implode(' - ', $channel_locale) }}]</span>
+                                                    <!-- <span class="locale">[{{ implode(' - ', $channel_locale) }}]</span> -->
                                                 @endif
                                             </label>
 
@@ -154,11 +193,11 @@
 
                                 @endforeach
 
-                                @if ($attributeGroup->name == 'Price')
+                                <!-- @if ($attributeGroup->name == 'Price')
 
                                     @include ('admin::catalog.products.accordians.customer-group-price')
 
-                                @endif
+                                @endif -->
 
                                 {!! view_render_event('bagisto.admin.catalog.product.edit_form_accordian.' . $attributeGroup->name . '.controls.after', ['product' => $product]) !!}
                             </div>
