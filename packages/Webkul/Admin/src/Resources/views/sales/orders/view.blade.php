@@ -432,12 +432,21 @@
                                             <td>{{ core()->formatBasePrice($order->base_sub_total) }}</td>
                                         </tr>
 
-                                        @if ($order->haveStockableItems())
+                                        {{-- @if ($order->haveStockableItems())
                                             <tr>
-                                                {{-- <td>{{ __('admin::app.sales.orders.shipping-handling') }}</td> --}}
+                                                <td>{{ __('admin::app.sales.orders.shipping-handling') }}</td>
                                                 <td>Phí vận chuyển</td>
                                                 <td>-</td>
                                                 <td>{{ core()->formatBasePrice($order->base_shipping_amount) }}</td>
+                                            </tr>
+                                        @endif --}}
+                                        @if($order->collection_diff > 0)
+                                            <tr>
+                                                <td>
+                                                    Thu khác
+                                                </td>
+                                                <td>-</td>
+                                                <td>{{ core()->formatBasePrice($order->collection_diff) }}</td>
                                             </tr>
                                         @endif
 
@@ -470,7 +479,8 @@
                                         </tr>
 
                                         <tr class="bold">
-                                            <td>{{ __('admin::app.sales.orders.total-paid') }}</td>
+                                            {{-- <td>{{ __('admin::app.sales.orders.total-paid') }}</td> --}}
+                                            <td>Tổng tiền phải trả</td>
                                             <td>-</td>
                                             <td>{{ core()->formatBasePrice($order->base_grand_total_invoiced) }}</td>
                                         </tr>

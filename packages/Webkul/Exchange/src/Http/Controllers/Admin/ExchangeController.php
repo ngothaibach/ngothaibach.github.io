@@ -20,6 +20,8 @@ use Webkul\Product\Models\Product;
 use Webkul\Core\Models\Address;
 use Webkul\Sales\Repositories\OrderItemRepository;
 use Webkul\Sales\Repositories\OrderRepository;
+use Webkul\Sales\Repositories\OrderAddressRepository;
+use Webkul\Checkout\Repositories\CartAddressRepository;
 
 
 use Illuminate\Support\Facades\DB;
@@ -85,11 +87,25 @@ class ExchangeController extends Controller
     protected $orderItemRepository;
 
     /**
+     * CartAddressRepository object
+     *
+     * @var \Webkul\Checkout\Repositories\CartAddressRepository;
+     */
+    protected $cartAddressRepository;
+
+    /**
+     * OrderAddressRepository object
+     *
+     * @var \Webkul\Sales\Repositories\OrderAddressRepository;
+     */
+    protected $orderAddressRepository;
+
+    /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct(ExchangeNoteRepository $exchangeNoteRepository, ProductExchangeNoteRepository $productExchangeNoteRepository, ProductInventoryRepository $productInventoryRepository, OrderRepository $orderRepository, CartRepository $cartRepository, CartItemRepository $cartItemRepository, OrderItemRepository $orderItemRepository )
+    public function __construct(ExchangeNoteRepository $exchangeNoteRepository, ProductExchangeNoteRepository $productExchangeNoteRepository, ProductInventoryRepository $productInventoryRepository, OrderRepository $orderRepository, CartRepository $cartRepository, CartItemRepository $cartItemRepository, OrderItemRepository $orderItemRepository, CartAddressRepository $cartAddressRepository, OrderAddressRepository $orderAddressRepository )
     {
         $this->exchangeNoteRepository = $exchangeNoteRepository;
 
@@ -104,6 +120,10 @@ class ExchangeController extends Controller
         $this->cartItemRepository = $cartItemRepository;
 
         $this->orderItemRepository = $orderItemRepository;
+
+        $this->cartAddressRepository = $cartAddressRepository;
+
+        $this->orderAddressRepository = $orderAddressRepository;
 
         $this->middleware('admin');
 
@@ -358,7 +378,16 @@ class ExchangeController extends Controller
         $customer_email= $customer->email;
         $customer_first_name= $customer->first_name;
         $customer_last_name= $customer->last_name;
-        $customer_phone = $customer->phone;
+
+        //lay du lieu address cua customer
+        $addresses = DB::table('addresses')->where('customer_id',$customer_id)->where('address_type','=','customer')->first();
+        $customer_company = $addresses->company_name;
+        $customer_address1 = $addresses->address1;
+        $customer_postcode = $addresses->postcode;
+        $customer_city = $addresses->city;
+        $customer_state = $addresses->state;
+        $customer_country = $addresses->country;
+        $customer_phone = $addresses->phone;
 
         $list_product = request()->added_products;
         $total_item_count = count($list_product);
@@ -447,26 +476,28 @@ class ExchangeController extends Controller
         $cartPayment->save();
 
         //Lưu dữ liệu cart vào address cart_billing
-        // $arr_address_cart = array('cart_billing', 'cart_shipping');
-        // foreach($arr_address_cart as $value) {
-        //     $address = new Address();
-        //     $address->address_type = $value;
-        //     $address->cart_id = $cart->id;
-        //     $address->first_name = $customer_first_name;
-        //     $address->last_name = $customer_last_name;
-        //     $address->company_name = 'MMOutfit';
-        //     $address->address1 = 'Số 352 Giải Phóng, Phương Liệt, Thanh Xuân, Hà Nội';
-        //     $address->postcode = '10000';
-        //     $address->city = 'Hà Nội';
-        //     $address->state = 'Hà Nội';
-        //     $address->country = 'Việt Nam';
-        //     $address->email = $customer_email;
-        //     $address->phone = $customer_phone;
-        //     $address->default_address = 0;
-        //     $address->created_at = request()->created_date;
-        //     $address->updated_at = request()->created_date;
-        //     $address->save();
-        // }
+        $arr_address_cart = array('cart_billing', 'cart_shipping');
+        foreach($arr_address_cart as $value) {
+            $cartAddressData = [
+                'address_type' => $value,
+                'cart_id' => $cart->id,
+                'first_name' => $customer_first_name,
+                'last_name' => $customer_last_name,
+                'company_name' => $customer_company,
+                'address1' => $customer_address1,
+                'postcode' => $customer_postcode,
+                'city' => $customer_city,
+                'state' => $customer_state,
+                'country' => $customer_country,
+                'email' => $customer_email,
+                'phone' => $customer_phone,
+                'default_address' => 0,
+                'created_at' => request()->created_date,
+                'updated_at' => request()->created_date
+            ];
+            $cartAddress = $this->cartAddressRepository->create($cartAddressData);
+            
+        }
         
         //lưu dữ liệu vào orders
         $order = new Order();
@@ -540,26 +571,27 @@ class ExchangeController extends Controller
         $orderPayment->save();
 
         //Lưu dữ liệu vào address order_billing, order_shipping
-        // $arr_address_order = array('order_billing', 'order_shipping');
-        // foreach($arr_address_order as $value) {
-        //     $address = new Address();
-        //     $address->address_type = $value;
-        //     $address->order_id = $order->id;
-        //     $address->first_name = $customer_first_name;
-        //     $address->last_name = $customer_last_name;
-        //     $address->company_name = 'MMOutfit';
-        //     $address->address1 = 'Số 352 Giải Phóng, Phương Liệt, Thanh Xuân, Hà Nội';
-        //     $address->postcode = '10000';
-        //     $address->city = 'Hà Nội';
-        //     $address->state = 'Hà Nội';
-        //     $address->country = 'Việt Nam';
-        //     $address->email = $customer_email;
-        //     $address->phone = $customer_phone;
-        //     $address->default_address = 0;
-        //     $address->created_at = request()->created_date;
-        //     $address->updated_at = request()->created_date;
-        //     $address->save();
-        // }
+        $arr_address_order = array('order_billing', 'order_shipping');
+        foreach($arr_address_order as $value) {
+            $orderAddressData = [
+                'address_type' => $value,
+                'order_id' => $order->id,
+                'first_name' => $customer_first_name,
+                'last_name' => $customer_last_name,
+                'company_name' => $customer_company,
+                'address1' => $customer_address1,
+                'postcode' => $customer_postcode,
+                'city' => $customer_city,
+                'state' => $customer_state,
+                'country' => $customer_country,
+                'email' => $customer_email,
+                'phone' => $customer_phone,
+                'default_address' => 0,
+                'created_at' => request()->created_date,
+                'updated_at' => request()->created_date
+            ];
+            $orderAddress = $this->orderAddressRepository->create($orderAddressData);
+        }
 
         //lưu dữ liệu vào bảng ordercomment
         if(request()->notes != "")
