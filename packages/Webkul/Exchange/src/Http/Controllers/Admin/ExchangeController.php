@@ -17,6 +17,7 @@ use Webkul\Sales\Models\OrderPayment;
 use Webkul\Sales\Models\Order;
 use Webkul\Sales\Models\OrderComment;
 use Webkul\Product\Models\Product;
+use Webkul\Core\Models\Address;
 use Webkul\Sales\Repositories\OrderItemRepository;
 use Webkul\Sales\Repositories\OrderRepository;
 
@@ -336,8 +337,9 @@ class ExchangeController extends Controller
     public function create_orders()
     {
         // Get user list
-        // $users = DB::table('admins')->select('id', 'name')->get();
-        $users = DB::table('customers')->select('id', 'first_name','last_name', 'email', 'phone')->get();
+        $users = DB::table('admins')->select('id', 'name')->get();
+
+        $customers = DB::table('customers')->select('id', 'first_name','last_name', 'email', 'phone')->get();
 
         // Get inventory sources
         $inventory_sources = DB::table('inventory_sources')->select('id', 'name')->get();
@@ -345,17 +347,18 @@ class ExchangeController extends Controller
         // Get inventory sources
         $suppliers = DB::table('suppliers')->select('id', 'name')->get();
 
-        return view($this->_config['view'], compact('users', 'inventory_sources', 'suppliers'));
+        return view($this->_config['view'], compact('users', 'inventory_sources', 'suppliers', 'customers'));
     }
 
     public function store_orders()
     {
         //lay du lieu khach hang da chon
-        $customer_id = isset(request()->user) ? request()->user : 24;
+        $customer_id = isset(request()->customer) ? request()->customer : 24;
         $customer = DB::table('customers')->find($customer_id);
         $customer_email= $customer->email;
         $customer_first_name= $customer->first_name;
         $customer_last_name= $customer->last_name;
+        $customer_phone = $customer->phone;
 
         $list_product = request()->added_products;
         $total_item_count = count($list_product);
@@ -440,9 +443,31 @@ class ExchangeController extends Controller
         $cartPayment->method = "cashondelivery";
         $cartPayment->cart_id = $cart->id;
         $cartPayment->created_at = request()->created_date;
-        $cartPayment->updated_at = request()->updated_date;
+        $cartPayment->updated_at = request()->created_date;
         $cartPayment->save();
 
+        //Lưu dữ liệu cart vào address cart_billing
+        // $arr_address_cart = array('cart_billing', 'cart_shipping');
+        // foreach($arr_address_cart as $value) {
+        //     $address = new Address();
+        //     $address->address_type = $value;
+        //     $address->cart_id = $cart->id;
+        //     $address->first_name = $customer_first_name;
+        //     $address->last_name = $customer_last_name;
+        //     $address->company_name = 'MMOutfit';
+        //     $address->address1 = 'Số 352 Giải Phóng, Phương Liệt, Thanh Xuân, Hà Nội';
+        //     $address->postcode = '10000';
+        //     $address->city = 'Hà Nội';
+        //     $address->state = 'Hà Nội';
+        //     $address->country = 'Việt Nam';
+        //     $address->email = $customer_email;
+        //     $address->phone = $customer_phone;
+        //     $address->default_address = 0;
+        //     $address->created_at = request()->created_date;
+        //     $address->updated_at = request()->created_date;
+        //     $address->save();
+        // }
+        
         //lưu dữ liệu vào orders
         $order = new Order();
         $order->increment_id = $this->orderRepository->generateIncrementId();
@@ -466,6 +491,7 @@ class ExchangeController extends Controller
         $order->sub_total = request()->price_total;
         $order->sub_total = request()->price_total;
         $order->base_sub_total = request()->price_total;
+        $order->base_grand_total_invoiced = request()->price_must_paid;
         $order->channel_id = 1;
         $order->channel_type = 'Webkul\Core\Models\Channel';
         $order->created_at = request()->created_date;
@@ -473,6 +499,9 @@ class ExchangeController extends Controller
         $order->discount_amount = $discount_amount;
         $order->discount_percent = $discount_percent;
         $order->cart_id = $cart->id;
+        $order->collection_diff = request()->collection_diff;
+        $order->customer_paid = request()->customer_paid;
+        $order->customer_remain = request()->customer_remain;
         $order->save();
 
         //luư dữ liệu vào order items
@@ -509,6 +538,28 @@ class ExchangeController extends Controller
         $orderPayment->created_at = request()->created_date;
         $orderPayment->updated_at = request()->created_date;
         $orderPayment->save();
+
+        //Lưu dữ liệu vào address order_billing, order_shipping
+        // $arr_address_order = array('order_billing', 'order_shipping');
+        // foreach($arr_address_order as $value) {
+        //     $address = new Address();
+        //     $address->address_type = $value;
+        //     $address->order_id = $order->id;
+        //     $address->first_name = $customer_first_name;
+        //     $address->last_name = $customer_last_name;
+        //     $address->company_name = 'MMOutfit';
+        //     $address->address1 = 'Số 352 Giải Phóng, Phương Liệt, Thanh Xuân, Hà Nội';
+        //     $address->postcode = '10000';
+        //     $address->city = 'Hà Nội';
+        //     $address->state = 'Hà Nội';
+        //     $address->country = 'Việt Nam';
+        //     $address->email = $customer_email;
+        //     $address->phone = $customer_phone;
+        //     $address->default_address = 0;
+        //     $address->created_at = request()->created_date;
+        //     $address->updated_at = request()->created_date;
+        //     $address->save();
+        // }
 
         //lưu dữ liệu vào bảng ordercomment
         if(request()->notes != "")

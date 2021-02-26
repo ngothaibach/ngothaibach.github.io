@@ -62,27 +62,40 @@
                 <div class="col-4">
                     <h2>Thông tin đặt hàng</h2>
                     <div class="mb-3">
-                        <label for="exampleFormControlInput2" class="form-label">Khách hàng</label>
                         <div class="row">
-                            <div class="col-12">
+                            <div class="col-5">
                                 <select v-model="form.user" name="user" class="form-control" aria-label="User">
                                 @foreach ($users as $user)
                                     @if (auth()->guard('admin')->user()->id == $user->id)
-                                        <option value="{{ $user->id }}" selected>{{ $user->first_name }} {{ $user->last_name }}</option>
+                                        <option value="{{ $user->id }}" selected>{{ $user->name }}</option>
                                     @else
-                                        <option value="{{ $user->id }}" >{{ $user->first_name }} {{ $user->last_name }}</option>
+                                        <option value="{{ $user->id }}" >{{ $user->name }}</option>
+                                    @endif
+                                @endforeach
+                                </select>
+                            </div>
+                            <div class="col-7">
+                                <vuejs-datepicker v-model="form.created_date"></vuejs-datepicker>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput2" class="form-label">Khách hàng</label>
+                        <div class="row">
+                            <div class="col-12">
+                                <select v-model="form.customer" name="customer" class="form-control" aria-label="User">
+                                @foreach ($customers as $customer)
+                                    @if (auth()->guard('admin')->user()->id == $customer->id)
+                                        <option value="{{ $customer->id }}" selected>{{ $customer->first_name }} {{ $customer->last_name }}</option>
+                                    @else
+                                        <option value="{{ $customer->id }}" >{{ $customer->first_name }} {{ $customer->last_name }}</option>
                                     @endif
                                 @endforeach
                                 </select>
                             </div>
                         </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="created_time" class="form-label">Thời gian</label>
-                        <div class="col-5">
-                            <vuejs-datepicker v-model="form.created_date"></vuejs-datepicker>
-                        </div>
-                    </div>
+                    
                     <!--<div class="mb-3">
                         <label for="inventory-source" class="form-label">{{ __('admin::app.vpt.inventory.inventory-source') }}</label>
                         <select v-model="form.to_inventory_source" class="form-control" aria-label="{{ __('admin::app.vpt.inventory.inventory-source') }}" name="inventory-source">
@@ -129,17 +142,18 @@
                         </div>
                     </div>
                     <div class="mb-3">
-                        Thu khác: 
-                        <input type="number" id="collection_diff" v-model="form.collection_diff" v-on:change="fn_update_collection_diff">
+                        <label for="exampleFormControlInput1" class="form-label">Thu khác:</label>
+                        <input type="number" class="form-control" id="collection_diff" v-model="form.collection_diff" v-on:change="fn_update_collection_diff">
                     </div>
 
                     <div class="mb-3">
-                        Khách cần trả: <span v-text="form.price_must_paid"></span> 
+                        Khách cần trả:
+                        <span v-text="form.price_must_paid"></span> 
                     </div>
 
                     <div class="mb-3">
-                        Khách thanh toán: 
-                        <input type="number" id="customer_paid" v-model="form.customer_paid" v-on:change="fn_update_customer_paid">
+                        <label for="exampleFormControlInput1" class="form-label">Khách thanh toán </label>
+                        <input type="number" class="form-control" id="customer_paid" v-model="form.customer_paid" v-on:change="fn_update_customer_paid">
                     </div>
 
                     <div class="mb-3">
@@ -184,6 +198,7 @@
                         receipt_date: new Date(),
                         created_date: new Date(),
                         user: "auth()->guard('admin')->user()->id",
+                        customer: "auth()->guard('admin')->user()->id",
                         supplier: null,
                         to_inventory_source: null,
                         note_code: null,
@@ -285,11 +300,11 @@
                             // attr.innerHTML = response.data.message;
                             console.error(response);
                             if (response.data.success == true) {
-                                console.error("save orders successfull");
+                                console.error("Tạo thành công đơn hàng");
                                 // window.location.href = "{{ route('admin.exchange.orders.list') }}";
                                 window.location.href = "{{ route('admin.sales.orders.index') }}";
                             } else {
-                                console.debug("save orders NOT successfull");
+                                console.debug("Tạo đơn hàng thất bại");
                             }
                         })
                     } else {
