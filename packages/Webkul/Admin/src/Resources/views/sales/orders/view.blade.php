@@ -1,8 +1,7 @@
 @extends('admin::layouts.master')
 
 @section('page_title')
-    {{-- {{ __('admin::app.sales.orders.view-title', ['order_id' => $order->increment_id]) }} --}}
-    {{ __('Đơn #' . $order->increment_id) }}
+    {{ __('admin::app.sales.orders.view-title', ['order_id' => $order->increment_id]) }}
 @stop
 
 @section('content-wrapper')
@@ -17,8 +16,8 @@
                     
                     <i class="icon angle-left-icon back-link" onclick="window.location = history.length > 1 ? document.referrer : '{{ route('admin.dashboard.index') }}'"></i>
 
-                    {{-- {{ __('admin::app.sales.orders.view-title', ['order_id' => $order->increment_id]) }} --}}
-                    {{ __('Đơn #' . $order->increment_id) }}
+                    {{ __('admin::app.sales.orders.view-title', ['order_id' => $order->increment_id]) }}
+                    {{-- {{ __('Đơn #' . $order->increment_id) }} --}}
 
                     {!! view_render_event('sales.order.title.after', ['order' => $order]) !!}
                     
@@ -30,28 +29,30 @@
 
                 @if ($order->canCancel())
                     <a href="{{ route('admin.sales.orders.cancel', $order->id) }}" class="btn btn-lg btn-primary" v-alert:message="'{{ __('admin::app.sales.orders.cancel-confirm-msg') }}'">
-                        {{-- {{ __('admin::app.sales.orders.cancel-btn-title') }} --}}
-                        Hủy
+                        {{ __('admin::app.sales.orders.cancel-btn-title') }}
                     </a>
                 @endif
 
                 @if ($order->canInvoice())
                     <a href="{{ route('admin.sales.invoices.create', $order->id) }}" class="btn btn-lg btn-primary">
                         {{ __('admin::app.sales.orders.invoice-btn-title') }}
+                        {{-- Hóa đơn --}}
                     </a>
                 @endif
 
                 @if ($order->canRefund())
                     <a href="{{ route('admin.sales.refunds.create', $order->id) }}" class="btn btn-lg btn-primary">
                         {{ __('admin::app.sales.orders.refund-btn-title') }}
+                        {{-- Hoàn tiền  --}}
                     </a>
                 @endif
 
-                @if ($order->canShip())
+                {{-- @if ($order->canShip())
                     <a href="{{ route('admin.sales.shipments.create', $order->id) }}" class="btn btn-lg btn-primary">
                         {{ __('admin::app.sales.orders.shipment-btn-title') }}
+                        Vận chuyển
                     </a>
-                @endif
+                @endif --}}
 
                 {!! view_render_event('sales.order.page_action.after', ['order' => $order]) !!}
             </div>
@@ -62,25 +63,25 @@
             <tabs>
                 {!! view_render_event('sales.order.tabs.before', ['order' => $order]) !!}
 
-                {{-- <tab name="{{ __('admin::app.sales.orders.info') }}" :selected="true"> --}}
-                <tab name="Thông tin" :selected="true">
+                <tab name="{{ __('admin::app.sales.orders.info') }}" :selected="true">
+                {{-- <tab name="Thông tin" :selected="true"> --}}
                     <div class="sale-container">
 
-                        {{-- <accordian :title="'{{ __('admin::app.sales.orders.order-and-account') }}'" :active="true"> --}}
-                        <accordian :title="'Đơn và tài khoản'" :active="true">
+                        <accordian :title="'{{ __('admin::app.sales.orders.order-and-account') }}'" :active="true">
+                        {{-- <accordian :title="'Đơn và tài khoản'" :active="true"> --}}
                             <div slot="body">
 
                                 <div class="sale-section">
                                     <div class="secton-title">
-                                        {{-- <span>{{ __('admin::app.sales.orders.order-info') }}</span> --}}
-                                        <span>Thông tin đơn hàng</span>
+                                        <span>{{ __('admin::app.sales.orders.order-info') }}</span>
+                                        {{-- <span>Thông tin đơn hàng</span> --}}
                                     </div>
 
                                     <div class="section-content">
                                         <div class="row">
                                             <span class="title">
-                                                {{-- {{ __('admin::app.sales.orders.order-date') }} --}}
-                                                Ngày mua
+                                                {{ __('admin::app.sales.orders.order-date') }}
+                                                {{-- Ngày mua --}}
                                             </span>
 
                                             <span class="value">
@@ -92,8 +93,8 @@
 
                                         <div class="row">
                                             <span class="title">
-                                                {{-- {{ __('admin::app.sales.orders.order-status') }} --}}
-                                                Trạng thái
+                                                {{ __('admin::app.sales.orders.order-status') }}
+                                                {{-- Trạng thái --}}
                                             </span>
 
                                             <span class="value">
@@ -105,8 +106,8 @@
 
                                         <div class="row">
                                             <span class="title">
-                                                {{-- {{ __('admin::app.sales.orders.channel') }} --}}
-                                                Kênh
+                                                {{ __('admin::app.sales.orders.channel') }}
+                                                {{-- Kênh --}}
                                             </span>
 
                                             <span class="value">
@@ -120,15 +121,15 @@
 
                                 <div class="sale-section">
                                     <div class="secton-title">
-                                        {{-- <span>{{ __('admin::app.sales.orders.account-info') }}</span> --}}
-                                        <span>Thông tin tài khoản</span>
+                                        <span>{{ __('admin::app.sales.orders.account-info') }}</span>
+                                        {{-- <span>Thông tin tài khoản</span> --}}
                                     </div>
 
                                     <div class="section-content">
                                         <div class="row">
                                             <span class="title">
-                                                {{-- {{ __('admin::app.sales.orders.customer-name') }} --}}
-                                                Khách hàng
+                                                {{ __('admin::app.sales.orders.customer-name') }}
+                                                {{-- Khách hàng --}}
                                             </span>
 
                                             <span class="value">
@@ -171,12 +172,14 @@
 
                         @if ($order->billing_address || $order->shipping_address)
                             <accordian :title="'{{ __('admin::app.sales.orders.address') }}'" :active="true">
+                            {{-- <accordian :title="'Địa chỉ'" :active="true"> --}}
                                 <div slot="body">
 
                                     @if($order->billing_address)
                                         <div class="sale-section">
                                             <div class="secton-title">
                                                 <span>{{ __('admin::app.sales.orders.billing-address') }}</span>
+                                                {{-- <span>Địa chỉ hóa đơn</span> --}}
                                             </div>
 
                                             <div class="section-content">
@@ -187,7 +190,7 @@
                                         </div>
                                     @endif
 
-                                    @if ($order->shipping_address)
+                                    {{-- @if ($order->shipping_address)
                                         <div class="sale-section">
                                             <div class="secton-title">
                                                 <span>{{ __('admin::app.sales.orders.shipping-address') }}</span>
@@ -199,27 +202,27 @@
                                                 {!! view_render_event('sales.order.shipping_address.after', ['order' => $order]) !!}
                                             </div>
                                         </div>
-                                    @endif
+                                    @endif --}}
 
                                 </div>
                             </accordian>
                         @endif
 
-                        {{-- <accordian :title="'{{ __('admin::app.sales.orders.payment-and-shipping') }}'" :active="true"> --}}
-                        <accordian :title="'Thanh toán và vận chuyển'" :active="true">
+                        <accordian :title="'{{ __('admin::app.sales.orders.payment-and-shipping') }}'" :active="true">
+                        {{-- <accordian :title="'Thanh toán và vận chuyển'" :active="true"> --}}
                             <div slot="body">
 
                                 <div class="sale-section">
                                     <div class="secton-title">
-                                        {{-- <span>{{ __('admin::app.sales.orders.payment-info') }}</span> --}}
-                                        <span>Thông tin thanh toán</span>
+                                        <span>{{ __('admin::app.sales.orders.payment-info') }}</span>
+                                        {{-- <span>Thông tin thanh toán</span> --}}
                                     </div>
 
                                     <div class="section-content">
                                         <div class="row">
                                             <span class="title">
-                                                {{-- {{ __('admin::app.sales.orders.payment-method') }} --}}
-                                                Phương thức thanh toán
+                                                {{ __('admin::app.sales.orders.payment-method') }}
+                                                {{-- Phương thức thanh toán --}}
                                             </span>
 
                                             <span class="value">
@@ -229,8 +232,8 @@
 
                                         <div class="row">
                                             <span class="title">
-                                                {{-- {{ __('admin::app.sales.orders.currency') }} --}}
-                                                Loại tiền
+                                                {{ __('admin::app.sales.orders.currency') }}
+                                                {{-- Loại tiền --}}
                                             </span>
 
                                             <span class="value">
@@ -256,7 +259,7 @@
                                     </div>
                                 </div>
 
-                                @if ($order->shipping_address)
+                                {{-- @if ($order->shipping_address)
                                     <div class="sale-section">
                                         <div class="secton-title">
                                             <span>{{ __('admin::app.sales.orders.shipping-info') }}</span>
@@ -286,37 +289,37 @@
                                             {!! view_render_event('sales.order.shipping-method.after', ['order' => $order]) !!}
                                         </div>
                                     </div>
-                                @endif
+                                @endif --}}
                             </div>
                         </accordian>
 
-                        {{-- <accordian :title="'{{ __('admin::app.sales.orders.products-ordered') }}'" :active="true"> --}}
-                        <accordian :title="'Sản phẩm đã đặt'" :active="true">
+                        <accordian :title="'{{ __('admin::app.sales.orders.products-ordered') }}'" :active="true">
+                        {{-- <accordian :title="'Sản phẩm đã đặt'" :active="true"> --}}
                             <div slot="body">
 
                                 <div class="table">
                                     <table>
                                         <thead>
                                             <tr>
-                                                {{-- <th>{{ __('admin::app.sales.orders.SKU') }}</th> --}}
-                                                <th>Mã hàng hóa</th>
-                                                {{-- <th>{{ __('admin::app.sales.orders.product-name') }}</th> --}}
-                                                <th>Tên sản phẩm</th>
-                                                {{-- <th>{{ __('admin::app.sales.orders.price') }}</th> --}}
-                                                <th>Đơn giá</th>
-                                                {{-- <th>{{ __('admin::app.sales.orders.item-status') }}</th> --}}
-                                                <th>Số lượng đã đặt</th>
-                                                {{-- <th>{{ __('admin::app.sales.orders.subtotal') }}</th> --}}
-                                                <th>Thành tiền</th>
-                                                {{-- <th>{{ __('admin::app.sales.orders.tax-percent') }}</th> --}}
-                                                <th>% Thuế</th>
-                                                {{-- <th>{{ __('admin::app.sales.orders.tax-amount') }}</th> --}}
-                                                <th>Tiền thuế</th>
+                                                <th>{{ __('admin::app.sales.orders.SKU') }}</th>
+                                                {{-- <th>Mã hàng hóa</th> --}}
+                                                <th>{{ __('admin::app.sales.orders.product-name') }}</th>
+                                                {{-- <th>Tên sản phẩm</th> --}}
+                                                <th>{{ __('admin::app.sales.orders.price') }}</th>
+                                                {{-- <th>Đơn giá</th> --}}
+                                                <th>{{ __('admin::app.sales.orders.item-status') }}</th>
+                                                {{-- <th>Số lượng đã đặt</th> --}}
+                                                <th>{{ __('admin::app.sales.orders.subtotal') }}</th>
+                                                {{-- <th>Thành tiền</th> --}}
+                                                <th>{{ __('admin::app.sales.orders.tax-percent') }}</th>
+                                                {{-- <th>% Thuế</th> --}}
+                                                <th>{{ __('admin::app.sales.orders.tax-amount') }}</th>
+                                                {{-- <th>Tiền thuế</th> --}}
                                                 @if ($order->base_discount_amount > 0)
                                                     <th>{{ __('admin::app.sales.orders.discount-amount') }}</th>
                                                 @endif
-                                                {{-- <th>{{ __('admin::app.sales.orders.grand-total') }}</th> --}}
-                                                <th>Tổng tiền</th>
+                                                <th>{{ __('admin::app.sales.orders.grand-total') }}</th>
+                                                {{-- <th>Tổng tiền</th> --}}
                                             </tr>
                                         </thead>
 
@@ -390,6 +393,7 @@
 
                                             <div class="control-group" :class="[errors.has('comment') ? 'has-error' : '']">
                                                 <label for="comment" class="required">{{ __('admin::app.sales.orders.comment') }}</label>
+                                                {{-- <label for="comment" class="required">Ghi chú</label> --}}
                                                 <textarea v-validate="'required'" class="control" id="comment" name="comment" data-vv-as="&quot;{{ __('admin::app.sales.orders.comment') }}&quot;"></textarea>
                                                 <span class="control-error" v-if="errors.has('comment')">@{{ errors.first('comment') }}</span>
                                             </div>
@@ -399,11 +403,13 @@
                                                     <input type="checkbox" name="customer_notified" id="customer-notified" name="checkbox[]">
                                                     <label class="checkbox-view" for="customer-notified"></label>
                                                     {{ __('admin::app.sales.orders.notify-customer') }}
+                                                    {{-- Thông báo khách hàng --}}
                                                 </span>
                                             </div>
 
                                             <button type="submit" class="btn btn-lg btn-primary">
                                                 {{ __('admin::app.sales.orders.submit-comment') }}
+                                                {{-- Gửi ghi chú --}}
                                             </button>
                                         </form>
 
@@ -426,8 +432,8 @@
 
                                     <table class="sale-summary">
                                         <tr>
-                                            {{-- <td>{{ __('admin::app.sales.orders.subtotal') }}</td> --}}
-                                            <td>Thành tiền</td>
+                                            <td>{{ __('admin::app.sales.orders.subtotal') }}</td>
+                                            {{-- <td>Tổng tiền hàng</td> --}}
                                             <td>-</td>
                                             <td>{{ core()->formatBasePrice($order->base_sub_total) }}</td>
                                         </tr>
@@ -440,21 +446,12 @@
                                                 <td>{{ core()->formatBasePrice($order->base_shipping_amount) }}</td>
                                             </tr>
                                         @endif --}}
-                                        @if($order->collection_diff > 0)
-                                            <tr>
-                                                <td>
-                                                    Thu khác
-                                                </td>
-                                                <td>-</td>
-                                                <td>{{ core()->formatBasePrice($order->collection_diff) }}</td>
-                                            </tr>
-                                        @endif
-
+                                        
                                         @if ($order->discount_amount > 0)
                                             <tr>
                                                 <td>
-                                                    {{-- {{ __('admin::app.sales.orders.discount') }} --}}
-                                                    Giảm giá
+                                                    {{ __('admin::app.sales.orders.discount') }}
+                                                    {{-- Giảm giá --}}
                                                     @if ($order->coupon_code)
                                                         ({{ $order->coupon_code }})
                                                     @endif
@@ -465,33 +462,44 @@
                                         @endif
 
                                         <tr class="border">
-                                            {{-- <td>{{ __('admin::app.sales.orders.tax') }}</td> --}}
-                                            <td>Thuế</td>
+                                            <td>{{ __('admin::app.sales.orders.tax') }}</td>
+                                            {{-- <td>Thuế</td> --}}
                                             <td>-</td>
                                             <td>{{ core()->formatBasePrice($order->base_tax_amount) }}</td>
                                         </tr>
 
+                                        @if($order->collection_diff > 0)
+                                            <tr>
+                                                <td>
+                                                    Thu khác
+                                                </td>
+                                                <td>-</td>
+                                                <td>{{ core()->formatBasePrice($order->collection_diff) }}</td>
+                                            </tr>
+                                        @endif
+
+
                                         <tr class="bold">
-                                            {{-- <td>{{ __('admin::app.sales.orders.grand-total') }}</td> --}}
-                                            <td>Tổng tiền</td>
+                                            <td>{{ __('admin::app.sales.orders.grand-total') }}</td>
+                                            {{-- <td>Thành tiền</td> --}}
                                             <td>-</td>
                                             <td>{{ core()->formatBasePrice($order->base_grand_total) }}</td>
                                         </tr>
 
-                                        <tr class="bold">
-                                            {{-- <td>{{ __('admin::app.sales.orders.total-paid') }}</td> --}}
-                                            <td>Tổng tiền phải trả</td>
+                                        {{-- <tr class="bold">
+                                            <td>{{ __('admin::app.sales.orders.total-paid') }}</td>
                                             <td>-</td>
                                             <td>{{ core()->formatBasePrice($order->base_grand_total_invoiced) }}</td>
-                                        </tr>
+                                        </tr> --}}
 
                                         <tr class="bold">
                                             <td>{{ __('admin::app.sales.orders.total-refunded') }}</td>
+                                            {{-- <td>Tiền hoàn lại đơn</td> --}}
                                             <td>-</td>
                                             <td>{{ core()->formatBasePrice($order->base_grand_total_refunded) }}</td>
                                         </tr>
 
-                                        <tr class="bold">
+                                        {{-- <tr class="bold">
                                             <td>{{ __('admin::app.sales.orders.total-due') }}</td>
 
                                             <td>-</td>
@@ -501,7 +509,7 @@
                                             @else
                                                 <td id="due-amount-on-cancelled">{{ core()->formatBasePrice(0.00) }}</td>
                                             @endif
-                                        </tr>
+                                        </tr> --}}
                                     </table>
                                 </div>
                             </div>
@@ -510,7 +518,8 @@
                     </div>
                 </tab>
 
-                <tab name="{{ __('admin::app.sales.orders.invoices') }}">
+                {{-- <tab name="{{ __('admin::app.sales.orders.invoices') }}"> --}}
+                <tab name="Hóa đơn">
 
                     <div class="table" style="padding: 20px 0">
                         <table>
@@ -518,11 +527,17 @@
                                 <tr>
                                     <th>{{ __('admin::app.sales.invoices.id') }}</th>
                                     <th>{{ __('admin::app.sales.invoices.date') }}</th>
+                                    {{-- <th>Ngày tạo hóa đơn</th> --}}
                                     <th>{{ __('admin::app.sales.invoices.order-id') }}</th>
+                                    {{-- <th>ID đơn hàng</th> --}}
                                     <th>{{ __('admin::app.sales.invoices.customer-name') }}</th>
+                                    {{-- <th>Tên khách hàng</th> --}}
                                     <th>{{ __('admin::app.sales.invoices.status') }}</th>
+                                    {{-- <th>Trạng thái</th> --}}
                                     <th>{{ __('admin::app.sales.invoices.amount') }}</th>
+                                    {{-- <th>Số tiền</th> --}}
                                     <th>{{ __('admin::app.sales.invoices.action') }}</th>
+                                    {{-- <th>Thao tác</th> --}}
                                 </tr>
                             </thead>
 
@@ -546,6 +561,7 @@
                                 @if (! $order->invoices->count())
                                     <tr>
                                         <td class="empty" colspan="7">{{ __('admin::app.common.no-result-found') }}</td>
+                                        {{-- <td class="empty" colspan="7">Không tìm thấy bản ghi nào</td> --}}
                                     <tr>
                                 @endif
                         </table>
@@ -553,7 +569,7 @@
 
                 </tab>
 
-                <tab name="{{ __('admin::app.sales.orders.shipments') }}">
+                {{-- <tab name="{{ __('admin::app.sales.orders.shipments') }}">
 
                     <div class="table" style="padding: 20px 0">
                         <table>
@@ -593,9 +609,10 @@
                         </table>
                     </div>
 
-                </tab>
+                </tab> --}}
 
-                <tab name="{{ __('admin::app.sales.orders.refunds') }}">
+                {{-- <tab name="{{ __('admin::app.sales.orders.refunds') }}"> --}}
+                <tab name="Hoàn tiền">
 
                     <div class="table" style="padding: 20px 0">
                         <table>
@@ -603,11 +620,17 @@
                                 <tr>
                                     <th>{{ __('admin::app.sales.refunds.id') }}</th>
                                     <th>{{ __('admin::app.sales.refunds.date') }}</th>
+                                    {{-- <th>Ngày hoàn trả</th> --}}
                                     <th>{{ __('admin::app.sales.refunds.order-id') }}</th>
+                                    {{-- <th>ID đơn hàng</th> --}}
                                     <th>{{ __('admin::app.sales.refunds.customer-name') }}</th>
+                                    {{-- <th>Tên khách hàng</th> --}}
                                     <th>{{ __('admin::app.sales.refunds.status') }}</th>
+                                    {{-- <th>Trạng thái</th> --}}
                                     <th>{{ __('admin::app.sales.refunds.refunded') }}</th>
+                                    {{-- <th>Đã hoàn</th> --}}
                                     <th>{{ __('admin::app.sales.refunds.action') }}</th>
+                                    {{-- <th>Thao tác</th> --}}
                                 </tr>
                             </thead>
 
@@ -632,6 +655,7 @@
                                 @if (! $order->refunds->count())
                                     <tr>
                                         <td class="empty" colspan="7">{{ __('admin::app.common.no-result-found') }}</td>
+                                        {{-- <td class="empty" colspan="7">Không tìm thấy bản ghi nào</td> --}}
                                     <tr>
                                 @endif
                         </table>

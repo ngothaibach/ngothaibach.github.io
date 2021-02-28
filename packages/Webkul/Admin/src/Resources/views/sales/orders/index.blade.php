@@ -14,7 +14,7 @@
             </div>
 
             <div class="page-action">
-                <a href="{{ route('admin.exchange.orders.create') }}" class="btn btn-lg btn-primary">
+                <a href="{{ route('admin.sales.orders.create') }}" class="btn btn-lg btn-primary">
                     Tạo đơn
                 </a>
             </div>
