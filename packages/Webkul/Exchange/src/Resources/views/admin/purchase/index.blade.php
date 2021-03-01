@@ -23,6 +23,9 @@
 </div>
 @stop
 
+
+
+
 @push('scripts')
     <script type="text/x-template" id="vpt-list-receipt-notes-template">
 

@@ -1,6 +1,7 @@
 <?php
 
 namespace Webkul\Exchange\Http\Controllers\Admin;
+use Illuminate\Support\Facades\Log;
 
 use Illuminate\Routing\Controller;
 use Illuminate\Http\Request;
@@ -25,6 +26,10 @@ use Webkul\Product\Repositories\ProductInventoryRepository;
 
 
 use Illuminate\Support\Facades\DB;
+use Webkul\Exchange\Http\Imports\ImportExcel;
+use Excel;
+use Webkul\Exchange\Http\Models\ImportProduct;
+use Webkul\Exchange\Models\ExchangeNote;
 
 class ExchangeController extends Controller
 {
@@ -144,6 +149,9 @@ class ExchangeController extends Controller
      */
     public function index()
     {
+        error_log('Some message here.');
+
+        // var_dump('xxxxxx');
         return view($this->_config['view']);
     }
 
@@ -162,6 +170,12 @@ class ExchangeController extends Controller
         ->where('type', '=', 'receipt')
         ->orderBy('id', 'desc')
         ->get()->toArray();
+
+        // $data = DB::table('exchange_notes')->get()->toJson();
+        // echo $data;
+
+        // $receipt_notes = DB::table('exchange_notes')->orderBy('id', 'DESC')->get()->toArray();
+
         return view($this->_config['view'], compact('receipt_notes'));
     }
 
@@ -320,6 +334,7 @@ class ExchangeController extends Controller
      * @param  int  $id
      * @return \Illuminate\View\View
      */
+
     public function edit($id)
     {
         return view($this->_config['view']);

@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => 'edd31a8d05504a661db03c8fbee986f8ccb810f2',
+    'reference' => 'a4b9a4c63c8c8ab6ff49bcbcb768b9c1ff9ad6a8',
     'name' => 'bagisto/bagisto',
   ),
   'versions' => 
@@ -72,7 +72,7 @@
       'aliases' => 
       array (
       ),
-      'reference' => 'edd31a8d05504a661db03c8fbee986f8ccb810f2',
+      'reference' => 'a4b9a4c63c8c8ab6ff49bcbcb768b9c1ff9ad6a8',
     ),
     'bagisto/bagisto-package-generator' => 
     array (
@@ -946,12 +946,12 @@
     ),
     'maatwebsite/excel' => 
     array (
-      'pretty_version' => '3.1.19',
-      'version' => '3.1.19.0',
+      'pretty_version' => '3.1.26',
+      'version' => '3.1.26.0',
       'aliases' => 
       array (
       ),
-      'reference' => '96527a9ebc2e79e9a5fa7eaef7e23c9e9bcc587c',
+      'reference' => '66f7c9584304ad0b6a267a5d8ffbfa2ff4272e85',
     ),
     'maennchen/zipstream-php' => 
     array (
@@ -1360,8 +1360,8 @@
     array (
       'provided' => 
       array (
-        0 => '1.0',
-        1 => '1.0.0',
+        0 => '1.0.0',
+        1 => '1.0',
       ),
     ),
     'psr/simple-cache' => 
