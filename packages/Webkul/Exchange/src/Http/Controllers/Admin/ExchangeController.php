@@ -260,58 +260,6 @@ class ExchangeController extends Controller
      * @return \Illuminate\View\View
      */
 
-    public function import_excel(Request $request){
-        if($request->hasFile('select_file')){ 
-            $path = $request->file('select_file')->getRealPath();
-            Excel::import(new ImportExcel, $path);
-            // echo $request->file('select_file');
-        return back()->with('success', 'Excel Data Imported successfully.');
-
-        }
-        return back()->with('success', 'File Not Empty.');
-
-       
-    }
-    // public function import_excel(Request $request){
-    //     $this->validate($request, [
-    //         'select_file'  => 'required|mimes:xls,xlsx'
-    //        ]);
-      
-    //        $path = $request->file('select_file')->getRealPath();
-      
-    //        $data = Excel::import(new ExchangeNote,$path);
-    //        if($data->count() > 0)
-    //        {
-    //         foreach($data->toArray() as $key => $value)
-    //         {
-    //          foreach($value as $row)
-    //          {
-    //           $insert_data[] = array(
-    //            'id'  => $row['id'],
-    //            'type'   => $row['type'],
-    //            'status'   => $row['status'],
-    //            'created_user_id'    => $row['created_user_id'],
-    //            'receipt_user_id'  => $row['receipt_user_id'],
-    //            'supplier_id'   => $row['supplier_id'],
-    //            'from_inventory_source_id'   => $row['from_inventory_source_id'],
-    //            'to_inventory_source_id'   => $row['to_inventory_source_id'],
-    //            'created_date'   => $row['created_date'],
-    //            'updated_date'   => $row['updated_date'],
-    //            'transfer_date'   => $row['transfer_date'],
-    //            'receipt_date'   => $row['receipt_date'],
-    //            'note'   => $row['note'],
-    //           );
-    //          }
-    //         }
-      
-    //         if(!empty($insert_data))
-    //         {
-    //          DB::table('exchange_notes')->insert($insert_data);
-    //         }
-    //        }
-    //        return back()->with('success', 'Excel Data Imported successfully.');
-    //       }
-
     public function edit($id)
     {
         return view($this->_config['view']);
