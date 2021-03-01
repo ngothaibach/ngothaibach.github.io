@@ -236,6 +236,10 @@ class InvoiceRepository extends Repository
         $invoice->discount_amount += $invoice->order->shipping_discount_amount;
         $invoice->base_discount_amount += $invoice->order->base_shipping_discount_amount;
 
+        if($invoice->order->discount_percent == 0){
+            $invoice->discount_amount = $invoice->base_discount_amount = $invoice->order->discount_amount;
+        }
+
         if ($invoice->order->shipping_amount) {
             foreach ($invoice->order->invoices as $prevInvoice) {
                 if ((float) $prevInvoice->shipping_amount) {
@@ -249,8 +253,8 @@ class InvoiceRepository extends Repository
             }
         }
 
-        $invoice->grand_total = $invoice->sub_total + $invoice->tax_amount + $invoice->shipping_amount - $invoice->discount_amount;
-        $invoice->base_grand_total = $invoice->base_sub_total + $invoice->base_tax_amount + $invoice->base_shipping_amount - $invoice->base_discount_amount;
+        $invoice->grand_total = $invoice->sub_total + $invoice->tax_amount + $invoice->shipping_amount - $invoice->discount_amount + $invoice->order->collection_diff;
+        $invoice->base_grand_total = $invoice->base_sub_total + $invoice->base_tax_amount + $invoice->base_shipping_amount - $invoice->base_discount_amount + $invoice->order->collection_diff;
 
         $invoice->save();
 
