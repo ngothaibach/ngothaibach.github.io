@@ -64,13 +64,13 @@ return [
             'icon-class' => '',
         ],[
             'key'        => 'sales',
-            'name'       => 'admin::app.layouts.sales',
+            'name'       => 'POS',
             'route'      => 'admin.sales.orders.index',
             'sort'       => 5,
             'icon-class' => 'sales-icon',
         ], [
             'key'        => 'sales.orders',
-            'name'       => 'admin::app.layouts.orders',
+            'name'       => 'Bán hàng',
             'route'      => 'admin.sales.orders.index',
             'sort'       => 1,
             'icon-class' => '',

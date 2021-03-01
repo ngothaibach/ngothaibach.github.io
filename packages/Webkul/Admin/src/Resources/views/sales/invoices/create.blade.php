@@ -1,7 +1,8 @@
 @extends('admin::layouts.master')
 
 @section('page_title')
-    {{ __('admin::app.sales.invoices.add-title') }}
+    {{-- {{ __('admin::app.sales.invoices.add-title') }} --}}
+    Tạo hóa đơn
 @stop
 
 @section('content-wrapper')
@@ -14,13 +15,15 @@
                     <h1>
                         <i class="icon angle-left-icon back-link" onclick="window.location = history.length > 1 ? document.referrer : '{{ route('admin.dashboard.index') }}'"></i>
 
-                        {{ __('admin::app.sales.invoices.add-title') }}
+                        {{-- {{ __('admin::app.sales.invoices.add-title') }} --}}
+                        Tạo hóa đơn
                     </h1>
                 </div>
 
                 <div class="page-action">
                     <button type="submit" class="btn btn-lg btn-primary">
-                        {{ __('admin::app.sales.invoices.save-btn-title') }}
+                        {{-- {{ __('admin::app.sales.invoices.save-btn-title') }} --}}
+                        Lưu hóa đơn
                     </button>
                 </div>
             </div>
@@ -28,18 +31,21 @@
             <div class="page-content">
                 <div class="sale-container">
 
-                    <accordian :title="'{{ __('admin::app.sales.orders.order-and-account') }}'" :active="true">
+                    {{-- <accordian :title="'{{ __('admin::app.sales.orders.order-and-account') }}'" :active="true"> --}}
+                    <accordian :title="'Đơn hàng và tài khoản'" :active="true">
                         <div slot="body">
 
                             <div class="sale-section">
                                 <div class="secton-title">
-                                    <span>{{ __('admin::app.sales.orders.order-info') }}</span>
+                                    {{-- <span>{{ __('admin::app.sales.orders.order-info') }}</span> --}}
+                                    <span>Thông tin đơn hàng</span>
                                 </div>
 
                                 <div class="section-content">
                                     <div class="row">
                                         <span class="title">
-                                            {{ __('admin::app.sales.invoices.order-id') }}
+                                            {{-- {{ __('admin::app.sales.invoices.order-id') }} --}}
+                                            ID
                                         </span>
 
                                         <span class="value">
@@ -49,7 +55,8 @@
 
                                     <div class="row">
                                         <span class="title">
-                                            {{ __('admin::app.sales.orders.order-date') }}
+                                            {{-- {{ __('admin::app.sales.orders.order-date') }} --}}
+                                            Ngày mua
                                         </span>
 
                                         <span class="value">
@@ -59,7 +66,8 @@
 
                                     <div class="row">
                                         <span class="title">
-                                            {{ __('admin::app.sales.orders.order-status') }}
+                                            {{-- {{ __('admin::app.sales.orders.order-status') }} --}}
+                                            Trạng thái đơn hàng
                                         </span>
 
                                         <span class="value">
@@ -69,7 +77,8 @@
 
                                     <div class="row">
                                         <span class="title">
-                                            {{ __('admin::app.sales.orders.channel') }}
+                                            {{-- {{ __('admin::app.sales.orders.channel') }} --}}
+                                            Kênh
                                         </span>
 
                                         <span class="value">
@@ -81,13 +90,15 @@
 
                             <div class="sale-section">
                                 <div class="secton-title">
-                                    <span>{{ __('admin::app.sales.orders.account-info') }}</span>
+                                    {{-- <span>{{ __('admin::app.sales.orders.account-info') }}</span> --}}
+                                    <span>Thông tin tài khoản</span>
                                 </div>
 
                                 <div class="section-content">
                                     <div class="row">
                                         <span class="title">
-                                            {{ __('admin::app.sales.orders.customer-name') }}
+                                            {{-- {{ __('admin::app.sales.orders.customer-name') }} --}}
+                                            Tên khách hàng
                                         </span>
 
                                         <span class="value">
@@ -110,12 +121,14 @@
                         </div>
                     </accordian>
 
-                    <accordian :title="'{{ __('admin::app.sales.orders.address') }}'" :active="true">
+                    {{-- <accordian :title="'{{ __('admin::app.sales.orders.address') }}'" :active="true"> --}}
+                    <accordian :title="'Địa chỉ'" :active="true">
                         <div slot="body">
 
                             <div class="sale-section">
                                 <div class="secton-title">
-                                    <span>{{ __('admin::app.sales.orders.billing-address') }}</span>
+                                    {{-- <span>{{ __('admin::app.sales.orders.billing-address') }}</span> --}}
+                                    <span>Địa chỉ hóa đơn</span>
                                 </div>
 
                                 <div class="section-content">
@@ -125,7 +138,7 @@
                                 </div>
                             </div>
 
-                            @if ($order->shipping_address)
+                            {{-- @if ($order->shipping_address)
                                 <div class="sale-section">
                                     <div class="secton-title">
                                         <span>{{ __('admin::app.sales.orders.shipping-address') }}</span>
@@ -137,23 +150,26 @@
 
                                     </div>
                                 </div>
-                            @endif
+                            @endif --}}
 
                         </div>
                     </accordian>
 
-                    <accordian :title="'{{ __('admin::app.sales.orders.payment-and-shipping') }}'" :active="true">
+                    {{-- <accordian :title="'{{ __('admin::app.sales.orders.payment-and-shipping') }}'" :active="true"> --}}
+                    <accordian :title="'Thanh toán'" :active="true">
                         <div slot="body">
 
                             <div class="sale-section">
                                 <div class="secton-title">
-                                    <span>{{ __('admin::app.sales.orders.payment-info') }}</span>
+                                    {{-- <span>{{ __('admin::app.sales.orders.payment-info') }}</span> --}}
+                                    <span>Thông tin thanh toán</span>
                                 </div>
 
                                 <div class="section-content">
                                     <div class="row">
                                         <span class="title">
-                                            {{ __('admin::app.sales.orders.payment-method') }}
+                                            {{-- {{ __('admin::app.sales.orders.payment-method') }} --}}
+                                            Phương thức thanh toán
                                         </span>
 
                                         <span class="value">
@@ -163,7 +179,8 @@
 
                                     <div class="row">
                                         <span class="title">
-                                            {{ __('admin::app.sales.orders.currency') }}
+                                            {{-- {{ __('admin::app.sales.orders.currency') }} --}}
+                                            Loại tiền
                                         </span>
 
                                         <span class="value">
@@ -187,7 +204,7 @@
                                 </div>
                             </div>
 
-                            @if ($order->shipping_address)
+                            {{-- @if ($order->shipping_address)
                                 <div class="sale-section">
                                     <div class="secton-title">
                                         <span>{{ __('admin::app.sales.orders.shipping-info') }}</span>
@@ -215,21 +232,26 @@
                                         </div>
                                     </div>
                                 </div>
-                            @endif
+                            @endif --}}
                         </div>
                     </accordian>
 
-                    <accordian :title="'{{ __('admin::app.sales.orders.products-ordered') }}'" :active="true">
+                    {{-- <accordian :title="'{{ __('admin::app.sales.orders.products-ordered') }}'" :active="true"> --}}
+                    <accordian :title="'Hàng hóa trong đơn'" :active="true">
                         <div slot="body">
 
                             <div class="table">
                                 <table>
                                     <thead>
                                         <tr>
-                                            <th>{{ __('admin::app.sales.orders.SKU') }}</th>
-                                            <th>{{ __('admin::app.sales.orders.product-name') }}</th>
-                                            <th>{{ __('admin::app.sales.invoices.qty-ordered') }}</th>
-                                            <th>{{ __('admin::app.sales.invoices.qty-to-invoice') }}</th>
+                                            {{-- <th>{{ __('admin::app.sales.orders.SKU') }}</th> --}}
+                                            <th>Mã sản phẩm</th>
+                                            {{-- <th>{{ __('admin::app.sales.orders.product-name') }}</th> --}}
+                                            <th>Tên sản phẩm</th>
+                                            {{-- <th>{{ __('admin::app.sales.invoices.qty-ordered') }}</th> --}}
+                                            <th>Số lượng đặt hàng</th>
+                                            {{-- <th>{{ __('admin::app.sales.invoices.qty-to-invoice') }}</th> --}}
+                                            <th>Số lượng trong hóa đơn</th>
                                         </tr>
                                     </thead>
 

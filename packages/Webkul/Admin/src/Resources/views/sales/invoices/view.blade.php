@@ -1,7 +1,8 @@
 @extends('admin::layouts.master')
 
 @section('page_title')
-    {{ __('admin::app.sales.invoices.view-title', ['invoice_id' => $invoice->id]) }}
+    {{-- {{ __('admin::app.sales.invoices.view-title', ['invoice_id' => $invoice->id]) }} --}}
+    {{ __('Hóa đơn #' . $invoice->id) }}
 @stop
 
 @section('content-wrapper')
@@ -16,7 +17,8 @@
 
                     <i class="icon angle-left-icon back-link" onclick="window.location = history.length > 1 ? document.referrer : '{{ route('admin.dashboard.index') }}'"></i>
 
-                    {{ __('admin::app.sales.invoices.view-title', ['invoice_id' => $invoice->id]) }}
+                    {{-- {{ __('admin::app.sales.invoices.view-title', ['invoice_id' => $invoice->id]) }} --}}
+                    {{ __('Hóa đơn #' . $invoice->id) }}
 
                     {!! view_render_event('sales.invoice.title.after', ['order' => $order]) !!}
                 </h1>
@@ -26,7 +28,8 @@
                 {!! view_render_event('sales.invoice.page_action.before', ['order' => $order]) !!}
 
                 <a href="{{ route('admin.sales.invoices.print', $invoice->id) }}" class="btn btn-lg btn-primary">
-                    {{ __('admin::app.sales.invoices.print') }}
+                    {{-- {{ __('admin::app.sales.invoices.print') }} --}}
+                    In hóa đơn
                 </a>
 
                 {!! view_render_event('sales.invoice.page_action.after', ['order' => $order]) !!}
@@ -37,6 +40,7 @@
             <div class="sale-container">
 
                 <accordian :title="'{{ __('admin::app.sales.orders.order-and-account') }}'" :active="true">
+                {{-- <accordian :title="'Đơn và tài khoản'" :active="true"> --}}
                     <div slot="body">
 
                         <div class="sale-section">
@@ -138,7 +142,7 @@
                                 </div>
                             @endif
 
-                            @if ($order->shipping_address)
+                            {{-- @if ($order->shipping_address)
                                 <div class="sale-section" style="margin: 0 0 0 300px;">
                                     <div class="secton-title" style="width: 400px;">
                                         <span>{{ __('admin::app.sales.orders.shipping-address') }}</span>
@@ -150,7 +154,7 @@
                                         {!! view_render_event('sales.invoice.shipping_address.after', ['order' => $order]) !!}
                                     </div>
                                 </div>
-                            @endif
+                            @endif --}}
                         </div>
                     </accordian>
                 @endif
@@ -222,11 +226,11 @@
                                 <td>{{ core()->formatBasePrice($invoice->base_sub_total) }}</td>
                             </tr>
 
-                            <tr>
+                            {{-- <tr>
                                 <td>{{ __('admin::app.sales.orders.shipping-handling') }}</td>
                                 <td>-</td>
                                 <td>{{ core()->formatBasePrice($invoice->base_shipping_amount) }}</td>
-                            </tr>
+                            </tr> --}}
 
                             <tr>
                                 <td>{{ __('admin::app.sales.orders.tax') }}</td>
@@ -241,6 +245,15 @@
                                     <td>{{ core()->formatBasePrice($invoice->base_discount_amount) }}</td>
                                 </tr>
                             @endif
+
+                            @if ($invoice->order->collection_diff > 0)
+                                <tr>
+                                    <td>Thu khác</td>
+                                    <td>-</td>
+                                    <td>{{ core()->formatBasePrice($invoice->order->collection_diff) }}</td>
+                                </tr>
+                            @endif
+                            
 
                             <tr class="bold">
                                 <td>{{ __('admin::app.sales.orders.grand-total') }}</td>
