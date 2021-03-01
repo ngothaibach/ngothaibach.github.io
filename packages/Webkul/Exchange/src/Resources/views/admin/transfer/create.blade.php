@@ -291,7 +291,7 @@
                                 qty: result[item].Amount,
                                 price: result[item].Price,
                                 in_stock: result[item].Remain,
-                                featured_image:  featured_image: imgProduct[0]
+                                featured_image: imgProduct[0]
                             }
                             this.form.added_products.push(added_item);
                         }
