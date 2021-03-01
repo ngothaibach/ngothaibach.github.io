@@ -282,18 +282,21 @@
 
                     // console.log("added_item", this.results)
                     for (var item = 0; item < result.length - 1; item++) {
-                        console.log("SKU",result[item].Sku);
-                        if (skuProduct.includes(result[item].Sku)) {
-                            let added_item = {
-                                id: 1,
-                                sku: result[item].Sku,
-                                name: result[item].Name,
-                                qty: result[item].Amount,
-                                price: result[item].Price,
-                                in_stock: result[item].Remain,
-                                featured_image: imgProduct[0]
+                        // console.log("SKU",result[item].Sku);
+                        for (var i = 0; i < vm.listProduct.length; i++) {
+                            // console.log(vm.listProduct[i])
+                            if (vm.listProduct[i].sku == (result[item].Sku)) {
+                                let added_item = {
+                                    id: 1,
+                                    sku: result[item].Sku,
+                                    name: result[item].Name,
+                                    qty: result[item].Amount,
+                                    price: result[item].Price,
+                                    in_stock: result[item].Remain,
+                                    featured_image: vm.listProduct[i].featured_image
+                                }
+                                this.form.added_products.push(added_item);
                             }
-                            this.form.added_products.push(added_item);
                         }
                     }
 
