@@ -4,6 +4,8 @@ namespace Webkul\Exchange\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Routing\Router;
+use Webkul\Admin\Http\Middleware\Locale;
 
 class ExchangeServiceProvider extends ServiceProvider
 {
@@ -12,7 +14,7 @@ class ExchangeServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(Router $router)
     {
         $this->loadMigrationsFrom(__DIR__ . '/../Database/Migrations');
 
@@ -20,7 +22,8 @@ class ExchangeServiceProvider extends ServiceProvider
 
         $this->loadRoutesFrom(__DIR__ . '/../Http/shop-routes.php');
 
-        $this->loadTranslationsFrom(__DIR__ . '/../Resources/lang', 'exchange');
+        $this->loadTranslationsFrom(__DIR__ . '/../Resources/lang', 'admin');
+        $this->publishes([__DIR__.'/../Resources/lang' => resource_path('lang/vendor/admin')]);
 
         // $this->publishes([
         //     __DIR__ . '/../../publishable/assets' => public_path('themes/default/assets'),
@@ -34,6 +37,8 @@ class ExchangeServiceProvider extends ServiceProvider
         Event::listen('bagisto.admin.layout.head', function($viewRenderEventManager) {
             $viewRenderEventManager->addTemplate('exchange::admin.layouts.style');
         });
+
+        $router->aliasMiddleware('admin_locale', Locale::class);
     }
 
     /**

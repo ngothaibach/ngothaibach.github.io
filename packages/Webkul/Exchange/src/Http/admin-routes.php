@@ -1,6 +1,6 @@
 <?php
 
-Route::group(['middleware' => ['web', 'admin']], function () {
+Route::group(['middleware' => ['web', 'admin_locale']], function () {
 
     Route::get('/admin/exchange', 'Webkul\Exchange\Http\Controllers\Admin\ExchangeController@index')->defaults('_config', [
         'view' => 'exchange::admin.index',
