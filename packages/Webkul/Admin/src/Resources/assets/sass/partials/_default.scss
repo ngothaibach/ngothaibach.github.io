@@ -355,3 +355,20 @@ body {
         }
     }
 }
+
+.vpt-login-page {
+    background: url(../images/banner.jpg) no-repeat center;
+    background-size: cover;
+    -webkit-background-size: cover;
+    -o-background-size: cover;
+    -ms-background-size: cover;
+    -moz-background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
+.btn.btn-primary {
+    background: #ff4c4c!important;
+}
+.control-group .control, .btn.btn-primary, .panel {
+    border-radius: 0!important;
+}

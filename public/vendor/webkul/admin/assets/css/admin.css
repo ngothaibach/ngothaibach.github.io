@@ -289,6 +289,25 @@
   right: 100% !important;
 }
 
+.vpt-login-page {
+  background: url(../images/banner.jpg) no-repeat center;
+  background-size: cover;
+  -webkit-background-size: cover;
+  -o-background-size: cover;
+  -ms-background-size: cover;
+  -moz-background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+.btn.btn-primary {
+  background: #ff4c4c !important;
+}
+
+.control-group .control, .btn.btn-primary, .panel {
+  border-radius: 0 !important;
+}
+
 .dashboard .page-header {
   margin-bottom: 0 !important;
   padding-bottom: 15px;
@@ -435,10 +454,6 @@
 .rtl .dashboard .page-header .control-group.date::after {
   margin-top: -13px !important;
   right: 100%;
-}
-
-.vpt-login {
-  background: blue;
 }
 
 .configuration-image {
