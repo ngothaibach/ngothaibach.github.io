@@ -365,10 +365,32 @@ body {
     -moz-background-size: cover;
     background-position: center;
     background-attachment: fixed;
+
+    // .btn.btn-primary {
+    //     background: #ff4c4c!important;
+    // }
+    .control-group .control, .btn.btn-primary, .panel {
+        border-radius: 0!important;
+    }
 }
+
+.navbar-top .navbar-top-left .brand-logo {
+    padding: 0 10px;
+}
+
+.brand-logo img {
+    height: 60px;
+}
+
+.navbar-top, .navbar-top .navbar-top-left {
+    background: #0090DA!important;
+    border-bottom: 3px solid #ecdc0f;
+}
+
 .btn.btn-primary {
-    background: #ff4c4c!important;
+    background: #0090DA!important;
 }
-.control-group .control, .btn.btn-primary, .panel {
-    border-radius: 0!important;
+
+.navbar-top .navbar-top-right .profile-info .role {
+    color: #ffffff;
 }
