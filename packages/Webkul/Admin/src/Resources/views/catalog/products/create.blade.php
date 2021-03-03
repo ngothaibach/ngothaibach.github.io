@@ -86,7 +86,7 @@
 
                         <div class="control-group" :class="[errors.has('sku') ? 'has-error' : '']">
                             <label for="sku" class="required">{{ __('admin::app.catalog.products.sku') }}</label>
-                            <input type="text" v-validate="{ required: true, regex: /^[a-z0-9]+(?:-[a-z0-9]+)*$/ }" class="control" id="sku" name="sku" value="{{ request()->input('sku') ?: old('sku') }}" data-vv-as="&quot;{{ __('admin::app.catalog.products.sku') }}&quot;"/>
+                            <input type="text" v-validate="{ required: true, regex: /^[A-Za-z0-9_.]+(?:-[A-Za-z0-9_.]+)*$/ }" class="control" id="sku" name="sku" value="{{ request()->input('sku') ?: old('sku') }}" data-vv-as="&quot;{{ __('admin::app.catalog.products.sku') }}&quot;"/>
                             <span class="control-error" v-if="errors.has('sku')">@{{ errors.first('sku') }}</span>
                         </div>
 

@@ -230,6 +230,17 @@ class ExchangeController extends Controller
         );
     }
 
+    // public function store()
+    // {
+    //     session()->flash('success', trans('admin::app.settings.inventory_sources.create-success'));
+    //     return response()->json(
+    //         [
+    //             'success' => true,
+    //             'message' => request()->added_products,
+    //         ]
+    //     );
+    // }
+
     public function get_transfered_products() {
         $transfer_id = request()->input('transfer_id');
         $transfered_products = [];
@@ -244,7 +255,6 @@ class ExchangeController extends Controller
                 , DB::raw('(select path as featured_image from product_images where product_images.product_id  = product_flat.product_id limit 1) as featured_image'))            
             ->distinct()->get();
         }
-
         return response()->json(
             [
                 'success' => True,
@@ -271,9 +281,40 @@ class ExchangeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update($id)
+  
+    public function update(ProductForm $request, $id)
     {
+        $data = request()->all();
 
+        $multiselectAttributeCodes = array();
+
+        $productAttributes = $this->exchangeNoteRepository->findOrFail($id);
+
+        foreach ($productAttributes->attribute_family->attribute_groups as $attributeGroup) {
+            $customAttributes = $productAttributes->getEditableAttributes($attributeGroup);
+
+            if (count($customAttributes)) {
+                foreach ($customAttributes as $attribute) {
+                    if ($attribute->type == 'multiselect') {
+                        array_push($multiselectAttributeCodes, $attribute->code);
+                    }
+                }
+            }
+        }
+
+        if (count($multiselectAttributeCodes)) {
+            foreach ($multiselectAttributeCodes as $multiselectAttributeCode) {
+                if (! isset($data[$multiselectAttributeCode])) {
+                    $data[$multiselectAttributeCode] = array();
+                }
+            }
+        }
+
+        $product = $this->productRepository->update($data, $id);
+
+        session()->flash('success', trans('admin::app.response.update-success', ['name' => 'Product']));
+
+        return redirect()->route($this->_config['redirect']);
     }
 
     /**
@@ -284,6 +325,10 @@ class ExchangeController extends Controller
      */
     public function destroy($id)
     {
+
+    }
+
+    public function fn_update(){
 
     }
 }

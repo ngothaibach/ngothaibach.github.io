@@ -15,4 +15,10 @@ class ProductExchangeNoteRepository extends Repository
     {
         return 'Webkul\Exchange\Models\ProductExchangeNote';
     }
+    public function update(array $data, $id, $attribute = "id")
+    {
+        $product_exchange_note = $this->find($id);
+        $product_exchange_note->update($data);
+        return $product_exchange_note;
+    }
 }

@@ -12,7 +12,7 @@
             </div>
 
             <div class="page-action">
-                <div class="export-import" @click="showModal('downloadDataGrid')">
+                <div class="export-import" v-on:click="showModal('downloadDataGrid')">
                     <i class="export-icon"></i>
                     <span >
                         {{ __('admin::app.export.export') }}
