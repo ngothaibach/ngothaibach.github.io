@@ -1,12 +1,11 @@
-@extends('admin::layouts.content')
+@extends('admin::layouts.master')
 
 @section('page_title')
-{{-- {{ __('admin::app.vpt.inventory.receipt-notes') }} --}}
 Đặt hàng
 @stop
 <link href="/css/app.css" rel="stylesheet">
 <script src="/js/app.js"></script>
-@section('content')
+@section('content-wrapper')
     <vpt-receipt-note-form></vpt-receipt-note-form>
 @stop
 
@@ -14,8 +13,8 @@
     <script type="text/x-template" id="vpt-receipt-note-form-template">
         <form action="#" class="form newtopic" @submit.prevent="save">
             <div class="row" style="margin-top: 20px;">
-                <div class="col-8" style="align-self: baseline;">
-                    <h2>Đặt hàng</h2>
+                <div class="col-9" style="align-self: baseline;">
+                    <h2 style="padding-left: 5px">Đặt hàng</h2>
                     <div>
                         <input class="form-control" type="text" v-model="keywords">
                         <ul class="list-group" v-if="results.length > 0">
@@ -59,7 +58,7 @@
                         </table>
                     </div>
                 </div>
-                <div class="col-4">
+                <div class="col-3">
                     <h2>Thông tin đặt hàng</h2>
                     <div class="mb-3">
                         <div class="row">
@@ -85,45 +84,17 @@
                             <div class="col-12">
                                 <select v-model="form.customer" name="customer" class="form-control" aria-label="User">
                                 @foreach ($customers as $customer)
-                                    @if (auth()->guard('admin')->user()->id == $customer->id)
+                                    <!--@if (auth()->guard('admin')->user()->id == $customer->id)
                                         <option value="{{ $customer->id }}" selected>{{ $customer->first_name }} {{ $customer->last_name }}</option>
-                                    @else
+                                    @else -->
                                         <option value="{{ $customer->id }}" >{{ $customer->first_name }} {{ $customer->last_name }}</option>
-                                    @endif
+                                    <!-- @endif -->
                                 @endforeach
                                 </select>
                             </div>
                         </div>
                     </div>
                     
-                    <!--<div class="mb-3">
-                        <label for="inventory-source" class="form-label">{{ __('admin::app.vpt.inventory.inventory-source') }}</label>
-                        <select v-model="form.to_inventory_source" class="form-control" aria-label="{{ __('admin::app.vpt.inventory.inventory-source') }}" name="inventory-source">
-                        @foreach ($inventory_sources as $source)
-                            <option value="{{ $source->id }}">{{ $source->name }}</option>
-                        @endforeach
-                        </select>
-                    </div> 
-                    <div class="mb-3">
-                        <label for="supplierInput" class="form-label">{{ __('admin::app.vpt.inventory.supplier') }}</label>
-                        <select v-model="form.supplier" class="form-control" aria-label="{{ __('admin::app.vpt.inventory.supplier') }}" name="supplierInput">
-                        @foreach ($suppliers as $supplier)
-                            <option value="{{ $supplier->id }}">{{ $supplier->name }}</option>
-                        @endforeach
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="exampleFormControlInput1" class="form-label">{{ __('admin::app.vpt.inventory.receipt-note-code') }}</label>
-                        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="{{ __('admin::app.vpt.inventory.receipt-note-code') }}">
-                    </div>
-                    <div class="mb-3">
-                        <label for="exampleFormControlInput1" class="form-label">{{ __('admin::app.vpt.inventory.order-code') }}</label>
-                        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="{{ __('admin::app.vpt.inventory.order-code') }}">
-                    </div>
-                    <div class="mb-3">
-                        <label for="exampleFormControlInput1" class="form-label">{{ __('admin::app.vpt.inventory.status') }}</label>
-                        <input v-model="form.status" type="text" disable=true class="form-control" id="exampleFormControlInput1" placeholder="{{ __('admin::app.vpt.inventory.status') }}" readonly>
-                    </div> -->
                     <div class="mb-3">
                         {{ __('admin::app.vpt.inventory.total-of-price') }}: <span v-text="form.price_total"></span>
                     </div>
@@ -198,7 +169,7 @@
                         receipt_date: new Date(),
                         created_date: new Date(),
                         user: "auth()->guard('admin')->user()->id",
-                        customer: "auth()->guard('admin')->user()->id",
+                        customer: "",
                         supplier: null,
                         to_inventory_source: null,
                         note_code: null,
@@ -293,11 +264,9 @@
                     }
                 },
                 save () {
-                    if(this.form.price_must_paid != 0 ) {
+                    if(this.form.price_must_paid != 0 && this.form.customer != "") {
                         this.form.post("{{ route('admin.sales.orders.store') }}")
                         .then(( response ) => {
-                            // var attr = document.getElementById("text");
-                            // attr.innerHTML = response.data.message;
                             console.error(response);
                             if (response.data.success == true) {
                                 console.error("Tạo thành công đơn hàng");

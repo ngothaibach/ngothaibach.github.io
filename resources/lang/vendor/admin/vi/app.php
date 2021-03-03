@@ -332,7 +332,7 @@ return [
             'view-title' => 'Đơn #:order_id',
             'cancel-btn-title' => 'Hủy',
             'shipment-btn-title' => 'Vận chuyển',
-            'invoice-btn-title' => 'Hóa đơn',
+            'invoice-btn-title' => 'Tạo hóa đơn',
             'info' => 'Thông tin',
             'invoices' => 'Hóa đơn',
             'shipments' => 'Vận chuyển',

@@ -201,7 +201,7 @@ class OrderController extends Controller
     public function store_orders()
     {
         //lay du lieu khach hang da chon
-        $customer_id = isset(request()->customer) ? request()->customer : 24;
+        $customer_id = request()->customer ;
         $customer = DB::table('customers')->find($customer_id);
         $customer_email= $customer->email;
         $customer_first_name= $customer->first_name;
