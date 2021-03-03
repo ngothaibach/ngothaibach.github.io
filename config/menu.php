@@ -64,7 +64,7 @@ return [
             'icon-class' => '',
         ],[
             'key'        => 'sales',
-            'name'       => 'POS',
+            'name'       => 'Bán hàng',
             'route'      => 'admin.sales.orders.index',
             'sort'       => 5,
             'icon-class' => 'sales-icon',

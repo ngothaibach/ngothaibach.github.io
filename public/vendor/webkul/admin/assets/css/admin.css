@@ -825,3 +825,14 @@
 .do-not-cross-linked-product-arrow {
   width: 95%;
 }
+.content-container-full {
+  padding-left: 5px;
+  position: absolute;
+  margin-top: 60px;
+  top: 0px;
+  right: 0;
+  left: 0;
+  bottom: 0px;
+  height: calc(100% - 60px);
+  width: 100%;
+}

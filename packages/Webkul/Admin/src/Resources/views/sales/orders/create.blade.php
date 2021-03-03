@@ -1,4 +1,4 @@
-@extends('admin::layouts.master')
+@extends('admin::layouts.master_full')
 
 @section('page_title')
 Đặt hàng
@@ -14,7 +14,7 @@
         <form action="#" class="form newtopic" @submit.prevent="save">
             <div class="row" style="margin-top: 20px;">
                 <div class="col-9" style="align-self: baseline;">
-                    <h2 style="padding-left: 5px">Đặt hàng</h2>
+                    <h2>Đặt hàng</h2>
                     <div>
                         <input class="form-control" type="text" v-model="keywords">
                         <ul class="list-group" v-if="results.length > 0">
