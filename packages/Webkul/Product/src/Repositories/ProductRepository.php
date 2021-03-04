@@ -492,6 +492,7 @@ class ProductRepository extends Repository
             error_log('Some message here.');
 
             $locale = request()->get('locale') ?: app()->getLocale();
+        
 
             return $query->distinct()
                 ->addSelect('product_flat.*', 
@@ -502,8 +503,8 @@ class ProductRepository extends Repository
                 ->where('products.type', 'simple')
                 ->where('product_flat.channel', $channel)
                 ->where('product_flat.locale', $locale)
-                ->where('product_flat.name', 'like', '%' . urldecode($term) . '%')
                 ->orWhere('product_flat.name', 'like', '%' . urldecode($term) . '%')
+                // ->orWhere('product_flat.sku', 'like', '%' . urldecode($term) . '%')
                 ->orderBy('product_id', 'desc');
         })->get();
     }

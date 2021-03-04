@@ -163,6 +163,7 @@ class ExchangeController extends Controller
      */
     public function list_purchases()
     {
+
         $receipt_notes = DB::table('exchange_notes')
         ->join('suppliers', 'suppliers.id', '=', 'exchange_notes.supplier_id')
         ->join('inventory_sources', 'inventory_sources.id', '=', 'exchange_notes.to_inventory_source_id')
@@ -171,7 +172,7 @@ class ExchangeController extends Controller
         ->where('type', '=', 'receipt')
         ->orderBy('id', 'desc')
         ->get()->toArray();
-
+      
         // $data = DB::table('exchange_notes')->get()->toJson();
 
         // echo $data;

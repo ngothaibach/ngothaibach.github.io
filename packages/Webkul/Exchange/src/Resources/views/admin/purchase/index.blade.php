@@ -99,7 +99,11 @@
                                                                                                                 <div class="form-group row">
                                                                                                                     <label class="col-sm-4 col-form-label">Trạng thái</label>
                                                                                                                     <div class="col-sm-8">
-                                                                                                                        <input type="text" v-model="form.listReceiptNotes[index].status" class="form-control" >
+                                                                                                                        <select v-model="form.listReceiptNotes[index].status" class="form-control" aria-label="{{ __('admin::app.vpt.inventory.inventory-source') }}" name="inventory-source">
+                                                                                                                            @foreach ($inventory_sources as $source)
+                                                                                                                                <option value="{{ $source->id }}">{{ $source->name }}</option>
+                                                                                                                            @endforeach
+                                                                                                                            </select>
                                                                                                                     </div>
                                                                                                                 </div>
                                                                                                             </div>
@@ -185,10 +189,14 @@
                         note_code: null,
                         order_code: null,
                         importer: "",
-                        status: "{{ __('admin::app.vpt.inventory.temp-save') }}",
                         note: "",
                         idExchange: 1,
                         product_list: null,
+                        status: [
+                        "{{ __('admin::app.vpt.inventory.temporary') }}",
+                        "{{ __('admin::app.vpt.inventory.received') }}",
+                        "{{ __('admin::app.vpt.inventory.cancle') }}",
+                    ],
                     }),
                     // listReceiptNotes: {!! json_encode($receipt_notes) !!},
                     showModal: false,
@@ -206,6 +214,7 @@
                         "{{ __('admin::app.vpt.inventory.price') }}",
                         "{{ __('admin::app.vpt.inventory.qty') }}"
                     ],
+                    
                     product_list: null,
                     selected_transfer: null,
                     price_total: null,
@@ -226,7 +235,7 @@
                     this.form.note = note;
                     this.form.importer = importer;
                     this.form.status = status;
-                    console.log('dataSource', this.form.product_list)
+                    console.log('dataSource', status)
 
 
                     this.form.post("{{ route('admin.exchange.update') }}")
@@ -237,8 +246,8 @@
                             console.error('loix ne ', response);
                             if (response.data.success == true) {
                                 console.error("save exchange successfull");
-                                window.location.href =
-                                    "{{ route('admin.exchange.purchase-order.list') }}";
+                                // window.location.href =
+                                //     "{{ route('admin.exchange.purchase-order.list') }}";
                             } else {
                                 console.debug("save exchange NOT successfull");
                             }
