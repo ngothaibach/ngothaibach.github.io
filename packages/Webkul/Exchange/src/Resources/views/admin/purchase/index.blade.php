@@ -99,10 +99,9 @@
                                                                                                                 <div class="form-group row">
                                                                                                                     <label class="col-sm-4 col-form-label">Trạng thái</label>
                                                                                                                     <div class="col-sm-8">
-                                                                                                                        <select v-model="form.listReceiptNotes[index].status" class="form-control" aria-label="{{ __('admin::app.vpt.inventory.inventory-source') }}" name="inventory-source">
-                                                                                                                            @foreach ($inventory_sources as $source)
-                                                                                                                                <option value="{{ $source->id }}">{{ $source->name }}</option>
-                                                                                                                            @endforeach
+                                                                                                                        <select v-model="form.listReceiptNotes[index].status" class="form-control">
+                                                                                                                                <option v-for="item in form.status" :value="item" v-text="item">
+                                                                                                                                </option>
                                                                                                                             </select>
                                                                                                                     </div>
                                                                                                                 </div>
@@ -192,10 +191,9 @@
                         note: "",
                         idExchange: 1,
                         product_list: null,
+                        selected : "{{ __('admin::app.vpt.inventory.received') }}",
                         status: [
-                        "{{ __('admin::app.vpt.inventory.temporary') }}",
-                        "{{ __('admin::app.vpt.inventory.received') }}",
-                        "{{ __('admin::app.vpt.inventory.cancle') }}",
+                            'temporary', 'received', 'cancel'
                     ],
                     }),
                     // listReceiptNotes: {!! json_encode($receipt_notes) !!},

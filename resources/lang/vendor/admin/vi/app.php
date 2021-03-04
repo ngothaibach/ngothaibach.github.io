@@ -1498,7 +1498,11 @@ return [
             'from-inventory-source' => 'Từ chi nhánh',
             'to-inventory-source' => 'Tới chi nhánh',
             'total-of-qty' => 'Tổng số lượng',
-            'image' => 'Ảnh'
+            'image' => 'Ảnh',
+            'temporary' => 'Phiếu tạm',
+            'received' => 'Đã nhận hàng',
+            'cancle' => 'Đã huỷ',
+            'transfering' => 'Đang chuyển'
         ],
         'attribute_group_1' => "Thông tin chung",
         'attribute_group_2' => "Mô tả sản phẩm",

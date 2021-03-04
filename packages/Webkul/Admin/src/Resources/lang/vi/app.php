@@ -1498,6 +1498,10 @@ return [
                 'received' => 'Đã nhận hàng',
                 'cancle' => 'Đã huỷ',
                 'transfering' => 'Đang chuyển',
+                'temporary' => 'Phiếu tạm',
+                'received' => 'Đã nhận hàng',
+                'cancle' => 'Đã huỷ',
+                'transfering' => 'Đang chuyển'
 
             ]
         ]
