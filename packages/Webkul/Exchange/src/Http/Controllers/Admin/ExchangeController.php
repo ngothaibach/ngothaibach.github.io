@@ -16,6 +16,7 @@ use Webkul\Exchange\Http\Imports\ImportExcel;
 use Excel;
 use Webkul\Exchange\Http\Models\ImportProduct;
 use Webkul\Exchange\Models\ExchangeNote;
+use Webkul\Exchange\Models\ProductExchangeNote;
 
 class ExchangeController extends Controller
 {
@@ -91,12 +92,13 @@ class ExchangeController extends Controller
         ->join('suppliers', 'suppliers.id', '=', 'exchange_notes.supplier_id')
         ->join('inventory_sources', 'inventory_sources.id', '=', 'exchange_notes.to_inventory_source_id')
         ->join('admins', 'admins.id', '=', 'exchange_notes.created_user_id')
-        ->select('exchange_notes.id', 'exchange_notes.created_date', 'exchange_notes.note', 'exchange_notes.status', 'exchange_notes.receipt_date', 'suppliers.name as supplier', 'inventory_sources.name as inventory', 'admins.name as created_user')
+        ->select('exchange_notes.id', 'exchange_notes.created_date', 'exchange_notes.note', 'exchange_notes.status','exchange_notes.importer', 'exchange_notes.receipt_date', 'suppliers.name as supplier', 'inventory_sources.name as inventory', 'admins.name as created_user')
         ->where('type', '=', 'receipt')
         ->orderBy('id', 'desc')
         ->get()->toArray();
 
         // $data = DB::table('exchange_notes')->get()->toJson();
+
         // echo $data;
 
         // $receipt_notes = DB::table('exchange_notes')->orderBy('id', 'DESC')->get()->toArray();
@@ -282,39 +284,77 @@ class ExchangeController extends Controller
      * @return \Illuminate\Http\Response
      */
   
-    public function update(ProductForm $request, $id)
+    public function update()
     {
-        $data = request()->all();
+        // $data = request()->all();
+        $id = request()->idExchange;
+        $item = request() -> exchange_note;
+        $note = request() -> note;
+        $importer = request() -> importer;
+        $status = request() -> status;
+        $product_list = request() -> product_list;
+        // $name = $item->id;
+        $exchaneNote = ExchangeNote::find($id);
+        $exchaneNote->status = $status;
+        $exchaneNote->note = $note;
+        $exchaneNote->importer = $importer;
+        $exchaneNote->save();
 
-        $multiselectAttributeCodes = array();
 
-        $productAttributes = $this->exchangeNoteRepository->findOrFail($id);
-
-        foreach ($productAttributes->attribute_family->attribute_groups as $attributeGroup) {
-            $customAttributes = $productAttributes->getEditableAttributes($attributeGroup);
-
-            if (count($customAttributes)) {
-                foreach ($customAttributes as $attribute) {
-                    if ($attribute->type == 'multiselect') {
-                        array_push($multiselectAttributeCodes, $attribute->code);
-                    }
-                }
-            }
+        foreach ($product_list as $product){
+            $productExchangeNote = DB::table('product_exchange_notes')
+            ->where([
+                ['exchange_note_id', $id ],
+                ['id',$product['id'] ],
+            ])
+            ->update(['transfer_qty' => $product['transfer_qty']]);
+           
         }
 
-        if (count($multiselectAttributeCodes)) {
-            foreach ($multiselectAttributeCodes as $multiselectAttributeCode) {
-                if (! isset($data[$multiselectAttributeCode])) {
-                    $data[$multiselectAttributeCode] = array();
-                }
-            }
-        }
+        
+  
 
-        $product = $this->productRepository->update($data, $id);
+        return response()->json(
+            [
+                'success' => True,
+                'transfered_products' => $product_list
+            ]
+        );
+  
 
-        session()->flash('success', trans('admin::app.response.update-success', ['name' => 'Product']));
+        
 
-        return redirect()->route($this->_config['redirect']);
+        // $admin =
+
+        // $multiselectAttributeCodes = array();
+
+        // $productAttributes = $this->exchangeNoteRepository->findOrFail($id);
+
+        // foreach ($productAttributes->attribute_family->attribute_groups as $attributeGroup) {
+        //     $customAttributes = $productAttributes->getEditableAttributes($attributeGroup);
+
+        //     if (count($customAttributes)) {
+        //         foreach ($customAttributes as $attribute) {
+        //             if ($attribute->type == 'multiselect') {
+        //                 array_push($multiselectAttributeCodes, $attribute->code);
+        //             }
+        //         }
+        //     }
+        // }
+
+        // if (count($multiselectAttributeCodes)) {
+        //     foreach ($multiselectAttributeCodes as $multiselectAttributeCode) {
+        //         if (! isset($data[$multiselectAttributeCode])) {
+        //             $data[$multiselectAttributeCode] = array();
+        //         }
+        //     }
+        // }
+
+        // $product = $this->productRepository->update($data, $id);
+
+        // session()->flash('success', trans('admin::app.response.update-success', ['name' => 'Product']));
+
+        // return redirect()->route($this->_config['redirect']);
     }
 
     /**
@@ -328,7 +368,4 @@ class ExchangeController extends Controller
 
     }
 
-    public function fn_update(){
-
-    }
 }

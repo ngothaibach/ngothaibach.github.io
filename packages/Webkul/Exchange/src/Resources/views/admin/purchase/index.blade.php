@@ -30,143 +30,143 @@
     <script type="text/x-template" id="vpt-list-receipt-notes-template">
         <form action="#" class="form newtopic" @submit.prevent="save">
 
-                <div>
-                                                                <table class="table table-bordered">
-                                                                    <thead>
-                                                                    <tr>
-                                                                        <th v-for="table_header in table_headers" class="grid_head">
-                                                                            <p v-text="table_header"></p>
-                                                                        </th>
-                                                                    </tr>
-                                                                    </thead>
-                                                                    <tbody v-for="(item,index) in form.listReceiptNotes">
-                                                                    
-                                                                        <tr :class="[selected_transfer ===  item.id ? 'table-info' : '']" v-on:click="load_product(item.id)">
-                                                                            <td v-text="'MDH00' + item.id"></td>
-                                                                            <td v-text="item.created_date"></td>
-                                                                            <td v-text="item.supplier"></td>
-                                                                            <td v-text="item.id"></td>
-                                                                            <td v-text="item.status"></td>
-                                                                        </tr>
-                                                                        <tr v-if="selected_transfer == item.id">
-                                                                            <td style="border: 1px solid #b3d7f5;" colspan="5">
-                                                                            <div>
-                                                                                <div class="tabs">
-                                                                                    <ul>
-                                                                                        <li class="active">
-                                                                                            <h4><a>Thông tin</a></h4>
-                                                                                        </li>
-                                                                                    </ul>
-                                                                                </div>
-                                                                                <div class="tabs-content" style="margin-top:20px;">
-                                                                                    <div class="row">
-                                                                                        <div class="col-4" style="align-self: baseline;">
-                                                                                            <div class="mb-3">
-                                                                                                <div class="form-group row">
-                                                                                                    <label class="col-sm-4 col-form-label">Mã nhập hàng</label>
-                                                                                                    <div class="col-sm-8">
-                                                                                                        <input type="text" v-model="'MNH00' +item.id" class="form-control" disabled>
-                                                                                                    </div>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                            <div class="mb-3">
-                                                                                                <div class="form-group row">
-                                                                                                    <label class="col-sm-4 col-form-label">Thời gian</label>
-                                                                                                    <div class="col-sm-8">
-                                                                                                        <input type="text" v-model="item.created_date" class="form-control" disabled>
-                                                                                                    </div>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                            <div class="mb-3">
-                                                                                                <div class="form-group row">
-                                                                                                    <label class="col-sm-4 col-form-label">Nhà cung cấp</label>
-                                                                                                    <div class="col-sm-8">
-                                                                                                        <input type="text" v-model="item.supplier" class="form-control" disabled>
-                                                                                                    </div>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                            <div class="mb-3">
-                                                                                                <div class="form-group row">
-                                                                                                    <label class="col-sm-4 col-form-label">Người tạo</label>
-                                                                                                    <div class="col-sm-8">
-                                                                                                        <input type="text" v-model="item.created_user" class="form-control" disabled>
-                                                                                                    </div>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                        <div class="col-4" style="align-self: baseline;">
-                                                                                            <div class="mb-3">
-                                                                                                <div class="form-group row">
-                                                                                                    <label class="col-sm-4 col-form-label">Trạng thái</label>
-                                                                                                    <div class="col-sm-8">
-                                                                                                        <input type="text" v-model="form.listReceiptNotes[index].status" class="form-control" >
-                                                                                                    </div>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                            <div class="mb-3">
-                                                                                                <div class="form-group row">
-                                                                                                    <label class="col-sm-4 col-form-label">Chi nhánh</label>
-                                                                                                    <div class="col-sm-8">
-                                                                                                        <input type="text" v-model="item.inventory" class="form-control" disabled>
-                                                                                                    </div>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                            <div class="mb-3">
-                                                                                                <div class="form-group row">
-                                                                                                    <label class="col-sm-4 col-form-label">Người nhập</label>
-                                                                                                    <div class="col-sm-8">
-                                                                                                        <input type="text" class="form-control">
-                                                                                                    </div>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                        <div class="col-4" style="align-self: baseline;">
-                                                                                            <div class="mb-3">
-                                                                                                <div class="form-group row">
-                                                                                                    <label class="col-sm-4 col-form-label">Ghi chú</label>
-                                                                                                    <div class="col-sm-8">
-                                                                                                        <textarea class="form-control" id="exampleFormControlTextarea1" v-model="item.note"></textarea>
-                                                                                                    </div>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                    <h4>Danh sách sản phẩm nhập</h4>
-                                                                                    <table class="table table-bordered">
-                                                                                        <thead>
-                                                                                        <tr>
-                                                                                            <th v-for="product_table_header in product_table_headers" class="grid_head">
-                                                                                                <p v-text="product_table_header"></p>
-                                                                                            </th>
+                                <div>
+                                                                                <table class="table table-bordered">
+                                                                                    <thead>
+                                                                                    <tr>
+                                                                                        <th v-for="table_header in table_headers" class="grid_head">
+                                                                                            <p v-text="table_header"></p>
+                                                                                        </th>
+                                                                                    </tr>
+                                                                                    </thead>
+                                                                                    <tbody v-for="(item,index) in form.listReceiptNotes">
+                                                                                    
+                                                                                        <tr :class="[selected_transfer ===  item.id ? 'table-info' : '']" v-on:click="load_product(item.id)">
+                                                                                            <td v-text="'MDH00' + item.id"></td>
+                                                                                            <td v-text="item.created_date"></td>
+                                                                                            <td v-text="item.supplier"></td>
+                                                                                            <td v-text="item.id"></td>
+                                                                                            <td v-text="item.status"></td>
                                                                                         </tr>
-                                                                                        </thead>
-                                                                                        <tbody>
-                                                                                            <tr v-for="(product,index) in product_list">
-                                                                                                <td v-text="product.id"></td>
-                                                                                                <td><img style="width: 60xp; height: 60px;" v-bind:src="'/cache/small/' + product.featured_image"/></td>
-                                                                                                <td v-text="product.name"></td>
-                                                                                                <td v-text="product.price"></td>
-                                                                                                <td>
-                                                                                                    <div class="col-sm-8">
-                                                                                                        <input type="text" v-model="product_list[index].transfer_qty" class="form-control">
+                                                                                        <tr v-if="selected_transfer == item.id">
+                                                                                            <td style="border: 1px solid #b3d7f5;" colspan="5">
+                                                                                            <div>
+                                                                                                <div class="tabs">
+                                                                                                    <ul>
+                                                                                                        <li class="active">
+                                                                                                            <h4><a>Thông tin</a></h4>
+                                                                                                        </li>
+                                                                                                    </ul>
+                                                                                                </div>
+                                                                                                <div class="tabs-content" style="margin-top:20px;">
+                                                                                                    <div class="row">
+                                                                                                        <div class="col-4" style="align-self: baseline;">
+                                                                                                            <div class="mb-3">
+                                                                                                                <div class="form-group row">
+                                                                                                                    <label class="col-sm-4 col-form-label">Mã nhập hàng</label>
+                                                                                                                    <div class="col-sm-8">
+                                                                                                                        <input type="text" v-model="'MNH00' +item.id" class="form-control" disabled>
+                                                                                                                    </div>
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                            <div class="mb-3">
+                                                                                                                <div class="form-group row">
+                                                                                                                    <label class="col-sm-4 col-form-label">Thời gian</label>
+                                                                                                                    <div class="col-sm-8">
+                                                                                                                        <input type="text" v-model="item.created_date" class="form-control" disabled>
+                                                                                                                    </div>
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                            <div class="mb-3">
+                                                                                                                <div class="form-group row">
+                                                                                                                    <label class="col-sm-4 col-form-label">Nhà cung cấp</label>
+                                                                                                                    <div class="col-sm-8">
+                                                                                                                        <input type="text" v-model="item.supplier" class="form-control" disabled>
+                                                                                                                    </div>
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                            <div class="mb-3">
+                                                                                                                <div class="form-group row">
+                                                                                                                    <label class="col-sm-4 col-form-label">Người tạo</label>
+                                                                                                                    <div class="col-sm-8">
+                                                                                                                        <input type="text" v-model="item.created_user" class="form-control" disabled>
+                                                                                                                    </div>
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                        <div class="col-4" style="align-self: baseline;">
+                                                                                                            <div class="mb-3">
+                                                                                                                <div class="form-group row">
+                                                                                                                    <label class="col-sm-4 col-form-label">Trạng thái</label>
+                                                                                                                    <div class="col-sm-8">
+                                                                                                                        <input type="text" v-model="form.listReceiptNotes[index].status" class="form-control" >
+                                                                                                                    </div>
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                            <div class="mb-3">
+                                                                                                                <div class="form-group row">
+                                                                                                                    <label class="col-sm-4 col-form-label">Chi nhánh</label>
+                                                                                                                    <div class="col-sm-8">
+                                                                                                                        <input type="text" v-model="item.inventory" class="form-control" disabled>
+                                                                                                                    </div>
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                            <div class="mb-3">
+                                                                                                                <div class="form-group row">
+                                                                                                                    <label class="col-sm-4 col-form-label">Người nhập</label>
+                                                                                                                    <div class="col-sm-8">
+                                                                                                                        <input type="text" v-model="item.importer" class="form-control">
+                                                                                                                    </div>
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                        <div class="col-4" style="align-self: baseline;">
+                                                                                                            <div class="mb-3">
+                                                                                                                <div class="form-group row">
+                                                                                                                    <label class="col-sm-4 col-form-label">Ghi chú</label>
+                                                                                                                    <div class="col-sm-8">
+                                                                                                                        <textarea class="form-control" id="exampleFormControlTextarea1" v-model="item.note"></textarea>
+                                                                                                                    </div>
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                        </div>
                                                                                                     </div>
-                                                                                                </td>
-                                                                                            </tr>
-                                                                                        </tbody>
-                                                                                    </table>
-                                                                                    <span class="font-weight-bold">Tổng giá trị:</span> <span class="text-danger font-weight-bold" v-text="price_total"></span>
-                                                                                    <div class="text-right">
-                                                                                        <button type="button" class="btn btn-success" v-on:click="save_inventory()">Lưu</button>
-                                                                                    </div>
-                                                                                </div>
+                                                                                                    <h4>Danh sách sản phẩm nhập</h4>
+                                                                                                    <table class="table table-bordered">
+                                                                                                        <thead>
+                                                                                                        <tr>
+                                                                                                            <th v-for="product_table_header in product_table_headers" class="grid_head">
+                                                                                                                <p v-text="product_table_header"></p>
+                                                                                                            </th>
+                                                                                                        </tr>
+                                                                                                        </thead>
+                                                                                                        <tbody>
+                                                                                                            <tr v-for="(product,index) in product_list">
+                                                                                                                <td v-text="product.id"></td>
+                                                                                                                <td><img style="width: 60xp; height: 60px;" v-bind:src="'/cache/small/' + product.featured_image"/></td>
+                                                                                                                <td v-text="product.name"></td>
+                                                                                                                <td v-text="product.price"></td>
+                                                                                                                <td>
+                                                                                                                    <div class="col-sm-8">
+                                                                                                                        <input type="text" v-model="product_list[index].transfer_qty" class="form-control">
+                                                                                                                    </div>
+                                                                                                                </td>
+                                                                                                            </tr>
+                                                                                                        </tbody>
+                                                                                                    </table>
+                                                                                                    <span class="font-weight-bold">Tổng giá trị:</span> <span class="text-danger font-weight-bold" v-text="price_total"></span>
+                                                                                                    <div class="text-right">
+                                                                                                        <button type="button" class="btn btn-success" v-on:click="save_inventory(item.id,item.note,item.status,item.importer)">Lưu</button>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                    </tbody>
+                                                                                </table>
                                                                             </div>
-                                                                            </td>
-                                                                        </tr>
-                                                                    </tbody>
-                                                                </table>
-                                                            </div>
-                                                        </form>
-                                                        </script>
+                                                                        </form>
+                                                                        </script>
 
     <script>
         Vue.component('vpt-list-receipt-notes', {
@@ -174,14 +174,6 @@
             data() {
                 return {
                     form: new Form({
-                        added_products: [{
-                            id: 1,
-                            name: "Testt",
-                            qty: 3,
-                            price: 100,
-                            in_stock: 3,
-                            featured_image: "product/4/6RpBuhTlEgI9HUI4swNtYbRxWnbfzgY4IY0Q1kgn.webp"
-                        }],
                         listReceiptNotes: {!! json_encode($receipt_notes) !!},
                         price_total: 0,
                         type: 'receipt',
@@ -192,8 +184,11 @@
                         to_inventory_source: null,
                         note_code: null,
                         order_code: null,
+                        importer: "",
                         status: "{{ __('admin::app.vpt.inventory.temp-save') }}",
-                        note: ""
+                        note: "",
+                        idExchange: 1,
+                        product_list: null,
                     }),
                     // listReceiptNotes: {!! json_encode($receipt_notes) !!},
                     showModal: false,
@@ -224,14 +219,17 @@
                         this.price_total += product.price * product.qty
                     }
                 },
-                save_inventory(exchange_note_id) {
+                save_inventory(exchange_note_id, note, status, importer) {
 
                     var sites = {!! json_encode($receipt_notes) !!};
+                    this.form.idExchange = exchange_note_id;
+                    this.form.note = note;
+                    this.form.importer = importer;
+                    this.form.status = status;
+                    console.log('dataSource', this.product_list)
 
-                    console.log('dataSource', exchange_note_id)
 
-
-                    this.form.post("{{ route('admin.exchange.store') }}")
+                    this.form.post("{{ route('admin.exchange.update') }}")
                         .then((response) => {
 
                             // var attr = document.getElementById("text");
@@ -249,7 +247,7 @@
                         })
                 },
                 load_product(exchange_note_id) {
-                    this.product_list = []
+                    this.product_list = [];
                     this.selected_transfer = exchange_note_id;
 
                     axios.get("{{ route('exchange.admin.get_transfered_products') }}", {
@@ -259,7 +257,7 @@
                         })
                         .then(response => {
                             this.product_list = response.data.transfered_products;
-                            // console.log('response.data.transfered_products',response.data.transfered_products)
+                            this.form.product_list = response.data.transfered_products;
                             console.error(this.product_list);
                             this.price_total = 0;
                             for (product of this.product_list) {

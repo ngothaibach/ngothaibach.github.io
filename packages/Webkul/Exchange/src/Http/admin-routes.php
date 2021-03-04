@@ -12,6 +12,8 @@ Route::group(['middleware' => ['web', 'admin']], function () {
         'view' => 'exchange::admin.list_transfer_notes',
     ])->name('exchange.admin.list_transfer_notes');
     Route::post('admin/exchange/store', 'Webkul\Exchange\Http\Controllers\Admin\ExchangeController@store')->name('admin.exchange.store');
+    Route::post('admin/exchange/list', 'Webkul\Exchange\Http\Controllers\Admin\ExchangeController@update')->name('admin.exchange.update');
+
     Route::get('/admin/exchange/get_transfered_products', 'Webkul\Exchange\Http\Controllers\Admin\ExchangeController@get_transfered_products')->name('exchange.admin.get_transfered_products');
     
     Route::get('/admin/purchase/create', 'Webkul\Exchange\Http\Controllers\Admin\ExchangeController@create_purchase')->defaults('_config', [
