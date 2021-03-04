@@ -32,7 +32,7 @@
                     <input name="_customer" type="hidden" value="{{ $customer->id }}">
 
                     <div class="control-group" :class="[errors.has('channel_id') ? 'has-error' : '']">
-                        <label for="notes">{{ __('admin::app.customers.note.enter-note') }} for {{ $customer->name }}</label>
+                        <label for="notes">{{ __('admin::app.customers.note.enter-note') }} cho {{ $customer->name }}</label>
 
                         <textarea class="control" name="notes">{{ $customer->notes }}</textarea>
 

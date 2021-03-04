@@ -18,7 +18,7 @@
 
             <?php $locale = request()->get('admin_locale') ?: app()->getLocale();?>
 
-            <div class="profile-info">
+            <!-- <div class="profile-info">
                 <div class="dropdown-toggle">
                     <div style="display: inline-block; vertical-align: middle;">
                         <span class="name">
@@ -32,7 +32,7 @@
                                 </span>
                             @endif
                         @endforeach
-                        
+
                     </div>
                     <i class="icon arrow-down-icon active"></i>
                 </div>
@@ -50,7 +50,7 @@
                         </select>
                     </div>
                 </div>
-            </div>
+            </div> -->
 
             <div class="profile-info">
                 <div class="dropdown-toggle">

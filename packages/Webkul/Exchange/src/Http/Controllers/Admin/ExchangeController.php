@@ -11,6 +11,20 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Webkul\Exchange\Repositories\ExchangeNoteRepository;
 use Webkul\Exchange\Repositories\ProductExchangeNoteRepository;
 use Webkul\Product\Repositories\ProductInventoryRepository;
+// use Webkul\Checkout\Repositories\CartRepository;
+// use Webkul\Checkout\Repositories\CartItemRepository;
+// use Webkul\Checkout\Models\CartPayment;
+// use Webkul\Sales\Models\OrderPayment;
+// use Webkul\Sales\Models\Order;
+// use Webkul\Sales\Models\OrderComment;
+// use Webkul\Product\Models\Product;
+// use Webkul\Core\Models\Address;
+// use Webkul\Sales\Repositories\OrderItemRepository;
+// use Webkul\Sales\Repositories\OrderRepository;
+// use Webkul\Sales\Repositories\OrderAddressRepository;
+// use Webkul\Checkout\Repositories\CartAddressRepository;
+
+
 use Illuminate\Support\Facades\DB;
 use Webkul\Exchange\Http\Imports\ImportExcel;
 use Excel;
@@ -50,18 +64,79 @@ class ExchangeController extends Controller
      */
     protected $productInventoryRepository;
 
+    // /**
+    //  * OrderRepository object
+    //  *
+    //  * @var \Webkul\Sales\Repositories\OrderRepository;
+    //  */
+    // protected $orderRepository;
+
+    // /**
+    //  * CartRepository object
+    //  *
+    //  * @var \Webkul\Checkout\Repositories\CartRepository;
+    //  */
+    // protected $cartRepository;
+
+    // /**
+    //  * CartItemRepository object
+    //  *
+    //  * @var \Webkul\Checkout\Repositories\CartItemRepository;
+    //  */
+    // protected $cartItemRepository;
+
+    // /**
+    //  * OrderItemRepository object
+    //  *
+    //  * @var \Webkul\Sales\Repositories\OrderItemRepository;
+    //  */
+    // protected $orderItemRepository;
+
+    // /**
+    //  * CartAddressRepository object
+    //  *
+    //  * @var \Webkul\Checkout\Repositories\CartAddressRepository;
+    //  */
+    // protected $cartAddressRepository;
+
+    // /**
+    //  * OrderAddressRepository object
+    //  *
+    //  * @var \Webkul\Sales\Repositories\OrderAddressRepository;
+    //  */
+    // protected $orderAddressRepository;
+
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct(ExchangeNoteRepository $exchangeNoteRepository, ProductExchangeNoteRepository $productExchangeNoteRepository, ProductInventoryRepository $productInventoryRepository)
+    public function __construct(ExchangeNoteRepository $exchangeNoteRepository, ProductExchangeNoteRepository $productExchangeNoteRepository, ProductInventoryRepository $productInventoryRepository
+    // OrderRepository $orderRepository, 
+    // CartRepository $cartRepository, 
+    // CartItemRepository $cartItemRepository, 
+    // OrderItemRepository $orderItemRepository, 
+    // CartAddressRepository $cartAddressRepository, 
+    // OrderAddressRepository $orderAddressRepository 
+    )
     {
         $this->exchangeNoteRepository = $exchangeNoteRepository;
 
         $this->productExchangeNoteRepository = $productExchangeNoteRepository;
 
         $this->productInventoryRepository = $productInventoryRepository;
+
+        // $this->orderRepository = $orderRepository;
+
+        // $this->cartRepository = $cartRepository;
+
+        // $this->cartItemRepository = $cartItemRepository;
+
+        // $this->orderItemRepository = $orderItemRepository;
+
+        // $this->cartAddressRepository = $cartAddressRepository;
+
+        // $this->orderAddressRepository = $orderAddressRepository;
 
         $this->middleware('admin');
 

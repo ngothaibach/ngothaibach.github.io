@@ -1,6 +1,6 @@
 <?php
 
-Route::group(['middleware' => ['web', 'admin']], function () {
+Route::group(['middleware' => ['web', 'admin_locale']], function () {
 
     Route::get('/admin/exchange', 'Webkul\Exchange\Http\Controllers\Admin\ExchangeController@index')->defaults('_config', [
         'view' => 'exchange::admin.index',
@@ -28,6 +28,4 @@ Route::group(['middleware' => ['web', 'admin']], function () {
     Route::get('/admin/transfer/list', 'Webkul\Exchange\Http\Controllers\Admin\ExchangeController@list_transfers')->defaults('_config', [
         'view' => 'exchange::admin.transfer.index',
     ])->name('admin.exchange.transfer.list');
-
-    Route::post('/admin/transfer/import-csv', 'Webkul\Exchange\Http\Controllers\Admin\ExchangeController@import_excel');
 });
