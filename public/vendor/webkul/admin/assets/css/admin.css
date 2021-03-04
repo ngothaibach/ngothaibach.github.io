@@ -834,5 +834,5 @@
   left: 0;
   bottom: 0px;
   height: calc(100% - 60px);
-  width: 100%;
+  width: calc(100% - 15px);
 }
