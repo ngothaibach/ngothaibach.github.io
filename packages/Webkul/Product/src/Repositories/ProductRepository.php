@@ -501,7 +501,7 @@ class ProductRepository extends Repository
                 ->leftJoin('product_images', 'product_images.product_id', '=', 'products.id')
                 ->where('products.type', 'simple')
                 ->where('product_flat.channel', $channel)
-                ->where('product_flat.locale', $locale)
+                // ->where('product_flat.locale', $locale)
                 ->where('product_flat.name', 'like', '%' . urldecode($term) . '%')
                 ->orWhere('product_flat.name', 'like', '%' . urldecode($term) . '%')
                 ->orderBy('product_id', 'desc');
