@@ -226,7 +226,7 @@
                     this.form.note = note;
                     this.form.importer = importer;
                     this.form.status = status;
-                    console.log('dataSource', this.product_list)
+                    console.log('dataSource', this.form.product_list)
 
 
                     this.form.post("{{ route('admin.exchange.update') }}")
@@ -237,8 +237,8 @@
                             console.error('loix ne ', response);
                             if (response.data.success == true) {
                                 console.error("save exchange successfull");
-                                window.location.href =
-                                    "{{ route('admin.exchange.purchase-order.list') }}";
+                                // window.location.href =
+                                //     "{{ route('admin.exchange.purchase-order.list') }}";
                             } else {
                                 console.debug("save exchange NOT successfull");
                             }
@@ -258,6 +258,7 @@
                         .then(response => {
                             this.product_list = response.data.transfered_products;
                             this.form.product_list = response.data.transfered_products;
+                            // console.log('this.product_list',exchange_note_id)
                             console.error(this.product_list);
                             this.price_total = 0;
                             for (product of this.product_list) {
