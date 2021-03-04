@@ -327,11 +327,12 @@ class ExchangeController extends Controller
             ->leftJoin('products', 'products.id', '=', 'product_exchange_notes.product_id')
             ->leftJoin('product_flat', 'product_flat.product_id', '=', 'product_exchange_notes.product_id')
             ->where('exchange_note_id', $transfer_id)
-            ->where('product_flat.locale', '=', core()->getCurrentLocale()->code)
+            // ->where('product_flat.locale', '=', core()->getCurrentLocale()->code)
             ->select('product_exchange_notes.id', 'product_exchange_notes.exchange_note_id', 'product_exchange_notes.product_id', 'product_exchange_notes.transfer_qty', 'product_exchange_notes.receipt_qty', 'product_exchange_notes.price', 'product_exchange_notes.discount', 'product_flat.name'
                 , DB::raw('(select path as featured_image from product_images where product_images.product_id  = product_flat.product_id limit 1) as featured_image'))            
             ->distinct()->get();
         }
+
         return response()->json(
             [
                 'success' => True,
@@ -374,8 +375,6 @@ class ExchangeController extends Controller
         $exchaneNote->note = $note;
         $exchaneNote->importer = $importer;
         $exchaneNote->save();
-
-
         foreach ($product_list as $product){
             $productExchangeNote = DB::table('product_exchange_notes')
             ->where([
@@ -383,10 +382,7 @@ class ExchangeController extends Controller
                 ['id',$product['id'] ],
             ])
             ->update(['transfer_qty' => $product['transfer_qty']]);
-           
         }
-
-        
         return response()->json(
             [
                 'success' => True,
