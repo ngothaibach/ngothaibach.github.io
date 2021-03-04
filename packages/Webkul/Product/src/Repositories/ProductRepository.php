@@ -504,7 +504,7 @@ class ProductRepository extends Repository
                 ->where('product_flat.channel', $channel)
                 ->where('product_flat.locale', $locale)
                 ->orWhere('product_flat.name', 'like', '%' . urldecode($term) . '%')
-                // ->orWhere('product_flat.sku', 'like', '%' . urldecode($term) . '%')
+                ->orWhere('product_flat.name', 'like', '%' . urldecode($term) . '%')
                 ->orderBy('product_id', 'desc');
         })->get();
     }

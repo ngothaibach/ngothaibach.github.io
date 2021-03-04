@@ -148,7 +148,6 @@
                                 </table>
                                 <span class="font-weight-bold">Tổng giá trị:</span> <span class="text-danger font-weight-bold" v-text="price_total"></span>
                                 <div class="text-right">
-                                    <button type="button" class="btn btn-info">In</button>
                                     <button type="button" class="btn btn-success">Lưu</button>
                                 </div>
                             </div>

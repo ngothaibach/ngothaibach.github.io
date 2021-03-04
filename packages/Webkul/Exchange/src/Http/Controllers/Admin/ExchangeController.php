@@ -271,7 +271,6 @@ class ExchangeController extends Controller
         ];
 
         $exchangeNote = $this->exchangeNoteRepository->create($exchangeNoteData);
-
         if (isset($exchangeNote) && $exchangeNote->id != null) {
             foreach (request()->added_products as $product ) {
                 if ($exchangeNoteData['type'] == "transfer") {
@@ -304,6 +303,7 @@ class ExchangeController extends Controller
             [
                 'success' => true,
                 'message' => 'Save susscessfully',
+                'tai smile' => $exchangeNote->id,
             ]
         );
     }
