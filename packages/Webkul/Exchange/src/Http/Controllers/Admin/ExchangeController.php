@@ -312,49 +312,12 @@ class ExchangeController extends Controller
         }
 
         
-  
-
         return response()->json(
             [
                 'success' => True,
                 'transfered_products' => $product_list
             ]
         );
-  
-
-        
-
-        // $admin =
-
-        // $multiselectAttributeCodes = array();
-
-        // $productAttributes = $this->exchangeNoteRepository->findOrFail($id);
-
-        // foreach ($productAttributes->attribute_family->attribute_groups as $attributeGroup) {
-        //     $customAttributes = $productAttributes->getEditableAttributes($attributeGroup);
-
-        //     if (count($customAttributes)) {
-        //         foreach ($customAttributes as $attribute) {
-        //             if ($attribute->type == 'multiselect') {
-        //                 array_push($multiselectAttributeCodes, $attribute->code);
-        //             }
-        //         }
-        //     }
-        // }
-
-        // if (count($multiselectAttributeCodes)) {
-        //     foreach ($multiselectAttributeCodes as $multiselectAttributeCode) {
-        //         if (! isset($data[$multiselectAttributeCode])) {
-        //             $data[$multiselectAttributeCode] = array();
-        //         }
-        //     }
-        // }
-
-        // $product = $this->productRepository->update($data, $id);
-
-        // session()->flash('success', trans('admin::app.response.update-success', ['name' => 'Product']));
-
-        // return redirect()->route($this->_config['redirect']);
     }
 
     /**
