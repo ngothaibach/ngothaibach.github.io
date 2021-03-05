@@ -487,26 +487,30 @@ class ProductRepository extends Repository
      */
     public function searchSimpleProducts($term)
     {
-        return app(ProductFlatRepository::class)->scopeQuery(function ($query) use ($term) {
-            $channel = request()->get('channel') ?: (core()->getCurrentChannelCode() ?: core()->getDefaultChannelCode());
-            error_log('Some message here.');
+        if (isset($term) && $term != "") {
+            return app(ProductFlatRepository::class)->scopeQuery(function ($query) use ($term) {
+                $channel = request()->get('channel') ?: (core()->getCurrentChannelCode() ?: core()->getDefaultChannelCode());
 
-            $locale = request()->get('locale') ?: app()->getLocale();
-        
+                $locale = request()->get('locale') ?: app()->getLocale();
 
-            return $query->distinct()
-                ->addSelect('product_flat.*', 
-                    DB::raw('(select path as featured_image from product_images where product_images.product_id  = product_flat.product_id limit 1) as featured_image'))
-                ->addSelect('product_flat.product_id as id')
-                ->leftJoin('products', 'product_flat.product_id', '=', 'products.id')
-                ->leftJoin('product_images', 'product_images.product_id', '=', 'products.id')
-                ->where('products.type', 'simple')
-                ->where('product_flat.channel', $channel)
-                ->where('product_flat.locale', $locale)
-                ->orWhere('product_flat.name', 'like', '%' . urldecode($term) . '%')
-                ->orWhere('product_flat.name', 'like', '%' . urldecode($term) . '%')
-                ->orderBy('product_id', 'desc');
-        })->get();
+                return $query->distinct()
+                    ->addSelect('product_flat.*', 
+                        DB::raw('(select path as featured_image from product_images where product_images.product_id  = product_flat.product_id limit 1) as featured_image'))
+                    ->addSelect('product_flat.product_id as id')
+                    ->leftJoin('products', 'product_flat.product_id', '=', 'products.id')
+                    ->leftJoin('product_images', 'product_images.product_id', '=', 'products.id')
+                    ->where('products.type', 'simple')
+                    ->where('product_flat.channel', $channel)
+                    ->where('product_flat.locale', $locale)
+                    ->where(function($query) use ($term) {
+                        $query->where('products.sku', 'like', '%' . $term . '%')
+                        ->orWhere('product_flat.name', 'like', '%' . urldecode($term) . '%');
+                    })
+                    ->orderBy('product_id', 'desc');
+            })->get();
+        } else {
+            return [];
+        }
     }
 
     /**
