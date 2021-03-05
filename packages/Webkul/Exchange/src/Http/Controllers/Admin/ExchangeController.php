@@ -163,7 +163,7 @@ class ExchangeController extends Controller
      */
     public function list_purchases()
     {
-
+        $users = DB::table('admins')->select('id', 'name')->get();
         $receipt_notes = DB::table('exchange_notes')
         ->join('suppliers', 'suppliers.id', '=', 'exchange_notes.supplier_id')
         ->join('inventory_sources', 'inventory_sources.id', '=', 'exchange_notes.to_inventory_source_id')
@@ -179,7 +179,7 @@ class ExchangeController extends Controller
 
         // $receipt_notes = DB::table('exchange_notes')->orderBy('id', 'DESC')->get()->toArray();
 
-        return view($this->_config['view'], compact('receipt_notes'));
+        return view($this->_config['view'], compact('receipt_notes','users'));
     }
 
     /**
