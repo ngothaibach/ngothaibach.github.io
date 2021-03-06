@@ -4,6 +4,8 @@
 Đặt hàng
 @stop
 <link href="/css/app.css" rel="stylesheet">
+<link rel="stylesheet" href="{{ asset('vendor/webkul/admin/assets/css/admin.css') }}">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <script src="/js/app.js"></script>
 @section('content-wrapper')
     <vpt-receipt-note-form></vpt-receipt-note-form>
@@ -62,84 +64,100 @@
                     <h2>Thông tin đặt hàng</h2>
                     <div class="mb-3">
                         <div class="row">
-                            <div class="col-5">
-                                <select v-model="form.user" name="user" class="form-control" aria-label="User">
-                                @foreach ($users as $user)
-                                    @if (auth()->guard('admin')->user()->id == $user->id)
-                                        <option value="{{ $user->id }}" selected>{{ $user->name }}</option>
-                                    @else
-                                        <option value="{{ $user->id }}" >{{ $user->name }}</option>
-                                    @endif
-                                @endforeach
-                                </select>
-                            </div>
-                            <div class="col-7">
+                            <div class="col-6">
                                 <vuejs-datepicker v-model="form.created_date"></vuejs-datepicker>
                             </div>
+                            <div class="col-right">
+                                <select v-model="form.user" name="user" class="w3-input" aria-label="User" style="width: 150px">
+                                    @foreach ($users as $user)
+                                        @if (auth()->guard('admin')->user()->id == $user->id)
+                                            <option value="{{ $user->id }}" selected>{{ $user->name }}</option>
+                                        @else
+                                            <option value="{{ $user->id }}" >{{ $user->name }}</option>
+                                        @endif
+                                    @endforeach
+                                </select>
+                            </div>
+                            
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label for="exampleFormControlInput2" class="form-label">Khách hàng</label>
-                        <div class="row">
-                            <div class="col-12">
-                                <select v-model="form.customer" name="customer" class="form-control" aria-label="User">
-                                @foreach ($customers as $customer)
-                                    <!--@if (auth()->guard('admin')->user()->id == $customer->id)
-                                        <option value="{{ $customer->id }}" selected>{{ $customer->first_name }} {{ $customer->last_name }}</option>
-                                    @else -->
+                        <div class="row_new">
+                            Khách hàng
+                            <div class="col-right">
+                                <select v-model="form.customer" name="customer" class="w3-input" aria-label="Customer" style="width: 150px">
+                                    @foreach ($customers as $customer)
                                         <option value="{{ $customer->id }}" >{{ $customer->first_name }} {{ $customer->last_name }}</option>
-                                    <!-- @endif -->
-                                @endforeach
+                                    @endforeach
                                 </select>
                             </div>
                         </div>
                     </div>
                     
                     <div class="mb-3">
-                        {{ __('admin::app.vpt.inventory.total-of-price') }}: <span v-text="form.price_total"></span>
+                        <div class="row_new">
+                            {{ __('admin::app.vpt.inventory.total-of-price') }}
+                            <div class="col-right1">
+                                <span v-text="form.price_total"></span>
+                            </div>
+                        </div>
                     </div>
                     <div class="mb-3">
-                        <label for="exampleFormControlInput1" class="form-label">{{ __('admin::app.vpt.inventory.discount') }}</label>
-                        <div class="row">
-                            <div class="col-7">
-                                <input type="number" disable=true class="form-control" v-model="form.discount" id="exampleFormControlInput1" v-on:change="update_discount">
-                            </div>
+                        <div class="row_new">
+                            Giảm giá
                             <div class="col-4">
-                                <select class="form-control" aria-label="User" v-model="form.discount_type" v-on:change="update_discount_type" >
+                                <select class="w3-input" aria-label="User" v-model="form.discount_type" v-on:change="update_discount_type" >
                                     <option value="1">{{ __('admin::app.vpt.inventory.vnd') }}</option>
                                     <option value="2">%</option>
                                 </select>
                             </div>
+                            <div class="col-right">
+                                <input type="number" class="w3-input" v-model="form.discount" id="inputDiscount" v-on:change="update_discount" style="direction: rtl; width: 150px" onClick="this.select();">
+                            </div>
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label for="exampleFormControlInput1" class="form-label">Thu khác:</label>
-                        <input type="number" class="form-control" id="collection_diff" v-model="form.collection_diff" v-on:change="fn_update_collection_diff">
+                        <div class="row_new">
+                            Thu khác
+                            <div class="col-right">
+                                <input type="number" class="w3-input" id="collection_diff" v-on:change="fn_update_collection_diff" style="direction: rtl; width: 150px" placeholder="0" onClick="this.select();">
+                            </div> 
+                        </div>
                     </div>
 
                     <div class="mb-3">
-                        Khách cần trả:
-                        <span v-text="form.price_must_paid"></span> 
+                        <div class="row_new">
+                            Khách cần trả
+                            <div class="col-right1">
+                                <b><span v-text="form.price_must_paid" style="color:red"></span></b>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="mb-3">
-                        <label for="exampleFormControlInput1" class="form-label">Khách thanh toán </label>
-                        <input type="number" class="form-control" id="customer_paid" v-model="form.customer_paid" v-on:change="fn_update_customer_paid">
+                        <div class="row_new">
+                            Khách thanh toán
+                            <div class="col-right">
+                                <input type="number" class="w3-input" id="customer_paid" placeholder="0"  v-on:change="fn_update_customer_paid" style="direction: rtl; width: 150px" onClick="this.select();">
+                            </div> 
+                        </div>
                     </div>
 
                     <div class="mb-3">
-                        Tiền thừa trả khách: <span v-text="form.customer_remain"></span> 
+                        <div class="row_new">
+                            Tiền thừa trả khách
+                            <div class="col-right1">
+                                <span v-text="form.customer_remain"></span>
+                            </div>
+                        </div>
                     </div>
                     
                     <div class="mb-3">
-                        <label for="exampleFormControlTextarea1" class="form-label">{{ __('admin::app.vpt.inventory.note') }}</label>
-                        <textarea v-model="form.notes" class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                        <input type="text"  placeholder="Ghi chú" class="w3-input" id="note" v-model="form.notes" >
                     </div>
+
                     <div class="mb-3">
-                        <!--<button v-on:click="save()" type="button" class="btn btn-primary">In</button>
-                        <button type="submit" class="btn btn-success">Đặt hàng</button>
-                        <button type="button" class="btn btn-primary">In</button>-->
-                        <button v-on:click="save()" type="button" class="btn btn-primary">Đặt hàng</button>
+                        <button v-on:click="save()" type="button" class="btn btn-primary" style="width: 100%; height: 60px">Đặt hàng</button>
                     </div>
                 </div>
             </div>
@@ -245,6 +263,10 @@
                     this.form.discount = 0;
                     this.form.price_must_paid = this.form.price_total ;
                     this.form.collection_diff = 0;
+                    document.getElementById('collection_diff').value = "0";
+                    this.form.customer_paid = 0;
+                    this.form.customer_remain = 0;
+                    document.getElementById('customer_paid').value = "0";
                 },
                 update_discount: function() {
                     if(this.form.discount_type == 1){
@@ -254,13 +276,26 @@
                     }
                 },
                 fn_update_customer_paid: function () {
-                    this.form.customer_remain = this.form.customer_paid - this.form.price_must_paid ;
+                    var inputCustomer_paid = document.getElementById('customer_paid').value;
+                    if(inputCustomer_paid == 0) {
+                        this.form.customer_remain = 0;
+                        this.form.customer_paid = 0;
+                    } else {
+                        this.form.customer_remain = inputCustomer_paid - this.form.price_must_paid ;
+                        this.form.customer_paid = inputCustomer_paid;
+                    }
                 },
                 fn_update_collection_diff: function(){
-                    if(this.form.collection_diff == ""){
+                    var inputValue = document.getElementById('collection_diff').value;
+                    if(inputValue == "" || inputValue == 0){
+                        this.form.price_must_paid = parseInt(this.form.price_must_paid) - parseInt(this.form.collection_diff);
                         this.form.collection_diff = 0;
                     } else {
-                        this.form.price_must_paid = parseInt(this.form.price_must_paid) + parseInt(this.form.collection_diff); 
+                        this.form.price_must_paid = parseInt(this.form.price_must_paid) - parseInt(this.form.collection_diff) + parseInt(inputValue); 
+                        this.form.collection_diff = inputValue;
+                    }
+                    if(this.form.customer_paid != 0) {
+                        this.form.customer_remain = this.form.customer_paid - this.form.price_must_paid;
                     }
                 },
                 save () {

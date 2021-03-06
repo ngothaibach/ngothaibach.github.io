@@ -836,3 +836,20 @@
   height: calc(100% - 60px);
   width: calc(100% - 15px);
 }
+.row_new {
+  display: flex;
+  flex-wrap: wrap;
+  /* border: 1px outset red; */
+  height: 35px;
+  align-items: center;
+}
+.col-right {
+  right: 0;
+  position: absolute;
+  margin-right: 15px;
+}
+.col-right1 {
+  right: 0;
+  position: absolute;
+  margin-right: 23px;
+}
