@@ -99,7 +99,7 @@
                                                                                                                     <div class="form-group row">
                                                                                                                         <label class="col-sm-4 col-form-label">Trạng thái</label>
                                                                                                                         <div class="col-sm-8">
-                                                                                                                            <select v-model="form.listReceiptNotes[index].status" class="form-control">
+                                                                                                                            <select v-model="form.listReceiptNotes[index].status" class="form-control" :disabled="form.listReceiptNotes[index].status == 'temporary' ? false : true">
                                                                                                                                     <option v-for="item in form.status" :value="item" v-text="item">
                                                                                                                                     </option>
                                                                                                                                 </select>
@@ -116,9 +116,9 @@
                                                                                                                 </div>
                                                                                                                 <div class="mb-3">
                                                                                                                     <div class="form-group row">
-                                                                                                                        <label class="col-sm-4 col-form-label">Người nhập</label>
+                                                                                                                        <label class="col-sm-4 col-form-label" >Người nhập</label>
                                                                                                                         <div class="col-sm-8">
-                                                                                                                            <select v-model="item.importer" name="user" class="form-control" aria-label="User">
+                                                                                                                            <select v-model="item.importer" name="user" class="form-control" aria-label="User" :disabled="form.listReceiptNotes[index].status == 'temporary' ? false : true">
                                                                                                                                 @foreach ($users as $user)
                                                                                                                                     @if (auth()
                                                                                                                                     ->guard('admin')
@@ -138,7 +138,7 @@
                                                                                                                     <div class="form-group row">
                                                                                                                         <label class="col-sm-4 col-form-label">Ghi chú</label>
                                                                                                                         <div class="col-sm-8">
-                                                                                                                            <textarea class="form-control" id="exampleFormControlTextarea1" v-model="item.note"></textarea>
+                                                                                                                            <textarea class="form-control" id="exampleFormControlTextarea1" v-model="item.note" :disabled="form.listReceiptNotes[index].status == 'temporary' ? false : true"></textarea>
                                                                                                                         </div>
                                                                                                                     </div>
                                                                                                                 </div>
@@ -154,14 +154,14 @@
                                                                                                             </tr>
                                                                                                             </thead>
                                                                                                             <tbody>
-                                                                                                                <tr v-for="(product,index) in product_list">
+                                                                                                                <tr v-for="(product,index1) in product_list">
                                                                                                                     <td v-text="product.id"></td>
                                                                                                                     <td><img style="width: 60xp; height: 60px;" v-bind:src="'/cache/small/' + product.featured_image"/></td>
                                                                                                                     <td v-text="product.name"></td>
                                                                                                                     <td v-text="product.price"></td>
                                                                                                                     <td>
                                                                                                                         <div class="col-sm-8">
-                                                                                                                            <input type="text" v-model="product_list[index].transfer_qty" class="form-control">
+                                                                                                                            <input type="text" v-model="product_list[index1].receipt_qty" class="form-control" :disabled="form.listReceiptNotes[index].status == 'temporary' ? false : true" >
                                                                                                                         </div>
                                                                                                                     </td>
                                                                                                                 </tr>
@@ -169,7 +169,7 @@
                                                                                                         </table>
                                                                                                         <span class="font-weight-bold">Tổng giá trị:</span> <span class="text-danger font-weight-bold" v-text="price_total"></span>
                                                                                                         <div class="text-right">
-                                                                                                            <button type="button" class="btn btn-success" v-on:click="save_inventory(item.id,item.note,item.status,item.importer)">Lưu</button>
+                                                                                                            <button type="button" class="btn btn-success" v-on:click="save_inventory(item.id,item.note,item.status,item.importer,item.type,item.inventoryID)" :disabled="form.listReceiptNotes[index].status == 'temporary' ? false : true" >Lưu</button>
                                                                                                         </div>
                                                                                                     </div>
                                                                                                 </div>
@@ -194,10 +194,12 @@
                         created_date: new Date(),
                         user: "auth()->guard('admin')->user()->id",
                         supplier: null,
+                        inventoryID : null,
                         to_inventory_source: null,
                         note_code: null,
                         order_code: null,
                         importer: "",
+                        type : "",
                         note: "",
                         idExchange: 1,
                         product_list: null,
@@ -237,14 +239,17 @@
                         this.price_total += product.price * product.qty
                     }
                 },
-                save_inventory(exchange_note_id, note, status, importer) {
+                save_inventory(exchange_note_id, note, status, importer,type,inventoryID) {
 
                     var sites = {!! json_encode($receipt_notes) !!};
                     this.form.idExchange = exchange_note_id;
                     this.form.note = note;
                     this.form.importer = importer;
                     this.form.status = status;
-                    console.log('dataSource', status)
+                    this.form.type = type;
+                    this.form.inventoryID = inventoryID;
+
+                    console.log('dataSource', this.form.inventoryID)
 
 
                     this.form.post("{{ route('admin.exchange.update') }}")
@@ -260,8 +265,6 @@
                             } else {
                                 console.debug("save exchange NOT successfull");
                             }
-
-
                         })
                 },
                 load_product(exchange_note_id) {
@@ -276,7 +279,7 @@
                         .then(response => {
                             this.product_list = response.data.transfered_products;
                             this.form.product_list = response.data.transfered_products;
-                            // console.log('this.product_list',exchange_note_id)
+                            console.log('this.product_list',this.product_list)
                             console.error(this.product_list);
                             this.price_total = 0;
                             for (product of this.product_list) {
