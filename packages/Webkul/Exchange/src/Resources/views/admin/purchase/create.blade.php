@@ -4,6 +4,7 @@
     {{ __('admin::app.vpt.inventory.receipt-notes') }}
 @stop
 <link href="/css/app.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <script src="/js/app.js"></script>
 @section('content')
     <vpt-receipt-note-form></vpt-receipt-note-form>
@@ -38,16 +39,25 @@
                                                                                         </li>
                                                                                     </ul>
 
-                                                                                    <div id="app">
-                                                                                        <div class="container">
-                                                                                          <div class="panel panel-sm">
+                                                                                    <div id="app" >
+                                                                                        <div >
+                                                                                          <div>
                                                                                             <div class="panel-heading"> 
-                                                                                              <h4>CSV Import</h4>
+                                                                                              <h4>Nhập file excel( *.csv)</h4>
                                                                                             </div>
                                                                                             <div class="panel-body">
-                                                                                              <div class="form-group">
-                                                                                                <div class="col-sm-9">
-                                                                                                  <input type="file" id="csv_file" name="csv_file" class="form-control" v-on:change="loadCSV($event)">
+                                                                                              <div class="form-group" >
+                                                                                                <div class="col-sm-12">
+                                                                                                    <label for="csv_file" class="custom-file-upload" style=" border: 1px solid #ccc;
+                                                                                                    display: inline-block;
+                                                                                                    padding: 6px 12px;
+                                                                                                    cursor: pointer;
+                                                                                                    margin-left : 40%;
+                                                                                                    "
+                                                                                                    >
+                                                                                                        <i class="fa fa-cloud-upload"></i> Chọn file excel
+                                                                                                    </label>
+                                                                                                  <input type="file" id="csv_file" name="csv_file" class="form-control" v-on:change="loadCSV($event)" style="display: none;">
                                                                                                 </div>
                                                                                               </div>
                                                                                             </div>

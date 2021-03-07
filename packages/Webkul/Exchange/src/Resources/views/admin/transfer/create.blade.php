@@ -30,16 +30,25 @@
                                             </li>
                                         </ul>
 
-                                        <div id="app">
-                                            <div class="container">
-                                              <div class="panel panel-sm">
+                                        <div id="app" >
+                                            <div >
+                                              <div>
                                                 <div class="panel-heading"> 
-                                                  <h4>CSV Import</h4>
+                                                  <h4>Nhập file excel( *.csv)</h4>
                                                 </div>
                                                 <div class="panel-body">
-                                                  <div class="form-group">
-                                                    <div class="col-sm-9">
-                                                      <input type="file" id="csv_file" name="csv_file" class="form-control" v-on:change="loadCSV($event)">
+                                                  <div class="form-group" >
+                                                    <div class="col-sm-12">
+                                                        <label for="csv_file" class="custom-file-upload" style=" border: 1px solid #ccc;
+                                                        display: inline-block;
+                                                        padding: 6px 12px;
+                                                        cursor: pointer;
+                                                        margin-left : 40%;
+                                                        "
+                                                        >
+                                                            <i class="fa fa-cloud-upload"></i> Chọn file excel
+                                                        </label>
+                                                      <input type="file" id="csv_file" name="csv_file" class="form-control" v-on:change="loadCSV($event)" style="display: none;">
                                                     </div>
                                                   </div>
                                                 </div>

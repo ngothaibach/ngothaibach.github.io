@@ -41,7 +41,10 @@
                             <td v-text="item.transfer_date"></td>
                             <td v-text="item.from_inventory"></td>
                             <td v-text="item.to_inventory"></td>
-                            <td v-text="item.status"></td>
+                            <td v-if="item.status == 'temporary'" >Lưu tạm</td>
+                            <td v-if="item.status == 'received'" >Đã nhận</td>
+                            <td v-if="item.status == 'cancel'" >Hủy</td>
+                            <td v-if="item.status == 'transfering'" >Đang vận chuyển</td>
                         </tr>
                         <tr v-if="selected_transfer == item.id">
                             <td style="border: 1px solid #b3d7f5;" colspan="5">
@@ -94,8 +97,8 @@
                                                 <div class="form-group row">
                                                     <label class="col-sm-4 col-form-label">Trạng thái</label>
                                                     <div class="col-sm-8">
-                                                        <select v-model="form.listReceiptNotes[index].status" class="form-control">
-                                                                <option v-for="item in form.status" :value="item" v-text="item">
+                                                        <select v-model="form.listReceiptNotes[index].status" class="form-control" :disabled="form.oldListReceip[index].status == 'temporary' ? false : form.oldListReceip[index].status == 'transfering' ? false : true">
+                                                                <option v-for="item in form.status" :value="item.key" v-text="item.value">
                                                                 </option>
                                                             </select>
                                                     </div>
@@ -113,7 +116,7 @@
                                                 <div class="form-group row">
                                                     <label class="col-sm-4 col-form-label">Ngày nhận</label>
                                                     <div class="col-sm-8">
-                                                        <vuejs-datepicker v-model="form.created_date"></vuejs-datepicker>
+                                                        <vuejs-datepicker v-model="form.created_date" :disabled="form.oldListReceip[index].status == 'temporary' ? false : form.oldListReceip[index].status == 'transfering' ? false : true"></vuejs-datepicker>
                                                     </div>
                                                 </div>
                                             </div>
@@ -123,7 +126,7 @@
                                                 <div class="form-group row">
                                                     <label class="col-sm-4 col-form-label">Ghi chú</label>
                                                     <div class="col-sm-8">
-                                                        <textarea class="form-control" id="exampleFormControlTextarea1" v-model="item.note"></textarea>
+                                                        <textarea class="form-control" id="exampleFormControlTextarea1" v-model="item.note" :disabled="form.oldListReceip[index].status == 'temporary' ? false : form.oldListReceip[index].status == 'transfering' ? false : true"></textarea>
                                                     </div>
                                                 </div>
                                             </div>
@@ -139,14 +142,14 @@
                                         </tr>
                                         </thead>
                                         <tbody>
-                                            <tr v-for="(product,index) in product_list">
+                                            <tr v-for="(product,index1) in product_list">
                                                 <td v-text="product.product_id"></td>
                                                 <td><img style="width: 60xp; height: 60px;" v-bind:src="'/cache/small/' + product.featured_image"/></td>
                                                 <td v-text="product.name"></td>
                                                 <td v-text="product.price"></td>
                                                 <td>
                                                     <div class="col-sm-8">
-                                                        <input type="text" v-model="product_list[index].transfer_qty" class="form-control">
+                                                        <input type="text" v-model="product_list[index1].transfer_qty" class="form-control" :disabled="form.oldListReceip[index].status == 'temporary' ? false : form.oldListReceip[index].status == 'transfering' ? false : true">
                                                     </div>
                                                 </td>
                                             </tr>
@@ -154,7 +157,7 @@
                                     </table>
                                     <span class="font-weight-bold">Tổng giá trị:</span> <span class="text-danger font-weight-bold" v-text="price_total"></span>
                                     <div class="text-right">
-                                        <button type="button" class="btn btn-success" v-on:click="save_inventory(item.id,item.note,item.status,item.importer)">Lưu</button>
+                                        <button type="button" class="btn btn-success" v-on:click="save_inventory(item.id,item.note,item.status,item.importer,item.type,item.from_inventory_id)" :disabled="form.oldListReceip[index].status == 'temporary' ? false : form.oldListReceip[index].status == 'transfering' ? false : true" >Lưu</button>
                                     </div>
                                 </div>
                             </div>
@@ -173,6 +176,7 @@
                 return {
                     form: new Form({
                         listReceiptNotes: {!! json_encode($receipt_notes) !!},
+                        oldListReceip : {!! json_encode($receipt_notes) !!},
                         price_total: 0,
                         type: 'receipt',
                         receipt_date: new Date(),
@@ -186,9 +190,26 @@
                         note: "",
                         idExchange: 1,
                         product_list: null,
+                        type : null,
+                        from_inventory_id : null,
                         selected : "{{ __('admin::app.vpt.inventory.received') }}",
                         status: [
-                            'temporary','transfering', 'received', 'cancel',
+                            {
+                                key :  'temporary',
+                                value : 'lưu tạm'
+                            },
+                            {
+                                key :  'transfering',
+                                value : 'Đang vận chuyển'
+                            },
+                            {
+                                key :  'received',
+                                value : 'Đã nhận'
+                            },
+                            {
+                                key :  'cancel',
+                                value : 'Hủy'
+                            }
                     ]
                     }),
                     showModal: false,
@@ -220,17 +241,18 @@
                         this.price_total += product.price * product.qty
                     }
                 },
-                save_inventory(exchange_note_id, note, status, importer) {
+                save_inventory(exchange_note_id, note, status, importer,type,from_inventory_id) {
 
                     var sites = {!! json_encode($receipt_notes) !!};
                     this.form.idExchange = exchange_note_id;
                     this.form.note = note;
                     this.form.importer = importer;
                     this.form.status = status;
-                    console.log('dataSource', this.form.product_list)
+                    this.form.type = type;
+                    this.form.from_inventory_id = from_inventory_id;
 
 
-                    this.form.post("{{ route('admin.exchange.update') }}")
+                    this.form.post("{{ route('admin.exchange.updateTransfer') }}")
                         .then((response) => {
 
                             // var attr = document.getElementById("text");
@@ -239,7 +261,7 @@
                             if (response.data.success == true) {
                                 console.error("save exchange successfull");
                                 window.location.href =
-                                    "{{ route('admin.exchange.purchase-order.list') }}";
+                                    "{{ route('admin.exchange.transfer.list') }}";
                             } else {
                                 console.debug("save exchange NOT successfull");
                             }
@@ -258,6 +280,9 @@
                         })
                         .then(response => {
                             this.product_list = response.data.transfered_products;
+                            this.form.product_list = response.data.transfered_products;
+                    // console.log('dataSource', this.form.product_list)
+
                             console.error(this.product_list);
 
                             this.price_total = 0;
