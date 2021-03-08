@@ -173,6 +173,9 @@ class ExchangeController extends Controller
         ->orderBy('id', 'desc')
         ->get()->toArray();
       
+
+        // $productInventoryQty = $this->productInventoryRepository->where('inventory_source_id', '=', request()->from_inventory_source)->where('product_id', '=', $product['id'])
+
         // $data = DB::table('exchange_notes')->get()->toJson();
 
         // echo $data;
