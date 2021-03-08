@@ -163,6 +163,7 @@ class ExchangeController extends Controller
      */
     public function list_purchases()
     {
+        $users = DB::table('admins')->select('id', 'name')->get();
         $receipt_notes = DB::table('exchange_notes')
         ->join('suppliers', 'suppliers.id', '=', 'exchange_notes.supplier_id')
         ->join('inventory_sources', 'inventory_sources.id', '=', 'exchange_notes.to_inventory_source_id')
@@ -171,14 +172,14 @@ class ExchangeController extends Controller
         ->where('type', '=', 'receipt')
         ->orderBy('id', 'desc')
         ->get()->toArray();
-
+      
         // $data = DB::table('exchange_notes')->get()->toJson();
 
         // echo $data;
 
         // $receipt_notes = DB::table('exchange_notes')->orderBy('id', 'DESC')->get()->toArray();
 
-        return view($this->_config['view'], compact('receipt_notes'));
+        return view($this->_config['view'], compact('receipt_notes','users'));
     }
 
     /**
@@ -270,7 +271,6 @@ class ExchangeController extends Controller
         ];
 
         $exchangeNote = $this->exchangeNoteRepository->create($exchangeNoteData);
-
         if (isset($exchangeNote) && $exchangeNote->id != null) {
             foreach (request()->added_products as $product ) {
                 if ($exchangeNoteData['type'] == "transfer") {
@@ -303,6 +303,7 @@ class ExchangeController extends Controller
             [
                 'success' => true,
                 'message' => 'Save susscessfully',
+                'tai smile' => $exchangeNote->id,
             ]
         );
     }
