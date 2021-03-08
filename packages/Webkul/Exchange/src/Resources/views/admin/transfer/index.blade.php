@@ -116,7 +116,7 @@
                                                 <div class="form-group row">
                                                     <label class="col-sm-4 col-form-label">Ngày nhận</label>
                                                     <div class="col-sm-8">
-                                                        <vuejs-datepicker v-model="form.created_date" :disabled="form.oldListReceip[index].status == 'temporary' ? false : form.oldListReceip[index].status == 'transfering' ? false : true"></vuejs-datepicker>
+                                                        <vuejs-datepicker v-model="item.receipt_date" :disabled="form.oldListReceip[index].status == 'temporary' ? false : form.oldListReceip[index].status == 'transfering' ? false : true"></vuejs-datepicker>
                                                     </div>
                                                 </div>
                                             </div>
@@ -157,7 +157,7 @@
                                     </table>
                                     <span class="font-weight-bold">Tổng giá trị:</span> <span class="text-danger font-weight-bold" v-text="price_total"></span>
                                     <div class="text-right">
-                                        <button type="button" class="btn btn-success" v-on:click="save_inventory(item.id,item.note,item.status,item.importer,item.type,item.from_inventory_id)" :disabled="form.oldListReceip[index].status == 'temporary' ? false : form.oldListReceip[index].status == 'transfering' ? false : true" >Lưu</button>
+                                        <button type="button" class="btn btn-success" v-on:click="save_inventory(item.id,item.note,item.status,item.importer,item.type,item.from_inventory_id,item.receipt_date)" :disabled="form.oldListReceip[index].status == 'temporary' ? false : form.oldListReceip[index].status == 'transfering' ? false : true" >Lưu</button>
                                     </div>
                                 </div>
                             </div>
@@ -241,7 +241,7 @@
                         this.price_total += product.price * product.qty
                     }
                 },
-                save_inventory(exchange_note_id, note, status, importer,type,from_inventory_id) {
+                save_inventory(exchange_note_id, note, status, importer,type,from_inventory_id,receipt_date) {
 
                     var sites = {!! json_encode($receipt_notes) !!};
                     this.form.idExchange = exchange_note_id;
@@ -250,7 +250,7 @@
                     this.form.status = status;
                     this.form.type = type;
                     this.form.from_inventory_id = from_inventory_id;
-
+                    this.form.receipt_date = receipt_date;
 
                     this.form.post("{{ route('admin.exchange.updateTransfer') }}")
                         .then((response) => {

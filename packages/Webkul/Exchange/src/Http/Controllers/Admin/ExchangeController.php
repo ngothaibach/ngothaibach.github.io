@@ -421,12 +421,13 @@ class ExchangeController extends Controller
         $product_list = request() -> product_list;
         $type = request() -> type;
         $from_inventory_id = request() -> from_inventory_id;
-
+        $receipt_date = request() -> receipt_date;
         // $name = $item->id;
         $exchaneNote = ExchangeNote::find($id);
         $exchaneNote->status = $status;
         $exchaneNote->note = $note;
         $exchaneNote->importer = $importer;
+        $exchaneNote->receipt_date = $receipt_date;
         $exchaneNote->save();
         foreach ($product_list as $product){
             // cập nhật các trường thay đổi số lượng
