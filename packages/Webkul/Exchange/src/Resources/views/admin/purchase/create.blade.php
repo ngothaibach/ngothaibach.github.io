@@ -329,8 +329,8 @@ let handleOutsideClick
                             console.error(response);
                             if (response.data.success == true) {
                                 console.error("save exchange successfull");
-                                // window.location.href =
-                                //     "{{ route('admin.exchange.purchase-order.list') }}";
+                                window.location.href =
+                                    "{{ route('admin.exchange.purchase-order.list') }}";
                             } else {
                                 console.debug("save exchange NOT successfull");
                             }
