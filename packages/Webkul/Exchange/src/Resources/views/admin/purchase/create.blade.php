@@ -275,6 +275,7 @@ let handleOutsideClick
                         })
                         .then(response => {
                             this.listProduct = response.data;
+                            // alert(response.data.length);
                         })
                         .catch(error => {});
                     console.error(this.results);
@@ -328,8 +329,8 @@ let handleOutsideClick
                             console.error(response);
                             if (response.data.success == true) {
                                 console.error("save exchange successfull");
-                                window.location.href =
-                                    "{{ route('admin.exchange.purchase-order.list') }}";
+                                // window.location.href =
+                                //     "{{ route('admin.exchange.purchase-order.list') }}";
                             } else {
                                 console.debug("save exchange NOT successfull");
                             }
@@ -389,7 +390,7 @@ let handleOutsideClick
                     //     return ele.id === '21';
                     // });
 
-                    // console.log('fetchData', skuProduct);
+                    console.log('fetchData', vm.listProduct);
 
                     // console.log("added_item", this.results)
                     for (var item = 0; item < result.length - 1; item++) {
@@ -398,7 +399,7 @@ let handleOutsideClick
                             // console.log(vm.listProduct[i])
                             if (vm.listProduct[i].sku == (result[item].Sku)) {
                                 let added_item = {
-                                    id: 1,
+                                    id: vm.listProduct[i].id,
                                     sku: result[item].Sku,
                                     name: result[item].Name,
                                     qty: result[item].Amount,
@@ -407,6 +408,7 @@ let handleOutsideClick
                                     featured_image: vm.listProduct[i].featured_image
                                 }
                                 this.form.added_products.push(added_item);
+                                // console.log('this.form.added_products',this.form.added_products)
                             }
                         }
                     }

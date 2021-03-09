@@ -299,7 +299,7 @@ class ExchangeController extends Controller
             [
                 'success' => true,
                 'message' => 'Save susscessfully',
-                'tai smile' => $exchangeNote->id,
+                'tai smile' =>$productExchangeData,
             ]
         );
     }
