@@ -168,11 +168,14 @@ class ExchangeController extends Controller
         ->join('suppliers', 'suppliers.id', '=', 'exchange_notes.supplier_id')
         ->join('inventory_sources', 'inventory_sources.id', '=', 'exchange_notes.to_inventory_source_id')
         ->join('admins', 'admins.id', '=', 'exchange_notes.created_user_id')
-        ->select('exchange_notes.id', 'exchange_notes.created_date', 'exchange_notes.note', 'exchange_notes.status','exchange_notes.importer', 'exchange_notes.receipt_date', 'suppliers.name as supplier', 'inventory_sources.name as inventory', 'admins.name as created_user')
+        ->select('exchange_notes.id', 'exchange_notes.created_date', 'exchange_notes.note', 'exchange_notes.status','exchange_notes.type','exchange_notes.importer', 'exchange_notes.receipt_date', 'suppliers.name as supplier', 'inventory_sources.name as inventory','inventory_sources.id as inventoryID', 'admins.name as created_user')
         ->where('type', '=', 'receipt')
         ->orderBy('id', 'desc')
         ->get()->toArray();
       
+
+        // $productInventoryQty = $this->productInventoryRepository->where('inventory_source_id', '=', request()->from_inventory_source)->where('product_id', '=', $product['id'])
+
         // $data = DB::table('exchange_notes')->get()->toJson();
 
         // echo $data;
@@ -194,7 +197,7 @@ class ExchangeController extends Controller
         ->leftJoin('inventory_sources as to_inventory_sources', 'to_inventory_sources.id', '=', 'exchange_notes.to_inventory_source_id')
         ->leftJoin('inventory_sources as from_inventory_sources', 'from_inventory_sources.id', '=', 'exchange_notes.from_inventory_source_id')
         ->join('admins', 'admins.id', '=', 'exchange_notes.created_user_id')
-        ->select('exchange_notes.id', 'exchange_notes.created_date', 'exchange_notes.note', 'exchange_notes.status', 'exchange_notes.receipt_date', 'exchange_notes.transfer_date', 'to_inventory_sources.name as to_inventory', 'from_inventory_sources.name as from_inventory', 'admins.name as created_user')
+        ->select('exchange_notes.id', 'exchange_notes.created_date', 'exchange_notes.note', 'exchange_notes.status', 'exchange_notes.receipt_date', 'exchange_notes.transfer_date', 'to_inventory_sources.name as to_inventory', 'from_inventory_sources.name as from_inventory','from_inventory_sources.id as from_inventory_id', 'admins.name as created_user')
         ->where('type', '=', 'transfer')
         ->orderBy('id', 'desc')
         ->get()->toArray();
@@ -246,13 +249,6 @@ class ExchangeController extends Controller
      */
     public function store()
     {
-        // $this->validate(request(), [
-        //     'status' => 'required',
-        //     'user' => 'required',
-        //     'supplier' => 'required',
-        //     'inventory_source' => 'required',
-        //     'receipt_date' => 'required',
-        // ]);
 
         $exchangeNoteData = [
             'status' => "temporary",
@@ -273,17 +269,17 @@ class ExchangeController extends Controller
         $exchangeNote = $this->exchangeNoteRepository->create($exchangeNoteData);
         if (isset($exchangeNote) && $exchangeNote->id != null) {
             foreach (request()->added_products as $product ) {
-                if ($exchangeNoteData['type'] == "transfer") {
-                    $productInventory = $this->productInventoryRepository->where('inventory_source_id', '=', request()->from_inventory_source)->where('product_id', '=', $product['id'])
-                    ->first();
-                    $productInventory->qty = (int)$productInventory->qty - (int)$product['qty'];
-                    $productInventory->save();
-                } else {
-                    $productInventory = $this->productInventoryRepository->where('inventory_source_id', '=', request()->to_inventory_source)->where('product_id', '=', $product['id'])
-                    ->first();
-                    $productInventory->qty = (int)$productInventory->qty + (int)$product['qty'];
-                    $productInventory->save();
-                }
+                // if ($exchangeNoteData['type'] == "transfer") {
+                //     $productInventory = $this->productInventoryRepository->where('inventory_source_id', '=', request()->from_inventory_source)->where('product_id', '=', $product['id'])
+                //     ->first();
+                //     $productInventory->qty = (int)$productInventory->qty - (int)$product['qty'];
+                //     $productInventory->save();
+                // } else {
+                //     $productInventory = $this->productInventoryRepository->where('inventory_source_id', '=', request()->to_inventory_source)->where('product_id', '=', $product['id'])
+                //     ->first();
+                //     $productInventory->qty = (int)$productInventory->qty + (int)$product['qty'];
+                //     $productInventory->save();
+                // }
 
                 $productExchangeData = [
                     'exchange_note_id' => $exchangeNote->id,
@@ -307,6 +303,8 @@ class ExchangeController extends Controller
             ]
         );
     }
+
+
 
     // public function store()
     // {
@@ -365,11 +363,13 @@ class ExchangeController extends Controller
     {
         // $data = request()->all();
         $id = request()->idExchange;
-        $item = request() -> exchange_note;
         $note = request() -> note;
         $importer = request() -> importer;
         $status = request() -> status;
         $product_list = request() -> product_list;
+        $type = request() -> type;
+        $inventoryID = request() -> inventoryID;
+
         // $name = $item->id;
         $exchaneNote = ExchangeNote::find($id);
         $exchaneNote->status = $status;
@@ -377,13 +377,31 @@ class ExchangeController extends Controller
         $exchaneNote->importer = $importer;
         $exchaneNote->save();
         foreach ($product_list as $product){
+            // cập nhật các trường thay đổi số lượng
             $productExchangeNote = DB::table('product_exchange_notes')
             ->where([
                 ['exchange_note_id', $id ],
                 ['id',$product['id'] ],
             ])
             ->update(['transfer_qty' => $product['transfer_qty']]);
+             // cập nhật số lượng trong kho
+            if($status == 'received'){
+                $productInventory = $this->productInventoryRepository->where('inventory_source_id', '=', $inventoryID )->where('product_id', '=', $product['product_id'])
+                ->first();
+                $productInventory->qty = (int)$productInventory->qty + (int)$product['transfer_qty'];
+                $productInventory->save();
+            }
         }
+        // cập nhật số lượng trong kho
+        // if ($exchangeNoteData['type'] == "transfer") {
+        //     $productInventory = $this->productInventoryRepository->where('inventory_source_id', '=', request()->from_inventory_source)->where('product_id', '=', $product['id'])
+        //     ->first();
+        //     $productInventory->qty = (int)$productInventory->qty - (int)$product['qty'];
+        //     $productInventory->save();
+        // } else {
+          
+         
+        // }
         return response()->json(
             [
                 'success' => True,
@@ -392,6 +410,48 @@ class ExchangeController extends Controller
         );
     }
 
+
+    public function updateTransfer()
+    {
+        // $data = request()->all();
+        $id = request()->idExchange;
+        $note = request() -> note;
+        $importer = request() -> importer;
+        $status = request() -> status;
+        $product_list = request() -> product_list;
+        $type = request() -> type;
+        $from_inventory_id = request() -> from_inventory_id;
+        $receipt_date = request() -> receipt_date;
+        // $name = $item->id;
+        $exchaneNote = ExchangeNote::find($id);
+        $exchaneNote->status = $status;
+        $exchaneNote->note = $note;
+        $exchaneNote->importer = $importer;
+        $exchaneNote->receipt_date = $receipt_date;
+        $exchaneNote->save();
+        foreach ($product_list as $product){
+            // cập nhật các trường thay đổi số lượng
+            $productExchangeNote = DB::table('product_exchange_notes')
+            ->where([
+                ['exchange_note_id', $id ],
+                ['id',$product['id'] ],
+            ])
+            ->update(['transfer_qty' => $product['transfer_qty']]);
+             // cập nhật số lượng trong kho
+            if($status == 'received'){
+                $productInventory = $this->productInventoryRepository->where('inventory_source_id', '=', $from_inventory_id)->where('product_id', '=', $product['product_id'])
+                ->first();
+                $productInventory->qty = (int)$productInventory->qty - (int)$product['transfer_qty'];
+                $productInventory->save();
+            }
+        }
+        return response()->json(
+            [
+                'success' => True,
+                'transfered_products' => $product_list
+            ]
+        );
+    }
     /**
      * Remove the specified resource from storage.
      *
