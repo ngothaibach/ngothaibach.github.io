@@ -487,7 +487,7 @@ class ProductRepository extends Repository
      */
     public function searchSimpleProducts($term)
     {
-        if (isset($term) && $term != "") {
+        // if (isset($term) && $term != "") {
             return app(ProductFlatRepository::class)->scopeQuery(function ($query) use ($term) {
                 $channel = request()->get('channel') ?: (core()->getCurrentChannelCode() ?: core()->getDefaultChannelCode());
 
@@ -508,9 +508,9 @@ class ProductRepository extends Repository
                     })
                     ->orderBy('product_id', 'desc');
             })->get();
-        } else {
-            return [];
-        }
+        // } else {
+        //     return [];
+        // }
     }
 
     /**
