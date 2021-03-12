@@ -34,12 +34,12 @@
                                                                                         <table class="table table-bordered">
                                                                                             <thead>
                                                                                             <tr>
-                                                                                                <th v-for="table_header in table_headers" class="grid_head">
-                                                                                                    <p v-text="table_header"></p>
+                                                                                                <th v-for="(table_header,index) in table_headers" class="grid_head">
+                                                                                                    <p v-text="table_header" v-on:click = sort(sort_list[index])></p>
                                                                                                 </th>
                                                                                             </tr>
                                                                                             </thead>
-                                                                                            <tbody v-for="(item,index) in form.listReceiptNotes">
+                                                                                            <tbody v-for="(item,index) in pageOfItems" :key="item.id">
                                                                                             
                                                                                                 <tr :class="[selected_transfer ===  item.id ? 'table-info' : '']" v-on:click="load_product(item.id)">
                                                                                                     <td v-text="'MDH00' + item.id"></td>
@@ -179,6 +179,15 @@
                                                                                                 </tr>
                                                                                             </tbody>
                                                                                         </table>
+                                                                                        <div class="card-footer pb-0 pt-3">
+                                                                                            <sort-pagination 
+                                                                                            v-bind:items="form.listReceiptNotes"
+                                                                                            v-bind:pageSize = "perPage"
+                                                                                            v-bind:sortBy ="sortBy"
+                                                                                            v-bind:currentSortDir ="currentSortDir"
+                                                                                            @changePage="onChangePage">
+                                                                                            </sort-pagination>
+                                                                                        </div>
                                                                                     </div>
                                                                                 </form>
                                                                                 </script>
@@ -188,6 +197,19 @@
             template: '#vpt-list-receipt-notes-template',
             data() {
                 return {
+                    //pagination
+                    sort_list: [
+                        "id",
+                        "created_date",
+                        "supplier",
+                        "",
+                        "status"
+                    ],
+                    currentSortDir: "",
+                    sortBy: "",
+                    pageOfItems: [],
+                    perPage: 4,
+                    //pagination
                     form: new Form({
                         listReceiptNotes: {!! json_encode($receipt_notes) !!},
                         oldListReceip: {!! json_encode($receipt_notes) !!},
@@ -302,10 +324,25 @@
                     // this.price_total = 0;
                     //this.showModal = true;
                 },
+                //pagination
+                onChangePage(pageOfItems) {
+                    // update page of items
+                    this.pageOfItems = pageOfItems;
+                },    
+                sort(name){
+                    if(this.sortBy != name){
+                        this.sortBy = name;
+                        this.currentSortDir = 'asc';
+                    }else{
+                        this.currentSortDir = this.currentSortDir==='asc'?'desc':'asc';
+                    }
+                },
+                //pagination
                 closeModal() {
                     this.showModal = false;
                 }
-            }
+            },
+           
         });
 
     </script>
