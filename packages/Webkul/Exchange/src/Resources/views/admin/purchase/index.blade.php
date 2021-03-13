@@ -23,13 +23,9 @@
     </div>
 @stop
 
-
-
-
 @push('scripts')
     <script type="text/x-template" id="vpt-list-receipt-notes-template">
         <form action="#" class="form newtopic" @submit.prevent="save">
-
                                         <div>                                               
                                                                                         <table class="table table-bordered">
                                                                                             <thead>
@@ -209,7 +205,7 @@
                     currentSortDir: "",
                     sortBy: "",
                     pageOfItems: [],
-                    perPage: 4,
+                    perPage: 10,
                     arrow: "custom-arrow-icon-down",
                     currentArrow : 0,
                     //pagination
@@ -291,16 +287,11 @@
 
                     this.form.post("{{ route('admin.exchange.update') }}")
                         .then((response) => {
-
-                            // var attr = document.getElementById("text");
-                            // attr.innerHTML = response.data.message;
-                            console.error('loix ne ', response);
                             if (response.data.success == true) {
-                                console.error("save exchange successfull");
                                 window.location.href =
                                     "{{ route('admin.exchange.purchase-order.list') }}";
                             } else {
-                                console.debug("save exchange NOT successfull");
+                                console.error("save exchange NOT successfull");
                             }
                         })
                 },
@@ -316,16 +307,11 @@
                         .then(response => {
                             this.product_list = response.data.transfered_products;
                             this.form.product_list = response.data.transfered_products;
-                            console.log('this.product_list', this.product_list)
-                            console.error(this.product_list);
                             this.price_total = 0;
                             for (product of this.product_list) {
                                 this.price_total += product.price * product.receipt_qty;
                             }
                         });
-                    // this.update_total_price();
-                    // this.price_total = 0;
-                    //this.showModal = true;
                 },
                 //pagination
                 onChangePage(pageOfItems) {
