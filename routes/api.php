@@ -12,3 +12,6 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+Route::get('products', 'Api\ProductController@index')->name('products.index');
+
+Route::apiResource('exchange', 'Api\ExchangeController');
