@@ -12,7 +12,7 @@ use Webkul\Core\Repositories\ChannelRepository;
 
 use Webkul\Admin\Mail\NewCustomerNotification;
 use Mail;
-
+use Webkul\Customer\Rules\VatIdRule;
 class CustomerController extends Controller
 {
     /**
@@ -106,25 +106,67 @@ class CustomerController extends Controller
      */
     public function store()
     {
+        request()->merge([
+            'address1' => implode(PHP_EOL, array_filter(request()->input('address1'))),
+        ]);
+
         $this->validate(request(), [
             'first_name'    => 'string|required',
             'last_name'     => 'string|required',
             'gender'        => 'required',
             'email'         => 'required|unique:customers,email',
             'date_of_birth' => 'date|before:today',
+            'company_name' => 'string',
+            'address1'     => 'string|required',
+            'country'      => 'string|required',
+            'state'        => 'string|required',
+            'city'         => 'string|required',
+            'postcode'     => 'required',
+            // 'vat_id'       => new VatIdRule(),
         ]);
 
-        $data = request()->all();
+        // $data = request()->all();
+        $dataCustomer = [
+            'first_name'    => request()->first_name,
+            'last_name'     => request()->last_name,
+            'gender'        => request()->gender,
+            'email'         => request()->email,
+            'date_of_birth' => request()->date_of_birth,
+            'phone'         => request()->phone,
+            'customer_group_id'=> request()->customer_group_id,
+        ];
 
         $password = rand(100000, 10000000);
 
-        $data['password'] = bcrypt($password);
+        $dataCustomer['password'] = bcrypt($password);
 
-        $data['is_verified'] = 1;
+        $dataCustomer['is_verified'] = 1;
 
         Event::dispatch('customer.registration.before');
 
-        $customer = $this->customerRepository->create($data);
+        $customer = $this->customerRepository->create($dataCustomer);
+
+        //minhpd luu dia chi khach hang
+        $dataAddress = [
+            'first_name'    => request()->first_name,
+            'last_name'     => request()->last_name,
+            'gender'        => request()->gender,
+            'email'         => request()->email,
+            'company_name' => request()->company_name,
+            'address1'     => request()->address1,
+            'country'      => request()->country,
+            'state'        => request()->state,
+            'city'         => request()->city,
+            'postcode'     => request()->postcode,
+            'phone'        => request()->phone,
+            'vat_id'       => request()->vat_id,
+            'customer_id'  => $customer->id,
+            'address_type' => 'customer',
+            'default_address' => request()->default_address,
+        ];
+
+        $addresses = $this->customerAddressRepository->create($dataAddress);
+        //end minh
 
         Event::dispatch('customer.registration.after', $customer);
 

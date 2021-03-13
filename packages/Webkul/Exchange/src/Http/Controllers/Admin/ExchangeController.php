@@ -327,6 +327,7 @@ class ExchangeController extends Controller
             ->leftJoin('product_flat', 'product_flat.product_id', '=', 'product_exchange_notes.product_id')
             ->where('exchange_note_id', $transfer_id)
             // ->where('product_flat.locale', '=', core()->getCurrentLocale()->code)
+            ->where('product_flat.locale', '=', 'vi')
             ->select('product_exchange_notes.id', 'product_exchange_notes.exchange_note_id', 'product_exchange_notes.product_id', 'product_exchange_notes.transfer_qty', 'product_exchange_notes.receipt_qty', 'product_exchange_notes.price', 'product_exchange_notes.discount', 'product_flat.name'
                 , DB::raw('(select path as featured_image from product_images where product_images.product_id  = product_flat.product_id limit 1) as featured_image'))            
             ->distinct()->get();

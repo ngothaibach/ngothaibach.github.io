@@ -96,6 +96,47 @@
                     </div>
 
                     {!! view_render_event('bagisto.admin.customers.create.after') !!}
+
+                    <div class="control-group" :class="[errors.has('company_name') ? 'has-error' : '']">
+                        <label for="company_name">{{ __('shop::app.customer.account.address.create.company_name') }}</label>
+                        <input type="text" class="control" name="company_name" value="{{ old('company_name') }}" data-vv-as="&quot;{{ __('shop::app.customer.account.address.create.company_name') }}&quot;">
+                        <span class="control-error" v-if="errors.has('company_name')">@{{ errors.first('company_name') }}</span>
+                    </div>
+
+                    <div class="control-group" :class="[errors.has('vat_id') ? 'has-error' : '']">
+                        <label for="vat_id">{{ __('shop::app.customer.account.address.create.vat_id') }}</label>
+                        <input type="text" class="control" name="vat_id" v-validate="" value="{{ old('vat_id') }}" data-vv-as="&quot;{{ __('shop::app.customer.account.address.create.vat_id') }}&quot;">
+                        <span class="control-error" v-if="errors.has('vat_id')">@{{ errors.first('vat_id') }}</span>
+                    </div>
+
+                    <div class="control-group" :class="[errors.has('address1[]') ? 'has-error' : '']">
+                        <label for="address_0" class="required">{{ __('shop::app.customer.account.address.edit.street-address') }}</label>
+                        <input type="text" class="control" name="address1[]" id="address_0" v-validate="'required'" value="{{ old('address1') }}" data-vv-as="&quot;{{ __('shop::app.customer.account.address.create.street-address') }}&quot;">
+                        <span class="control-error" v-if="errors.has('address1[]')">@{{ errors.first('address1[]') }}</span>
+                    </div>
+
+                    <div class="control-group" :class="[errors.has('city') ? 'has-error' : '']">
+                        <label for="city" class="required">{{ __('shop::app.customer.account.address.create.city') }}</label>
+                        <input type="text" class="control" name="city" v-validate="'required'" value="{{ old('city') }}" data-vv-as="&quot;{{ __('shop::app.customer.account.address.create.city') }}&quot;">
+                        <span class="control-error" v-if="errors.has('city')">@{{ errors.first('city') }}</span>
+                    </div>
+
+                    @include ('admin::customers.country-state', ['countryCode' => old('country') ?? config('app.default_country'), 'stateCode' => old('state') ?? ''])
+
+                    <div class="control-group" :class="[errors.has('postcode') ? 'has-error' : '']">
+                        <label for="postcode" class="required">{{ __('shop::app.customer.account.address.create.postcode') }}</label>
+                        <input type="text" class="control" name="postcode" v-validate="'required'" value="{{ old('postcode') }}" data-vv-as="&quot;{{ __('shop::app.customer.account.address.create.postcode') }}&quot;">
+                        <span class="control-error" v-if="errors.has('postcode')">@{{ errors.first('postcode') }}</span>
+                    </div>
+
+                    <div class="control-group">
+                        <span class="checkbox">
+                            <input type="checkbox" class="control" id="default_address" name="default_address" {{ old('default_address') ? 'checked' : '' }} >
+
+                            <label class="checkbox-view" for="default_address"></label>
+                            {{ __('admin::app.customers.addresses.default-address') }}
+                        </span>
+                    </div>
                 </div>
             </div>
         </form>
