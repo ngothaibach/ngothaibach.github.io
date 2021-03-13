@@ -926,7 +926,7 @@ return [
             'order-list' => 'Order\'s List',
             'address-id' => 'ID địa chỉ',
             'company-name' => 'Tên công ty',
-            'address-1' => 'Địa chỉ 1',
+            'address-1' => 'Địa chỉ',
             'city' => 'Thành phố',
             'state-name' => 'Vùng',
             'country-name' => 'Quốc gia',
