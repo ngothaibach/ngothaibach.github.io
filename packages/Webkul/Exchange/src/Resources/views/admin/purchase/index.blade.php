@@ -30,12 +30,13 @@
     <script type="text/x-template" id="vpt-list-receipt-notes-template">
         <form action="#" class="form newtopic" @submit.prevent="save">
 
-                                        <div>
+                                        <div>                                               
                                                                                         <table class="table table-bordered">
                                                                                             <thead>
                                                                                             <tr>
-                                                                                                <th v-for="(table_header,index) in table_headers" class="grid_head">
-                                                                                                    <p v-text="table_header" v-on:click = sort(sort_list[index])></p>
+                                                                                                <th v-for="(table_header,index) in table_headers" >
+                                                                                                    <p  v-text="table_header" v-on:click = "sort(sort_list[index]);showArrow(index)" ></p><p :class="arrow" v-if="currentArrow == index" ></p>
+                                                                                                </p>
                                                                                                 </th>
                                                                                             </tr>
                                                                                             </thead>
@@ -209,6 +210,8 @@
                     sortBy: "",
                     pageOfItems: [],
                     perPage: 4,
+                    arrow: "custom-arrow-icon-down",
+                    currentArrow : 0,
                     //pagination
                     form: new Form({
                         listReceiptNotes: {!! json_encode($receipt_notes) !!},
@@ -333,9 +336,14 @@
                     if(this.sortBy != name){
                         this.sortBy = name;
                         this.currentSortDir = 'asc';
+                        
                     }else{
                         this.currentSortDir = this.currentSortDir==='asc'?'desc':'asc';
+                        this.arrow = this.arrow=== 'custom-arrow-icon-down' ? 'custom-arrow-icon-up' : 'custom-arrow-icon-down';
                     }
+                },
+                showArrow(number) {
+                    this.currentArrow = number;
                 },
                 //pagination
                 closeModal() {
