@@ -98,7 +98,8 @@ class ExchangeController extends Controller
 
         $exchangeNote = $this->exchangeNoteRepository->create($exchangeNoteData);
                 $productExchangeData = [
-                    'exchange_note_id' => $request->exchange_note_id,
+
+                    'exchange_note_id' => $exchangeNote->id,
                     'product_id' => $request->product_id,
                     'transfer_qty' => $request->transfer_qty,
                     'receipt_qty' => $request->receipt_qty,
