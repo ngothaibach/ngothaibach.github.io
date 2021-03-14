@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Webkul\Exchange\Repositories\ProductExchangeNoteRepository;
 use Webkul\Exchange\Repositories\ExchangeNoteRepository;
+use Carbon\Carbon;
 class ExchangeController extends Controller
 {
     /**
@@ -80,6 +81,7 @@ class ExchangeController extends Controller
     public function store(Request $request)
     {
         //
+        $date = Carbon::now()->toISOString();
         $exchangeNoteData = [
             'status' => "temporary",
             'type' => "receipt",
@@ -89,10 +91,10 @@ class ExchangeController extends Controller
             // 'from_inventory_source_id' => 1,
             'to_inventory_source_id' => $request->to_inventory_source_id,
             'from_inventory_source_id' =>  $request->from_inventory_source_id,
-            'created_date' => "2021-03-13T20:07:16.383Z",
-            'updated_date' => "2021-03-13T20:07:16.383Z",
-            'transfer_date' => "2021-03-13T20:07:16.383Z",
-            'receipt_date' => "2021-03-13T20:07:16.383Z",
+            'created_date' =>$date,
+            'updated_date' =>$date,
+            'transfer_date' =>$date,
+            'receipt_date' =>$date,
             'note' => $request->notes,
         ];
 
@@ -113,6 +115,7 @@ class ExchangeController extends Controller
                 'success' => true,
                 'message' => 'Save susscessfully',
                 'tai smile' =>$productExchangeData,
+                'minh smile' => Carbon::now()->toISOString()
             ]
         );
     }
