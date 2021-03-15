@@ -20,6 +20,7 @@ class CreateExchangeNotesTable extends Migration
             $table->integer('created_user_id')->unsigned();
             $table->integer('receipt_user_id')->unsigned();
             $table->integer('supplier_id')->unsigned();
+            $table->decimal('total', $precision = 16, $scale = 4)->unsigned();
             $table->integer('from_inventory_source_id')->unsigned();
             $table->integer('to_inventory_source_id')->unsigned();
             $table->date('created_date')->nullable();

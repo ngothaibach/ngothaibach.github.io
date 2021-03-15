@@ -42,7 +42,7 @@
                                                                                                     <td v-text="'MDH00' + item.id"></td>
                                                                                                     <td v-text="item.created_date"></td>
                                                                                                     <td v-text="item.supplier"></td>
-                                                                                                    <td v-text="item.id"></td>
+                                                                                                    <td v-text="item.total"></td>
                                                                                                     <td v-if="item.status == 'temporary'" >Lưu tạm</td>
                                                                                                     <td v-if="item.status == 'received'" >Đã nhận</td>
                                                                                                     <td v-if="item.status == 'cancel'" >Hủy</td>
@@ -160,7 +160,7 @@
                                                                                                                         <td v-text="product.price"></td>
                                                                                                                         <td>
                                                                                                                             <div class="col-sm-8">
-                                                                                                                                <input type="text" v-model="product_list[index1].receipt_qty" class="form-control" :disabled="form.oldListReceip[index].status == 'temporary' ? false : true" >
+                                                                                                                                <input type="number" :value="product.receipt_qty" @change.lazy="update_total_price(parseInt($event.target.value),parseInt(product.receipt_qty),parseInt(product.price))"  class="form-control" :disabled="form.oldListReceip[index].status == 'temporary' ? false : true" >
                                                                                                                             </div>
                                                                                                                         </td>
                                                                                                                     </tr>
@@ -168,7 +168,7 @@
                                                                                                             </table>
                                                                                                             <span class="font-weight-bold">Tổng giá trị:</span> <span class="text-danger font-weight-bold" v-text="price_total"></span>
                                                                                                             <div class="text-right">
-                                                                                                                <button type="button" class="btn btn-success" v-on:click="save_inventory(item.id,item.note,item.status,item.importer,item.type,item.inventoryID)" :disabled="form.oldListReceip[index].status == 'temporary' ? false : true" >Lưu</button>
+                                                                                                                <button type="button" class="btn btn-success" v-on:click="save_inventory(item.id,item.note,item.status,item.importer,item.type,item.inventoryID,price_total,product_list)" :disabled="form.oldListReceip[index].status == 'temporary' ? false : true" >Lưu</button>
                                                                                                             </div>
                                                                                                         </div>
                                                                                                     </div>
@@ -186,8 +186,8 @@
                                                                                             </sort-pagination>
                                                                                         </div>
                                                                                     </div>
-                                                                                </form>
-                                                                                </script>
+                                                                                </form> 
+                                                                                </script> 
 
     <script>
         Vue.component('vpt-list-receipt-notes', {
@@ -199,7 +199,7 @@
                         "id",
                         "created_date",
                         "supplier",
-                        "",
+                        "total",
                         "status"
                     ],
                     currentSortDir: "desc",
@@ -266,13 +266,11 @@
             },
             watch: {},
             methods: {
-                update_total_price() {
-                    this.price_total = 0;
-                    for (product in this.product_list) {
-                        this.price_total += product.price * product.qty
-                    }
+                update_total_price(newQty, oldQty, price){
+                    this.price_total += price * (newQty - oldQty);
+                    product.receipt_qty= newQty  ;
                 },
-                save_inventory(exchange_note_id, note, status, importer, type, inventoryID) {
+                save_inventory(exchange_note_id, note, status, importer, type, inventoryID,price_total,product_list) {
 
                     var sites = {!! json_encode($receipt_notes) !!};
                     this.form.idExchange = exchange_note_id;
@@ -281,9 +279,10 @@
                     this.form.status = status;
                     this.form.type = type;
                     this.form.inventoryID = inventoryID;
+                    this.form.total = price_total;
+                    this.form.product_list = product_list;
 
-                    console.log('dataSource', this.form.inventoryID)
-
+                    console.log('dataSource', this.form.inventoryID);
 
                     this.form.post("{{ route('admin.exchange.update') }}")
                         .then((response) => {
