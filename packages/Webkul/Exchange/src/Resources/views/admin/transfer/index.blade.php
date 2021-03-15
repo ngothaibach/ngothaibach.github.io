@@ -30,8 +30,8 @@
                 <table class="table table-bordered">
                     <thead>
                     <tr>
-                        <th v-for="table_header in table_headers" class="grid_head">
-                            <p v-text="table_header"></p>
+                        <th v-for="(table_header,index) in table_headers" class="grid_head">
+                        <p  v-text="table_header" v-on:click = "sort(sort_list[index]);showArrow(index)" ></p><p :class="arrow" v-if="currentArrow == index" ></p>
                         </th>
                     </tr>
                     </thead>
@@ -165,6 +165,15 @@
                         </tr>
                     </tbody>
                 </table>
+                <div class="card-footer pb-0 pt-3">
+                    <sort-pagination 
+                    v-bind:items="form.listReceiptNotes"
+                    v-bind:pageSize = "perPage"
+                    v-bind:sortBy ="sortBy"
+                    v-bind:currentSortDir ="currentSortDir"
+                    @changePage="onChangePage">
+                    </sort-pagination>
+                </div>
             </div>
           </form>
         </script>
@@ -174,6 +183,21 @@
             template: '#vpt-list-receipt-notes-template',
             data() {
                 return {
+                     //pagination
+                     sort_list: [
+                        "id",
+                        "transfer_date",
+                        "from_inventory",
+                        "to_inventory",
+                        "status"
+                    ],
+                    currentSortDir: "desc",
+                    sortBy: "id",
+                    pageOfItems: [],
+                    perPage: 10,
+                    arrow: "custom-arrow-icon-down",
+                    currentArrow : 0,
+                    //pagination
                     form: new Form({
                         listReceiptNotes: {!! json_encode($receipt_notes) !!},
                         oldListReceip : {!! json_encode($receipt_notes) !!},
@@ -297,6 +321,26 @@
 
                     //this.showModal = true;
                 },
+                //pagination
+                onChangePage(pageOfItems) {
+                    // update page of items
+                    this.pageOfItems = pageOfItems;
+                },    
+                sort(name){
+                    if(this.sortBy != name){
+                        this.sortBy = name;
+                        this.currentSortDir = 'desc';
+                        this.arrow = 'custom-arrow-icon-down';
+                        
+                    }else{
+                        this.currentSortDir = this.currentSortDir==='asc'?'desc':'asc';
+                        this.arrow = this.arrow=== 'custom-arrow-icon-down' ? 'custom-arrow-icon-up' : 'custom-arrow-icon-down';
+                    }
+                },
+                showArrow(number) {
+                    this.currentArrow = number;
+                },
+                //pagination
                 closeModal() {
                     this.showModal = false;
                 }

@@ -202,8 +202,8 @@
                         "",
                         "status"
                     ],
-                    currentSortDir: "",
-                    sortBy: "",
+                    currentSortDir: "desc",
+                    sortBy: "id",
                     pageOfItems: [],
                     perPage: 10,
                     arrow: "custom-arrow-icon-down",
@@ -321,7 +321,8 @@
                 sort(name){
                     if(this.sortBy != name){
                         this.sortBy = name;
-                        this.currentSortDir = 'asc';
+                        this.currentSortDir = 'desc';
+                        this.arrow = 'custom-arrow-icon-down';
                         
                     }else{
                         this.currentSortDir = this.currentSortDir==='asc'?'desc':'asc';
