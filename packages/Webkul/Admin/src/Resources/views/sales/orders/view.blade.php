@@ -457,16 +457,9 @@
                                                     @endif
                                                 </td>
                                                 <td>-</td>
-                                                <td>{{ core()->formatBasePrice($order->discount_amount) }}</td>
+                                                <td>-{{ core()->formatBasePrice($order->discount_amount) }}</td>
                                             </tr>
                                         @endif
-
-                                        <tr class="border">
-                                            <td>{{ __('admin::app.sales.orders.tax') }}</td>
-                                            {{-- <td>Thuế</td> --}}
-                                            <td>-</td>
-                                            <td>{{ core()->formatBasePrice($order->base_tax_amount) }}</td>
-                                        </tr>
 
                                         @if($order->collection_diff > 0)
                                             <tr>
@@ -478,6 +471,15 @@
                                             </tr>
                                         @endif
 
+                                        <tr class="border">
+                                            <td>{{ __('admin::app.sales.orders.tax') }}</td>
+                                            {{-- <td>Thuế</td> --}}
+                                            <td>-</td>
+                                            <td>{{ core()->formatBasePrice($order->base_tax_amount) }}</td>
+                                        </tr>
+
+                                        
+
 
                                         <tr class="bold">
                                             <td>{{ __('admin::app.sales.orders.grand-total') }}</td>
@@ -486,11 +488,11 @@
                                             <td>{{ core()->formatBasePrice($order->base_grand_total) }}</td>
                                         </tr>
 
-                                        {{-- <tr class="bold">
+                                        <tr class="bold">
                                             <td>{{ __('admin::app.sales.orders.total-paid') }}</td>
                                             <td>-</td>
                                             <td>{{ core()->formatBasePrice($order->base_grand_total_invoiced) }}</td>
-                                        </tr> --}}
+                                        </tr>
 
                                         <tr class="bold">
                                             <td>{{ __('admin::app.sales.orders.total-refunded') }}</td>

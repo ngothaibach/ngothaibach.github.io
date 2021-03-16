@@ -35,7 +35,7 @@ return [
     'category' => 'Danh mục',
 
     'common' => [
-        'no-result-found' => 'We could not find any records.',
+        'no-result-found' => 'Không tìm thấy bản ghi.',
         'country' => 'Quốc gia',
         'state' => 'State',
         'true' => 'True',
@@ -191,9 +191,9 @@ return [
         'grand-total' => 'Grand Total',
         'order-date' => 'Ngày mua',
         'channel-name' => 'Channel Name',
-        'billed-to' => 'Billed To',
+        'billed-to' => 'Đơn của',
         'shipped-to' => 'Shipped To',
-        'order-id' => 'Order Id',
+        'order-id' => 'Id đơn hàng',
         'invoice-date' => 'Invoice Date',
         'total-qty' => 'Tổng số lượng',
         'inventory-source' => 'Kho',
@@ -218,8 +218,8 @@ return [
         'usage-throttle' => 'Usage Times',
         'for-guest' => 'For Guest',
         'order_number' => 'Order Number',
-        'refund-date' => 'Refund Date',
-        'refunded' => 'Refunded',
+        'refund-date' => 'Ngày hoàn trả',
+        'refunded' => 'Số tiền hoàn',
         'start' => 'Start',
         'end' => 'End',
         'active' => 'Kích hoạt',
@@ -344,7 +344,7 @@ return [
             'order-status-closed' => 'Đóng',
             'order-status-fraud' => 'Fraud',
             'order-status-pending' => 'Dừng',
-            'order-status-pending-payment' => 'Pending Payment',
+            'order-status-pending-payment' => 'Dừng thanh toán',
             'order-status-processing' => 'Đang xử lý',
             'order-status-success' => 'Hoàn thành',
             'channel' => 'Kênh',
@@ -382,7 +382,7 @@ return [
             'tax-amount' => 'Tiền thuế',
             'discount-amount' => 'Tiền khuyến mại',
             'grand-total' => 'Tổng cộng',
-            'total-paid' => 'Tổng chi trả',
+            'total-paid' => 'Tổng hóa đơn',
             'total-refunded' => 'Tổng tiền hoàn lại',
             'total-due' => 'Total Due',
             'cancel-confirm-msg' => 'Bạn có muốn hủy đơn hàng lại ?',
@@ -449,7 +449,7 @@ return [
         ],
 
         'refunds' => [
-            'title' => 'Refunds',
+            'title' => 'Hoàn trả',
             'id' => 'Id',
             'add-title' => 'Tạo hoàn tiền',
             'save-btn-title' => 'Hoàn tiền',
@@ -461,14 +461,14 @@ return [
             'adjustment-fee' => 'Chỉnh sửa phí',
             'update-qty' => 'Cập nhật số lượng',
             'invalid-qty' => 'We found an invalid quantity to refund items.',
-            'refund-limit-error' => 'The most money available to refund is :amount.',
-            'refunded' => 'Refunded',
+            'refund-limit-error' => 'Số tiền nhiều nhất hiện có để hoàn lại là :amount.',
+            'refunded' => 'Hoàn lại',
             'date' => 'Ngày hoàn lại',
             'customer-name' => 'Tên khách hàng',
             'status' => 'Trạng thái',
             'action' => 'Thao tác',
-            'view-title' => 'Refund #:refund_id',
-            'invalid-refund-amount-error' => 'Refund amount should be non zero.'
+            'view-title' => 'Đơn hoàn #:refund_id',
+            'invalid-refund-amount-error' => 'Số lượng hoàn phải khác 0.'
 
         ]
     ],

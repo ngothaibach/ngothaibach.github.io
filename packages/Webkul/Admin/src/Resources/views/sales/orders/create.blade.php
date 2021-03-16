@@ -271,8 +271,14 @@
                 update_discount: function() {
                     if(this.form.discount_type == 1){
                         this.form.price_must_paid = this.form.price_total - this.form.discount ;
+                        if (this.form.customer_paid != 0){
+                            this.form.customer_remain = parseInt(this.form.customer_remain) + parseInt(this.form.discount); 
+                        }
                     } else {
                         this.form.price_must_paid = this.form.price_total - ((this.form.discount * this.form.price_total)/100) ;
+                        if (this.form.customer_paid != 0){
+                            this.form.customer_remain = parseInt(this.form.customer_remain) + parseInt((this.form.discount * this.form.price_total)/100); 
+                        }
                     }
                 },
                 fn_update_customer_paid: function () {

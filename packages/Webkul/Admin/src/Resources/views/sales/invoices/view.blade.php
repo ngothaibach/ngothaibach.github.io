@@ -172,9 +172,9 @@
                                         <th>{{ __('admin::app.sales.orders.qty') }}</th>
                                         <th>{{ __('admin::app.sales.orders.subtotal') }}</th>
                                         <th>{{ __('admin::app.sales.orders.tax-amount') }}</th>
-                                        @if ($invoice->base_discount_amount > 0)
+                                        {{-- @if ($invoice->base_discount_amount > 0)
                                             <th>{{ __('admin::app.sales.orders.discount-amount') }}</th>
-                                        @endif
+                                        @endif --}}
                                         <th>{{ __('admin::app.sales.orders.grand-total') }}</th>
                                     </tr>
                                 </thead>
@@ -207,11 +207,12 @@
 
                                             <td>{{ core()->formatBasePrice($item->base_tax_amount) }}</td>
 
-                                            @if ($invoice->base_discount_amount > 0)
+                                            {{-- @if ($invoice->base_discount_amount > 0)
                                                 <td>{{ core()->formatBasePrice($item->base_discount_amount) }}</td>
-                                            @endif
+                                            @endif --}}
 
-                                            <td>{{ core()->formatBasePrice($item->base_total + $item->base_tax_amount - $item->base_discount_amount) }}</td>
+                                            {{-- <td>{{ core()->formatBasePrice($item->base_total + $item->base_tax_amount - $item->base_discount_amount) }}</td> --}}
+                                            <td>{{ core()->formatBasePrice($item->base_total + $item->base_tax_amount) }}</td>
                                         </tr>
                                     @endforeach
 
@@ -242,7 +243,7 @@
                                 <tr>
                                     <td>{{ __('admin::app.sales.orders.discount') }}</td>
                                     <td>-</td>
-                                    <td>{{ core()->formatBasePrice($invoice->base_discount_amount) }}</td>
+                                    <td>-{{ core()->formatBasePrice($invoice->base_discount_amount) }}</td>
                                 </tr>
                             @endif
 

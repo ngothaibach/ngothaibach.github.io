@@ -332,6 +332,12 @@
                 </tr>
 
                 <tr>
+                    <td>Thu khác</td>
+                    <td>-</td>
+                    <td>@{{ refund.summary.collection_diff.formated_price }}</td>
+                </tr>
+
+                <tr>
                     <td>{{ __('admin::app.sales.refunds.refund-shipping') }}</td>
                     <td>-</td>
                     <td>
@@ -427,6 +433,7 @@
                                 this_this.$root.addFlashMessages()
                             } else {
                                 this_this.refund.summary = response.data;
+                                // alert('vao day roi');
                             }
                         })
                         .catch(function (error) {})
