@@ -160,7 +160,7 @@
                                                                                                                         <td v-text="product.price"></td>
                                                                                                                         <td>
                                                                                                                             <div class="col-sm-8">
-                                                                                                                                <input type="number" :value="product.receipt_qty" @change.lazy="update_total_price(parseInt($event.target.value),parseInt(product.receipt_qty),parseInt(product.price))"  class="form-control" :disabled="form.oldListReceip[index].status == 'temporary' ? false : true" >
+                                                                                                                            <input type="text" :value="product.receipt_qty" @change.lazy="update_total_price(parseInt($event.target.value),parseInt(product.receipt_qty),parseInt(product.price),index1)" class="form-control" :disabled="form.oldListReceip[index].status == 'temporary' ? false : true" >
                                                                                                                             </div>
                                                                                                                         </td>
                                                                                                                     </tr>
@@ -168,7 +168,7 @@
                                                                                                             </table>
                                                                                                             <span class="font-weight-bold">Tổng giá trị:</span> <span class="text-danger font-weight-bold" v-text="price_total"></span>
                                                                                                             <div class="text-right">
-                                                                                                                <button type="button" class="btn btn-success" v-on:click="save_inventory(item.id,item.note,item.status,item.importer,item.type,item.inventoryID,price_total,product_list)" :disabled="form.oldListReceip[index].status == 'temporary' ? false : true" >Lưu</button>
+                                                                                                                <button type="button" class="btn btn-success" v-on:click="save_inventory(item.id,item.note,item.status,item.importer,item.type,item.inventoryID,price_total)" :disabled="form.oldListReceip[index].status == 'temporary' ? false : true" >Lưu</button>
                                                                                                             </div>
                                                                                                         </div>
                                                                                                     </div>
@@ -266,9 +266,10 @@
             },
             watch: {},
             methods: {
-                update_total_price(newQty, oldQty, price){
+                update_total_price(newQty, oldQty, price,pos){
                     this.price_total += price * (newQty - oldQty);
-                    product.receipt_qty= newQty  ;
+                    this.product_list[pos].receipt_qty = newQty;
+                    this.product_list.push();
                 },
                 save_inventory(exchange_note_id, note, status, importer, type, inventoryID,price_total,product_list) {
 
@@ -280,7 +281,6 @@
                     this.form.type = type;
                     this.form.inventoryID = inventoryID;
                     this.form.total = price_total;
-                    this.form.product_list = product_list;
 
                     console.log('dataSource', this.form.inventoryID);
 

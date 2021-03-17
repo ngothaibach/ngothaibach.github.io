@@ -386,9 +386,7 @@ class ExchangeController extends Controller
                 ['exchange_note_id', $id ],
                 ['id',$product['id'] ],
             ])
-            ->update(['receipt_qty' => $product['receipt_qty']],
-                     ['transfer_qty' => $product['transfer_qty']]
-            );
+            ->update(['receipt_qty' => $product['receipt_qty']],);
              // cập nhật số lượng trong kho
             if($status == 'received'){
                 $productInventory = $this->productInventoryRepository->where('inventory_source_id', '=', $inventoryID )->where('product_id', '=', $product['product_id'])
