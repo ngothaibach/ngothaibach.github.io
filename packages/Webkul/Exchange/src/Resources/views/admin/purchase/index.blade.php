@@ -271,7 +271,7 @@
                     this.product_list[pos].receipt_qty = newQty;
                     this.product_list.push();
                 },
-                save_inventory(exchange_note_id, note, status, importer, type, inventoryID,price_total,product_list) {
+                save_inventory(exchange_note_id, note, status, importer, type, inventoryID,price_total) {
 
                     var sites = {!! json_encode($receipt_notes) !!};
                     this.form.idExchange = exchange_note_id;
