@@ -25,6 +25,7 @@ import Debounce from './directives/debounce';
 import OverlayLoader from './components/overlay-loader';
 import VTooltip from 'v-tooltip';
 import Datepicker from 'vuejs-datepicker';
+import SortPagination from './components/sort-pagination';
 //Import v-from
 import { Form, HasError, AlertError } from 'vform'
 window.Form = Form;
@@ -62,6 +63,7 @@ Vue.component("time-component", TimeComponent);
 Vue.component('swatch-picker', SwatchPicker);
 Vue.directive('debounce', Debounce);
 Vue.component('overlay-loader', OverlayLoader);
+Vue.component('sort-pagination', SortPagination);
 Vue.filter('truncate', function (value, limit, trail) {
 	if (! value)
         value = '';
