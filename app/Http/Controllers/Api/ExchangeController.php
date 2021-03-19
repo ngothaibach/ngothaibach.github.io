@@ -193,10 +193,16 @@ class ExchangeController extends Controller
                 }
             }
         }
+
+        // $filename = "userUpdate.jpg";
+        // $path = $request->file('images')->move(public_path("/"),$filename);
+        // $photoURL = url('/'.$filename);
+
+
         $data1 = [
             "channel"=> $request->channel,
             "locale"=> $request->locale,
-            // "_method"=> $request->_method,
+            "sku" => $product['sku'],
             "product_number"=> $request->product_number,
             "name"=> $request->name,
             "url_key"=> $request->url_key,
@@ -206,15 +212,13 @@ class ExchangeController extends Controller
             "price"=> $request->price,
             "cost"=> $request->cost,
             "inventories" => json_decode($request->inventories),
-            "images" => [
-                "0" => "https://scontent.fhan5-7.fna.fbcdn.net/v/t1.0-9/54729419_2238982889750879_76837982832689152_o.png?_nc_cat=100&ccb=1-3&_nc_sid=09cbfe&_nc_ohc=0SCh36nA-XcAX8SUU7e&_nc_ht=scontent.fhan5-7.fna&oh=3086523d7c420440aadea0a2456decc9&oe=6075E036"
-            ]
+            "images" => $request->file('images')
         ];
-        $product1 = $this->productRepository->update($data1, $id);
 
-        
+        $product1 = $this->productRepository->update($data1, $id);
+        // var_dump($request->file('images'));
         return response()->json(
-            ['id' => $request->all() ]
+            ['id' =>$request->all()]
         );
     }
 
@@ -268,7 +272,7 @@ class ExchangeController extends Controller
         $data1 = [
             "channel"=> $request->channel,
             "locale"=> $request->locale,
-            // "_method"=> $request->_method,
+            "_method"=> $request->_method,
             "product_number"=> $request->product_number,
             "name"=> $request->name,
             "url_key"=> $request->url_key,
@@ -278,10 +282,10 @@ class ExchangeController extends Controller
             "price"=> $request->price,
             "cost"=> $request->cost,
             "inventories" => json_decode($request->inventories),
-            "images" => [
-                "0" => "https://scontent.fhan5-7.fna.fbcdn.net/v/t1.0-9/54729419_2238982889750879_76837982832689152_o.png?_nc_cat=100&ccb=1-3&_nc_sid=09cbfe&_nc_ohc=0SCh36nA-XcAX8SUU7e&_nc_ht=scontent.fhan5-7.fna&oh=3086523d7c420440aadea0a2456decc9&oe=6075E036"
-            ]
+            // "channels" => $request->channels,
+            "images" =>  $request->file('images')
         ];
+        // var_dump($request->file('images'));
         $product = $this->productRepository->update($data1, $id);
 
 
