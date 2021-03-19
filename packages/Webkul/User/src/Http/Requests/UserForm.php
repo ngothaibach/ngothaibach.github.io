@@ -32,6 +32,7 @@ class UserForm extends FormRequest
             'password_confirmation' => 'nullable|required_with:password|same:password',
             'status'   => 'sometimes',
             'role_id'  => 'required',
+            'inventory_id' => 'nullable'
         ];
 
         if ($this->method() == 'PUT') {

@@ -160,7 +160,7 @@
                                                                                                                         <td v-text="product.price"></td>
                                                                                                                         <td>
                                                                                                                             <div class="col-sm-8">
-                                                                                                                            <input type="text" :value="product.receipt_qty" @change.lazy="update_total_price(parseInt($event.target.value),parseInt(product.receipt_qty),parseInt(product.price),index1)" class="form-control" :disabled="form.oldListReceip[index].status == 'temporary' ? false : true" >
+                                                                                                                            <input type="text" :value="product.receipt_qty" @change.lazy="update_total_price(parseInt($event.target.value),product.receipt_qty,product.price,index1)" class="form-control" :disabled="form.oldListReceip[index].status == 'temporary' ? false : true" >
                                                                                                                             </div>
                                                                                                                         </td>
                                                                                                                     </tr>
@@ -271,7 +271,7 @@
                     this.product_list[pos].receipt_qty = newQty;
                     this.product_list.push();
                 },
-                save_inventory(exchange_note_id, note, status, importer, type, inventoryID,price_total,product_list) {
+                save_inventory(exchange_note_id, note, status, importer, type, inventoryID,price_total) {
 
                     var sites = {!! json_encode($receipt_notes) !!};
                     this.form.idExchange = exchange_note_id;

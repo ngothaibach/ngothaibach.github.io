@@ -62,13 +62,21 @@
                     <accordian :title="'{{ __('admin::app.users.users.status-and-role') }}'" :active="true">
                         <div slot="body">
                             <div class="control-group" :class="[errors.has('role_id') ? 'has-error' : '']">
-                                <label for="role" class="required">{{ __('admin::app.users.users.role') }}</label>
-                                <select v-validate="'required'" class="control" name="role_id" data-vv-as="&quot;{{ __('admin::app.users.users.role') }}&quot;">
+                                <label  class="required">{{ __('admin::app.users.users.role') }}</label>
+                                <select v-validate="'required'" class="control" name="role_id" v-model="role" data-vv-as="&quot;{{ __('admin::app.users.users.role') }}&quot;">
                                     @foreach ($roles as $role)
                                         <option value="{{ $role->id }}">{{ $role->name }}</option>
                                     @endforeach
                                 </select>
                                 <span class="control-error" v-if="errors.has('role_id')">@{{ errors.first('role_id') }}</span>
+                            </div>
+                            <div class="control-group" v-if="role != 1">
+                                <label >Chi nhánh</label>
+                                <select class="control" name="inventory_id">
+                                    @foreach ($inventory_list as $inventory)
+                                        <option value="{{ $inventory->id }}">{{ $inventory->name }}</option>
+                                    @endforeach
+                                </select>
                             </div>
 
                             <div class="control-group">
