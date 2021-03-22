@@ -7,6 +7,16 @@
 {{-- <link rel="stylesheet" href="{{ asset('vendor/webkul/admin/assets/css/admin.css') }}"> --}}
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <script src="/js/app.js"></script>
+<style>
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+    input[type="number"] {
+        -moz-appearance: textfield;
+    }
+</style>
 @section('content-wrapper')
     <vpt-receipt-note-form></vpt-receipt-note-form>
 @stop
@@ -112,7 +122,7 @@
                                 </select>
                             </div>
                             <div class="col-right">
-                                <input type="number" class="w3-input" v-model="form.discount" id="inputDiscount" v-on:change="update_discount" style="direction: rtl; width: 150px" onClick="this.select();">
+                                <input type="number" class="w3-input" v-model="form.discount" id="inputDiscount" v-on:change="update_discount" style="text-align: right; width: 150px" onClick="this.select();">
                             </div>
                         </div>
                     </div>
@@ -120,7 +130,7 @@
                         <div class="row_new">
                             Thu khác
                             <div class="col-right">
-                                <input type="number" class="w3-input" id="collection_diff" v-on:change="fn_update_collection_diff" style="direction: rtl; width: 150px" placeholder="0" onClick="this.select();">
+                                <input type="number" class="w3-input" id="collection_diff" v-on:change="fn_update_collection_diff" style="text-align: right; width: 150px" placeholder="0" onClick="this.select();">
                             </div> 
                         </div>
                     </div>
@@ -138,7 +148,7 @@
                         <div class="row_new">
                             Khách thanh toán
                             <div class="col-right">
-                                <input type="number" class="w3-input" id="customer_paid" placeholder="0"  v-on:change="fn_update_customer_paid" style="direction: rtl; width: 150px" onClick="this.select();">
+                                <input type="number" class="w3-input" id="customer_paid" placeholder="0" v-on:change="fn_update_customer_paid" style="text-align: right; width: 150px" onClick="this.select();">
                             </div> 
                         </div>
                     </div>

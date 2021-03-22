@@ -461,7 +461,7 @@
                                             </tr>
                                         @endif
 
-                                        @if($order->collection_diff > 0)
+                                        @if($order->collection_diff != 0)
                                             <tr>
                                                 <td>
                                                     Thu khác

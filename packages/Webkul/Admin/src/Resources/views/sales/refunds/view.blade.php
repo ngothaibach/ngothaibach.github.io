@@ -298,7 +298,7 @@
                                 </tr>
                             @endif
 
-                            @if ($refund->collection_diff > 0)
+                            @if ($refund->collection_diff != 0)
                                 <tr>
                                     <td>Thu khác</td>
                                     <td>-</td>

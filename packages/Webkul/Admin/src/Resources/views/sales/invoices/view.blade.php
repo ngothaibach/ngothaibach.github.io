@@ -247,7 +247,7 @@
                                 </tr>
                             @endif
 
-                            @if ($invoice->order->collection_diff > 0)
+                            @if ($invoice->order->collection_diff != 0)
                                 <tr>
                                     <td>Thu khác</td>
                                     <td>-</td>
