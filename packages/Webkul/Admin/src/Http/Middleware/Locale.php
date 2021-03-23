@@ -45,8 +45,6 @@ class Locale
             }
         }
 
-        // Always set vi for locale
-        app()->setLocale("vi");
         unset($request['admin_locale']);
 
         return $next($request);

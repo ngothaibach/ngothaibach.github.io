@@ -489,10 +489,8 @@ class ProductRepository extends Repository
     {
         return app(ProductFlatRepository::class)->scopeQuery(function ($query) use ($term) {
             $channel = request()->get('channel') ?: (core()->getCurrentChannelCode() ?: core()->getDefaultChannelCode());
-            error_log('Some message here.');
 
             $locale = request()->get('locale') ?: app()->getLocale();
-        
 
             return $query->distinct()
                 ->addSelect('product_flat.*', 
@@ -503,10 +501,7 @@ class ProductRepository extends Repository
                 ->where('products.type', 'simple')
                 ->where('product_flat.channel', $channel)
                 ->where('product_flat.locale', $locale)
-		->where(function($query) use ($term) {
-		    $query->where('products.sku', 'like', '%' . $term . '%')
-		    ->orWhere('product_flat.name', 'like', '%' . urldecode($term) . '%');
-		})
+                ->where('product_flat.name', 'like', '%' . urldecode($term) . '%')
                 ->orderBy('product_id', 'desc');
         })->get();
     }

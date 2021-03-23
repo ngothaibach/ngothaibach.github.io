@@ -17,18 +17,18 @@ class OrderDataGrid extends DataGrid
         $queryBuilder = DB::table('orders')
             ->leftJoin('addresses as order_address_shipping', function($leftJoin) {
                 $leftJoin->on('order_address_shipping.order_id', '=', 'orders.id')
-                        ->where('order_address_shipping.address_type', OrderAddress::ADDRESS_TYPE_SHIPPING);
+                         ->where('order_address_shipping.address_type', OrderAddress::ADDRESS_TYPE_SHIPPING);
             })
             ->leftJoin('addresses as order_address_billing', function($leftJoin) {
                 $leftJoin->on('order_address_billing.order_id', '=', 'orders.id')
-                        ->where('order_address_billing.address_type', OrderAddress::ADDRESS_TYPE_BILLING);
+                         ->where('order_address_billing.address_type', OrderAddress::ADDRESS_TYPE_BILLING);
             })
-            ->addSelect('orders.id','orders.increment_id', 'orders.base_sub_total', 'orders.base_grand_total', 'orders.created_at', 'channel_name', 'status', 'orders.customer_first_name', 'orders.customer_last_name');
-            // ->addSelect(DB::raw('CONCAT(' . DB::getTablePrefix() . 'order_address_billing.first_name, " ", ' . DB::getTablePrefix() . 'order_address_billing.last_name) as billed_to'))
-            // ->addSelect(DB::raw('CONCAT(' . DB::getTablePrefix() . 'order_address_shipping.first_name, " ", ' . DB::getTablePrefix() . 'order_address_shipping.last_name) as shipped_to'));
+            ->addSelect('orders.id','orders.increment_id', 'orders.base_sub_total', 'orders.base_grand_total', 'orders.created_at', 'channel_name', 'status')
+            ->addSelect(DB::raw('CONCAT(' . DB::getTablePrefix() . 'order_address_billing.first_name, " ", ' . DB::getTablePrefix() . 'order_address_billing.last_name) as billed_to'))
+            ->addSelect(DB::raw('CONCAT(' . DB::getTablePrefix() . 'order_address_shipping.first_name, " ", ' . DB::getTablePrefix() . 'order_address_shipping.last_name) as shipped_to'));
 
-        // $this->addFilter('billed_to', DB::raw('CONCAT(' . DB::getTablePrefix() . 'order_address_billing.first_name, " ", ' . DB::getTablePrefix() . 'order_address_billing.last_name)'));
-        // $this->addFilter('shipped_to', DB::raw('CONCAT(' . DB::getTablePrefix() . 'order_address_shipping.first_name, " ", ' . DB::getTablePrefix() . 'order_address_shipping.last_name)'));
+        $this->addFilter('billed_to', DB::raw('CONCAT(' . DB::getTablePrefix() . 'order_address_billing.first_name, " ", ' . DB::getTablePrefix() . 'order_address_billing.last_name)'));
+        $this->addFilter('shipped_to', DB::raw('CONCAT(' . DB::getTablePrefix() . 'order_address_shipping.first_name, " ", ' . DB::getTablePrefix() . 'order_address_shipping.last_name)'));
         $this->addFilter('increment_id', 'orders.increment_id');
         $this->addFilter('created_at', 'orders.created_at');
 
@@ -45,10 +45,28 @@ class OrderDataGrid extends DataGrid
             'sortable'   => true,
             'filterable' => true,
         ]);
-        
+
+        $this->addColumn([
+            'index'      => 'base_sub_total',
+            'label'      => trans('admin::app.datagrid.sub-total'),
+            'type'       => 'price',
+            'searchable' => false,
+            'sortable'   => true,
+            'filterable' => true,
+        ]);
+
+        $this->addColumn([
+            'index'      => 'base_grand_total',
+            'label'      => trans('admin::app.datagrid.grand-total'),
+            'type'       => 'price',
+            'searchable' => false,
+            'sortable'   => true,
+            'filterable' => true,
+        ]);
+
         $this->addColumn([
             'index'      => 'created_at',
-            'label'      => 'Thời gian',
+            'label'      => trans('admin::app.datagrid.order-date'),
             'type'       => 'datetime',
             'sortable'   => true,
             'searchable' => false,
@@ -56,55 +74,17 @@ class OrderDataGrid extends DataGrid
         ]);
 
         $this->addColumn([
-            'index'      => 'customer_first_name',
-            'label'      => 'Họ',
+            'index'      => 'channel_name',
+            'label'      => trans('admin::app.datagrid.channel-name'),
             'type'       => 'string',
+            'sortable'   => true,
             'searchable' => true,
-            'sortable'   => true,
             'filterable' => true,
         ]);
-
-        $this->addColumn([
-            'index'      => 'customer_last_name',
-            'label'      => 'Tên',
-            'type'       => 'string',
-            'searchable' => true,
-            'sortable'   => true,
-            'filterable' => true,
-        ]);
-
-        // $this->addColumn([
-        //     'index'      => 'base_sub_total',
-        //     'label'      => trans('admin::app.datagrid.sub-total'),
-        //     'type'       => 'price',
-        //     'searchable' => false,
-        //     'sortable'   => true,
-        //     'filterable' => true,
-        // ]);
-
-        $this->addColumn([
-            'index'      => 'base_grand_total',
-            'label'      => 'Số tiền',
-            'type'       => 'price',
-            'searchable' => false,
-            'sortable'   => true,
-            'filterable' => true,
-        ]);
-
-        
-
-        // $this->addColumn([
-        //     'index'      => 'channel_name',
-        //     'label'      => trans('admin::app.datagrid.channel-name'),
-        //     'type'       => 'string',
-        //     'sortable'   => true,
-        //     'searchable' => true,
-        //     'filterable' => true,
-        // ]);
 
         $this->addColumn([
             'index'      => 'status',
-            'label'      => 'Trạng thái',
+            'label'      => trans('admin::app.datagrid.status'),
             'type'       => 'string',
             'sortable'   => true,
             'searchable' => true,
@@ -129,25 +109,23 @@ class OrderDataGrid extends DataGrid
             },
         ]);
 
-        // $this->addColumn([
-        //     'index'      => 'billed_to',
-        //     'label'      => trans('admin::app.datagrid.billed-to'),
-        //     'type'       => 'string',
-        //     'searchable' => true,
-        //     'sortable'   => true,
-        //     'filterable' => true,
-        // ]);
+        $this->addColumn([
+            'index'      => 'billed_to',
+            'label'      => trans('admin::app.datagrid.billed-to'),
+            'type'       => 'string',
+            'searchable' => true,
+            'sortable'   => true,
+            'filterable' => true,
+        ]);
 
-        // $this->addColumn([
-        //     'index'      => 'shipped_to',
-        //     'label'      => trans('admin::app.datagrid.shipped-to'),
-        //     'type'       => 'string',
-        //     'searchable' => true,
-        //     'sortable'   => true,
-        //     'filterable' => true,
-        // ]);
-
-        
+        $this->addColumn([
+            'index'      => 'shipped_to',
+            'label'      => trans('admin::app.datagrid.shipped-to'),
+            'type'       => 'string',
+            'searchable' => true,
+            'sortable'   => true,
+            'filterable' => true,
+        ]);
     }
 
     public function prepareActions()
