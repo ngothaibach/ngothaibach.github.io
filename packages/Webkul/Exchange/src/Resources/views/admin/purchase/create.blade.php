@@ -42,9 +42,7 @@
                                                                                     <div id="app" >
                                                                                         <div >
                                                                                           <div>
-                                                                                            <div class="panel-heading"> 
-                                                                                              <h4>Nhập file excel( *.csv)</h4>
-                                                                                            </div>
+                                                                                            <br>
                                                                                             <div class="panel-body">
                                                                                               <div class="form-group" >
                                                                                                 <div class="col-sm-12">
@@ -55,7 +53,7 @@
                                                                                                     margin-left : 40%;
                                                                                                     "
                                                                                                     >
-                                                                                                        <i class="fa fa-cloud-upload"></i> Chọn file excel
+                                                                                                        <i class="fa fa-cloud-upload"></i>Nhập dữ liệu từ Excel
                                                                                                     </label>
                                                                                                   <input type="file" id="csv_file" name="csv_file" class="form-control" v-on:change="loadCSV($event)" style="display: none;">
                                                                                                 </div>

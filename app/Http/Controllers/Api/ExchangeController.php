@@ -92,71 +92,9 @@ class ExchangeController extends Controller
      */
     public function store(Request $request)
     {
-        //
-        // $date = Carbon::now()->toISOString();
-        // $exchangeNoteData = [
-        //     'status' => "temporary",
-        //     'type' => "receipt",
-        //     'created_user_id' => 1,
-        //     'receipt_user_id' => 1,
-        //     'supplier_id' => $request->supplier_id,
-        //     // 'from_inventory_source_id' => 1,
-        //     'to_inventory_source_id' => $request->to_inventory_source_id,
-        //     'from_inventory_source_id' =>  $request->from_inventory_source_id,
-        //     'created_date' =>$date,
-        //     'updated_date' =>$date,
-        //     'transfer_date' =>$date,
-        //     'receipt_date' =>$date,
-        //     'note' => $request->notes,
-        // ];
-
-        // $exchangeNote = $this->exchangeNoteRepository->create($exchangeNoteData);
-        //         $productExchangeData = [
-
-        //             'exchange_note_id' => $exchangeNote->id,
-        //             'product_id' => $request->product_id,
-        //             'transfer_qty' => $request->transfer_qty,
-        //             'receipt_qty' => $request->receipt_qty,
-        //             'price' => $request->price,
-        //             'discount' => 0,
-        //         ];
-        //         $productExchange = $this->productExchangeNoteRepository->create($productExchangeData);
-          
-        // return response()->json(
-        //     [
-        //         'success' => true,
-        //         'message' => 'Save susscessfully',
-        //         'tai smile' =>$productExchangeData,
-        //         'minh smile' => Carbon::now()->toISOString()
-        //     ]
-        // );
-
-
-         
-            // if (! request()->get('family')
-            //     && ProductType::hasVariants(request()->input('type'))
-            //     && request()->input('sku') != ''
-            // ) {
-            //     return redirect(url()->current() . '?type=' . request()->input('type') . '&family=' . request()->input('attribute_family_id') . '&sku=' . request()->input('sku'));
-            // }
-
-            // if (ProductType::hasVariants(request()->input('type'))
-            //     && (! request()->has('super_attributes')
-            //         || ! count(request()->get('super_attributes')))
-            // ) {
-            //     session()->flash('error', trans('admin::app.catalog.products.configurable-error'));
-
-            //     return back();
-            // }
-
-            // $this->validate(request(), [
-            //     'type'                => 'required',
-            //     'attribute_family_id' => 'required',
-            //     'sku'                 => ['required', 'unique:products,sku', new Slug],
-            // ]);
-
-        // Set default values
-        // request()->all()['status'] = "Active";
+        $codeOld = DB::table('products')->where('sku',$request->sku)->first();
+        if(!$codeOld){
+        if($request->_token == 'bIHy1ZvVOkZOVYlf0aGQtwxNwfXwLQjJ0ky7JRWM'){
 
         $product = $this->productRepository->create( [
             // '_token'              => 'gvJCsaanpxNrVuUJimDudaWapb4AOUXpk8HWK22k',
@@ -212,14 +150,25 @@ class ExchangeController extends Controller
             "price"=> $request->price,
             "cost"=> $request->cost,
             "inventories" => json_decode($request->inventories),
-            "images" => $request->file('images')
+            "images" => $request->file('images'),
+            "channels" => json_decode($request->channels),
+            "categories" =>  json_decode($request->categories),
+            "_token" => $request->_token,
         ];
-
-        $product1 = $this->productRepository->update($data1, $id);
-        // var_dump($request->file('images'));
-        return response()->json(
-            ['id' =>$request->all()]
-        );
+            $product1 = $this->productRepository->update($data1, $id);
+            // var_dump($request->file('images'));
+            return response()->json(
+                [
+                'id' => $id,
+                'message' =>$data1,
+                ]
+            );
+        }else{
+            return response()->json(['message' => "HTTP Error 401 - Unauthorized"], 401);
+        }
+    }else{
+        return response()->json(['message' => "HTTP Error 409 - Inventory already exists"], 409);
+    }
     }
 
     /**
@@ -243,6 +192,7 @@ class ExchangeController extends Controller
      */
     public function update(Request $request, $id)
     {
+        if($request->_token == 'bIHy1ZvVOkZOVYlf0aGQtwxNwfXwLQjJ0ky7JRWM'){
         $productAttributes = $this->productRepository->findOrFail($id);
 
         $data = request()->all();
@@ -282,17 +232,19 @@ class ExchangeController extends Controller
             "price"=> $request->price,
             "cost"=> $request->cost,
             "inventories" => json_decode($request->inventories),
-            // "channels" => $request->channels,
-            "images" =>  $request->file('images')
+            "channels" => json_decode($request->channels),
+            "categories" =>  json_decode($request->categories),
+            "images" =>  $request->file('images'),
+            "_token" => $request->_token,
         ];
-        // var_dump($request->file('images'));
-        $product = $this->productRepository->update($data1, $id);
 
+            $product = $this->productRepository->update($data1, $id);
 
-        // session()->flash('success', trans('admin::app.response.update-success', ['name' => 'Product']));
-
-        // return redirect()->route($this->_config['redirect']);
-             return response()->json(['message' => $data], 200);
+            return response()->json(['message' => $id], 200);
+        }else{
+            return response()->json(['message' => "HTTP Error 401 - Unauthorized"], 401);
+        }
+       
 
     }
 
