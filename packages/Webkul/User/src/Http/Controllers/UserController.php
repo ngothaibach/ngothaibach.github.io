@@ -175,7 +175,6 @@ class UserController extends Controller
     public function destroy($id)
     {
         $user = $this->adminRepository->findOrFail($id);
-
         if ($this->adminRepository->count() == 1) {
             session()->flash('error', trans('admin::app.response.last-delete-error', ['name' => 'Admin']));
         } else {
@@ -194,7 +193,7 @@ class UserController extends Controller
 
                 Event::dispatch('user.admin.delete.after', $id);
 
-                return response()->json(['message' => true], 200);
+                return redirect()->route('admin.users.index');
             } catch (Exception $e) {
                 session()->flash('error', trans('admin::app.response.delete-failed', ['name' => 'Admin']));
             }
