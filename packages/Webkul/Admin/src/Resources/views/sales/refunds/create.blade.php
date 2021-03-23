@@ -433,7 +433,7 @@
                                 this_this.$root.addFlashMessages()
                             } else {
                                 this_this.refund.summary = response.data;
-                                // alert('vao day roi');
+                                // console.log(response.data);
                             }
                         })
                         .catch(function (error) {})

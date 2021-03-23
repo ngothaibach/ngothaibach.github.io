@@ -269,6 +269,7 @@ class RefundRepository extends Repository
         $summary['shipping']['price'] += $order->base_shipping_invoiced - $order->base_shipping_refunded - $order->base_shipping_discount_amount;
 
         $summary['collection_diff']['price'] = $order->collection_diff;
+        $summary['discount']['price'] = $order->discount_amount;
 
         $summary['grand_total']['price'] += $summary['subtotal']['price'] + $summary['tax']['price'] + $summary['shipping']['price'] - $summary['discount']['price'] + $summary['collection_diff']['price'];
 
