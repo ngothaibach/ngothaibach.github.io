@@ -10,7 +10,7 @@
             <div class="page-title">
                 <h1>{{ __('admin::app.catalog.products.title') }}</h1>
             </div>
-
+            @if(auth()->guard('admin')->user()->role['id'] != 2)
             <div class="page-action">
                 <div class="export-import" v-on:click="showModal('downloadDataGrid')">
                     <i class="export-icon"></i>
@@ -23,6 +23,7 @@
                     {{ __('admin::app.catalog.products.add-product-btn-title') }}
                 </a>
             </div>
+            @endif
         </div>
 
         {!! view_render_event('bagisto.admin.catalog.products.list.before') !!}
