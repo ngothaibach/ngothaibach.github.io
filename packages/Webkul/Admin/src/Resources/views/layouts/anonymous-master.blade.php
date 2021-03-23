@@ -76,7 +76,7 @@
 
             <flash-wrapper ref='flashes'></flash-wrapper>
 
-            <div class="center-box">
+            <div class="center-box vpt-login-page">
 
                 <div class="adjacent-center">
 
