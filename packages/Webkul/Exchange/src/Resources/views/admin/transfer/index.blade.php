@@ -11,11 +11,13 @@
             <div class="page-title">
                 <h1>{{ __('admin::app.vpt.inventory.transfer-note') }}</h1>
             </div>
+            @if($role_id != 2)
             <div class="page-action">
                 <a href="{{ route('admin.exchange.transfer.create') }}" class="btn btn-lg btn-primary">
                     {{ __('admin::app.vpt.inventory.transfer') }}
                 </a>
             </div>
+            @endif
         </div>
         <div class="page-content">
             <vpt-list-receipt-notes></vpt-list-receipt-notes>
@@ -97,7 +99,7 @@
                                                 <div class="form-group row">
                                                     <label class="col-sm-4 col-form-label">Trạng thái</label>
                                                     <div class="col-sm-8">
-                                                        <select v-model="form.listReceiptNotes[index].status" class="form-control" :disabled="form.oldListReceip[index].status == 'temporary' ? false : form.oldListReceip[index].status == 'transfering' ? false : true">
+                                                        <select v-model="form.listReceiptNotes[index].status" class="form-control" :disabled="role_id == 2 ? true : form.oldListReceip[index].status == 'temporary' ? false : form.oldListReceip[index].status == 'transfering' ? false : true">
                                                                 <option v-for="item in form.status" :value="item.key" v-text="item.value">
                                                                 </option>
                                                             </select>
@@ -116,7 +118,7 @@
                                                 <div class="form-group row">
                                                     <label class="col-sm-4 col-form-label">Ngày nhận</label>
                                                     <div class="col-sm-8">
-                                                        <vuejs-datepicker v-model="item.receipt_date" :disabled="form.oldListReceip[index].status == 'temporary' ? false : form.oldListReceip[index].status == 'transfering' ? false : true"></vuejs-datepicker>
+                                                        <vuejs-datepicker v-model="item.receipt_date" :disabled="role_id == 2 ? true : form.oldListReceip[index].status == 'temporary' ? false : form.oldListReceip[index].status == 'transfering' ? false : true"></vuejs-datepicker>
                                                     </div>
                                                 </div>
                                             </div>
@@ -126,7 +128,7 @@
                                                 <div class="form-group row">
                                                     <label class="col-sm-4 col-form-label">Ghi chú</label>
                                                     <div class="col-sm-8">
-                                                        <textarea class="form-control" id="exampleFormControlTextarea1" v-model="item.note" :disabled="form.oldListReceip[index].status == 'temporary' ? false : form.oldListReceip[index].status == 'transfering' ? false : true"></textarea>
+                                                        <textarea class="form-control" id="exampleFormControlTextarea1" v-model="item.note" :disabled="role_id == 2 ? true : form.oldListReceip[index].status == 'temporary' ? false : form.oldListReceip[index].status == 'transfering' ? false : true"></textarea>
                                                     </div>
                                                 </div>
                                             </div>
@@ -149,7 +151,7 @@
                                                 <td v-text="product.price"></td>
                                                 <td>
                                                     <div class="col-sm-8">
-                                                        <input type="text" v-model="product_list[index1].transfer_qty" class="form-control" :disabled="form.oldListReceip[index].status == 'temporary' ? false : form.oldListReceip[index].status == 'transfering' ? false : true">
+                                                        <input type="text" v-model="product_list[index1].transfer_qty" class="form-control" :disabled="role_id == 2 ? true : form.oldListReceip[index].status == 'temporary' ? false : form.oldListReceip[index].status == 'transfering' ? false : true">
                                                     </div>
                                                 </td>
                                             </tr>
@@ -157,7 +159,7 @@
                                     </table>
                                     <span class="font-weight-bold">Tổng giá trị:</span> <span class="text-danger font-weight-bold" v-text="price_total"></span>
                                     <div class="text-right">
-                                        <button type="button" class="btn btn-success" v-on:click="save_inventory(item.id,item.note,item.status,item.importer,item.type,item.from_inventory_id,item.receipt_date)" :disabled="form.oldListReceip[index].status == 'temporary' ? false : form.oldListReceip[index].status == 'transfering' ? false : true" >Lưu</button>
+                                        <button type="button" class="btn btn-success" v-on:click="save_inventory(item.id,item.note,item.status,item.importer,item.type,item.from_inventory_id,item.receipt_date)" :disabled="role_id == 2 ? true : form.oldListReceip[index].status == 'temporary' ? false : form.oldListReceip[index].status == 'transfering' ? false : true" >Lưu</button>
                                     </div>
                                 </div>
                             </div>
@@ -255,6 +257,7 @@
                     product_list: null,
                     selected_transfer: null,
                     price_total: null,
+                    role_id: {!! json_encode($role_id)!!}
                 };
             },
             watch: {},

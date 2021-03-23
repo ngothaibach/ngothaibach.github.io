@@ -140,7 +140,7 @@ class RoleController extends Controller
 
                 session()->flash('success', trans('admin::app.response.delete-success', ['name' => 'Role']));
 
-                return response()->json(['message' => true], 200);
+                return redirect()->route('admin.roles.index');
             } catch(\Exception $e) {
                 session()->flash('error', trans('admin::app.response.delete-failed', ['name' => 'Role']));
             }
