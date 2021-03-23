@@ -67,12 +67,12 @@
                     $hidden_attribute_groups = array(
                         "Meta Description",
                         "Shipping"
-                    );
+                    );                    
                     $hidden_attributes = array(
-                        "guest_checkout",
-                        "size",
-                        "color",
-                        "depth",
+                        "guest_checkout", 
+                        "size", 
+                        "color", 
+                        "depth", 
                         "height",
                         "width",
                         "meta_keywords",
@@ -107,7 +107,7 @@
                                 @foreach ($customAttributes as $attribute)
 
                                     <?php
-                                        if ($attribute->code == "status") {
+                                        if ($attribute->code == "status") { 
                                             ?>
                                             <input type="hidden"  id="{{ $attribute->code }}" name="{{ $attribute->code }}" value="1">
                                             <?php
@@ -115,7 +115,7 @@
                                         if (in_array($attribute->code, $hidden_attributes)) {
                                             continue;
                                         }
-
+                                        
                                         if ($attribute->code == 'guest_checkout' && ! core()->getConfigData('catalog.products.guest-checkout.allow-guest-checkout')) {
                                             continue;
                                         }

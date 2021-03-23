@@ -224,7 +224,7 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
-        Maatwebsite\Excel\ExcelServiceProvider::class,
+
         /*
          * Package Service Providers...
          */
@@ -342,6 +342,5 @@ return [
         'Concord' => Konekt\Concord\Facades\Concord::class,
         'Helper'  => Konekt\Concord\Facades\Helper::class,
         'Debugbar' => Barryvdh\Debugbar\Facade::class,
-        'Excel' => Maatwebsite\Excel\Facades\Excel::class,
     ],
 ];

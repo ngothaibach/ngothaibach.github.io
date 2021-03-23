@@ -188,13 +188,7 @@ Route::group(['middleware' => ['web', 'admin_locale']], function () {
                 ])->name('admin.sales.orders.cancel');
 
                 Route::post('/orders/create/{order_id}', 'Webkul\Admin\Http\Controllers\Sales\OrderController@comment')->name('admin.sales.orders.comment');
-                
-                //minhpd tạo đơn hàng
-                Route::get('/admin/orders/create', 'Webkul\Admin\Http\Controllers\Sales\OrderController@create_orders')->defaults('_config', [
-                    'view' => 'admin::sales.orders.create',
-                ])->name('admin.sales.orders.create');
-                Route::post('admin/orders/store', 'Webkul\Admin\Http\Controllers\Sales\OrderController@store_orders')->name('admin.sales.orders.store');
-                //end minh
+
 
                 // Sales Invoices Routes
                 Route::get('/invoices', 'Webkul\Admin\Http\Controllers\Sales\InvoiceController@index')->defaults('_config', [

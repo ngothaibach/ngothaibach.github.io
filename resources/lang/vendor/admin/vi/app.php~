@@ -336,7 +336,7 @@ return [
             'info' => 'Information',
             'invoices' => 'Invoices',
             'shipments' => 'Shipments',
-            'order-and-account' => 'Đơn và tài khoản',
+            'order-and-account' => 'Order and Account',
             'order-info' => 'Order Information',
             'order-date' => 'Order Date',
             'order-status' => 'Order Status',
