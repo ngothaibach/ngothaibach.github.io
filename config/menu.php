@@ -15,7 +15,8 @@ return [
             'route' => 'exchange.admin.index',
             'sort' => 3,
             'icon-class' => 'cms-icon',
-        ],[
+        ],
+        [
             'key' => 'exchange.list_purchases',
             'name' => 'Nhập hàng',
             'route' => 'admin.exchange.purchase-order.list',
