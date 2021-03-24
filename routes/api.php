@@ -15,3 +15,4 @@ use Illuminate\Http\Request;
 Route::get('products', 'Api\ProductController@index')->name('products.index');
 
 Route::apiResource('exchange', 'Api\ExchangeController');
+Route::apiResource('inventory', 'Api\InventorySourceController');
