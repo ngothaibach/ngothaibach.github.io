@@ -7,6 +7,16 @@
 {{-- <link rel="stylesheet" href="{{ asset('vendor/webkul/admin/assets/css/admin.css') }}"> --}}
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <script src="/js/app.js"></script>
+<style>
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+    input[type="number"] {
+        -moz-appearance: textfield;
+    }
+</style>
 @section('content-wrapper')
     <vpt-receipt-note-form></vpt-receipt-note-form>
 @stop
@@ -98,7 +108,7 @@
                         <div class="row_new">
                             {{ __('admin::app.vpt.inventory.total-of-price') }}
                             <div class="col-right1">
-                                <span v-text="form.price_total"></span>
+                                <span v-text="form.price_total_show"></span>
                             </div>
                         </div>
                     </div>
@@ -112,7 +122,7 @@
                                 </select>
                             </div>
                             <div class="col-right">
-                                <input type="number" class="w3-input" v-model="form.discount" id="inputDiscount" v-on:change="update_discount" style="direction: rtl; width: 150px" onClick="this.select();">
+                                <input type="text" class="w3-input" id="inputDiscount" v-on:change="update_discount" style="text-align: right; width: 150px" onClick="this.select();">
                             </div>
                         </div>
                     </div>
@@ -120,7 +130,7 @@
                         <div class="row_new">
                             Thu khác
                             <div class="col-right">
-                                <input type="number" class="w3-input" id="collection_diff" v-on:change="fn_update_collection_diff" style="direction: rtl; width: 150px" placeholder="0" onClick="this.select();">
+                                <input type="text" class="w3-input" id="collection_diff" v-on:change="fn_update_collection_diff" style="text-align: right; width: 150px" placeholder="0" onClick="this.select();">
                             </div> 
                         </div>
                     </div>
@@ -129,7 +139,7 @@
                         <div class="row_new">
                             Khách cần trả
                             <div class="col-right1">
-                                <b><span v-text="form.price_must_paid" style="color:red"></span></b>
+                                <b><span v-text="form.price_must_paid_show" style="color:red"></span></b>
                             </div>
                         </div>
                     </div>
@@ -138,7 +148,7 @@
                         <div class="row_new">
                             Khách thanh toán
                             <div class="col-right">
-                                <input type="number" class="w3-input" id="customer_paid" placeholder="0"  v-on:change="fn_update_customer_paid" style="direction: rtl; width: 150px" onClick="this.select();">
+                                <input type="text" class="w3-input" id="customer_paid" placeholder="0" v-on:change="fn_update_customer_paid" style="text-align: right; width: 150px" onClick="this.select();">
                             </div> 
                         </div>
                     </div>
@@ -147,7 +157,7 @@
                         <div class="row_new">
                             Tiền thừa trả khách
                             <div class="col-right1">
-                                <span v-text="form.customer_remain"></span>
+                                <span v-text="form.customer_remain_show"></span>
                             </div>
                         </div>
                     </div>
@@ -170,6 +180,7 @@
             data() {
                 return {
                     keywords: null,
+                    // number_formatter: null,
                     results: [],
                     table_headers: [
                         "{{ __('admin::app.vpt.inventory.code') }}",
@@ -183,6 +194,7 @@
                     form: new Form({
                         added_products:[],
                         price_total: 0,
+                        price_total_show: '0',
                         type: 'receipt',
                         receipt_date: new Date(),
                         created_date: new Date(),
@@ -196,8 +208,10 @@
                         notes: "",
                         collection_diff: 0,
                         price_must_paid: 0,
+                        price_must_paid_show: '0',
                         customer_paid: 0,
                         customer_remain: 0,
+                        customer_remain_show: '0',
                         discount: 0,
                         discount_type: 1,
                     }),
@@ -206,14 +220,14 @@
             watch: {
                 keywords(after, before) {
                     this.fetch();
-                }
+                },
             },
             methods: {
                 fetch() {
                     axios.get("{{ route('admin.catalog.products.live-search-products') }}", { params: { key: this.keywords } })
                         .then(response => this.results = response.data)
                         .catch(error => {});
-                    console.error(this.results);
+                    // console.error(this.results);
                 },
                 add_product: function (result) {
                     added_item = {id:result.id, name:result.name, qty:1, price:result.price, in_stock: 0, featured_image:result.featured_image};
@@ -229,6 +243,12 @@
                     } else {
                         this.form.price_must_paid = this.form.price_total ;
                     }
+                    this.form.price_must_paid_show = this.numberFormatter(this.form.price_must_paid);
+                    this.form.price_total_show = this.numberFormatter(this.form.price_total);
+                    if (this.form.customer_paid != 0) {
+                        this.form.customer_remain = parseInt(this.form.customer_paid) - parseInt(this.form.price_must_paid);
+                        this.form.customer_remain_show = this.numberFormatter(this.form.customer_remain);
+                    }
                 },
                 remove_product: function (item) {
                     this.form.added_products.splice(this.form.added_products.indexOf(item), 1);
@@ -241,6 +261,12 @@
                         }
                     } else {
                         this.form.price_must_paid = this.form.price_total ;
+                    }
+                    this.form.price_must_paid_show = this.numberFormatter(this.form.price_must_paid);
+                    this.form.price_total_show = this.numberFormatter(this.form.price_total);
+                    if (this.form.customer_paid != 0) {
+                        this.form.customer_remain = parseInt(this.form.customer_paid) - parseInt(this.form.price_must_paid);
+                        this.form.customer_remain_show = this.numberFormatter(this.form.customer_remain);
                     }
                 },
                 update_price: function() {
@@ -258,6 +284,8 @@
                     } else {
                         this.form.price_must_paid = this.form.price_total ;
                     }
+                    this.form.price_must_paid_show = this.numberFormatter(this.form.price_must_paid);
+                    this.form.price_total_show = this.numberFormatter(this.form.price_total);
                 },
                 update_discount_type: function() {
                     this.form.discount = 0;
@@ -267,35 +295,72 @@
                     this.form.customer_paid = 0;
                     this.form.customer_remain = 0;
                     document.getElementById('customer_paid').value = "0";
+                    this.form.price_must_paid_show = this.numberFormatter(this.form.price_must_paid);
+                    this.form.customer_remain_show = '0';
+                    document.getElementById('inputDiscount').value = "0";
                 },
                 update_discount: function() {
-                    if(this.form.discount_type == 1){
-                        this.form.price_must_paid = this.form.price_total - this.form.discount ;
+                    var input_discount = document.getElementById('inputDiscount').value;
+                    if(isNaN(input_discount)) {
+                        alert('Bạn phải nhập số');
+                        document.getElementById('inputDiscount').value = '0';
                     } else {
-                        this.form.price_must_paid = this.form.price_total - ((this.form.discount * this.form.price_total)/100) ;
+                        this.form.discount = parseInt(input_discount);
+                        if(this.form.discount_type == 1){
+                            this.form.price_must_paid = this.form.price_total - this.form.discount ;
+                            if (this.form.customer_paid != 0){
+                                this.form.customer_remain = parseInt(this.form.customer_remain) + parseInt(this.form.discount); 
+                            }
+                        } else {
+                            this.form.price_must_paid = this.form.price_total - ((this.form.discount * this.form.price_total)/100) ;
+                            if (this.form.customer_paid != 0){
+                                this.form.customer_remain = parseInt(this.form.customer_remain) + parseInt((this.form.discount * this.form.price_total)/100); 
+                            }
+                        }
+                            this.form.price_must_paid_show = this.numberFormatter(this.form.price_must_paid);
+                            this.form.customer_remain_show = this.numberFormatter(this.form.customer_remain);
+                            document.getElementById('inputDiscount').value = this.numberFormatter(input_discount);
                     }
                 },
                 fn_update_customer_paid: function () {
                     var inputCustomer_paid = document.getElementById('customer_paid').value;
-                    if(inputCustomer_paid == 0) {
-                        this.form.customer_remain = 0;
-                        this.form.customer_paid = 0;
+                    if(isNaN(inputCustomer_paid)) {
+                        alert('Bạn phải nhập số');
+                        document.getElementById('customer_paid').value = "";
                     } else {
-                        this.form.customer_remain = inputCustomer_paid - this.form.price_must_paid ;
-                        this.form.customer_paid = inputCustomer_paid;
+                        if(inputCustomer_paid == 0) {
+                            this.form.customer_remain = 0;
+                            this.form.customer_paid = 0;
+                        } else {
+                            this.form.customer_remain = inputCustomer_paid - this.form.price_must_paid ;
+                            this.form.customer_paid = inputCustomer_paid;
+                        }
+                        document.getElementById('customer_paid').value = this.numberFormatter(inputCustomer_paid);
+                        this.form.customer_remain_show = this.numberFormatter(this.form.customer_remain);
                     }
+                },
+                numberFormatter(num) {
+                    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 },
                 fn_update_collection_diff: function(){
                     var inputValue = document.getElementById('collection_diff').value;
-                    if(inputValue == "" || inputValue == 0){
+                    if(isNaN(inputValue)) {
+                        alert('Bạn phải nhập số');
+                        document.getElementById('collection_diff').value = "";
+                    } else {
+                        if(inputValue == "" || inputValue == 0){
                         this.form.price_must_paid = parseInt(this.form.price_must_paid) - parseInt(this.form.collection_diff);
                         this.form.collection_diff = 0;
-                    } else {
-                        this.form.price_must_paid = parseInt(this.form.price_must_paid) - parseInt(this.form.collection_diff) + parseInt(inputValue); 
-                        this.form.collection_diff = inputValue;
-                    }
-                    if(this.form.customer_paid != 0) {
-                        this.form.customer_remain = this.form.customer_paid - this.form.price_must_paid;
+                        } else {
+                            this.form.price_must_paid = parseInt(this.form.price_must_paid) - parseInt(this.form.collection_diff) + parseInt(inputValue); 
+                            this.form.collection_diff = inputValue;
+                        }
+                        if(this.form.customer_paid != 0) {
+                            this.form.customer_remain = this.form.customer_paid - this.form.price_must_paid;
+                        }
+                        document.getElementById('collection_diff').value = this.numberFormatter(inputValue);
+                        this.form.price_must_paid_show = this.numberFormatter(this.form.price_must_paid);
+                        this.form.customer_remain_show = this.numberFormatter(this.form.customer_remain);
                     }
                 },
                 save () {
@@ -324,3 +389,6 @@
         });
     </script>
 @endpush
+<script>
+
+</script>

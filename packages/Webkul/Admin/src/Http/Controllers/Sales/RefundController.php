@@ -113,9 +113,9 @@ class RefundController extends Controller
 
         $totals = $this->refundRepository->getOrderItemsRefundSummary($data['refund']['items'], $orderId);
 
-        $maxRefundAmount = $totals['grand_total']['price'] - $order->refunds()->sum('base_adjustment_refund');
+        $maxRefundAmount = $totals['grand_total']['price'] - $order->refunds()->sum('base_adjustment_refund') ;
 
-        $refundAmount = $totals['grand_total']['price'] - $totals['shipping']['price'] + $data['refund']['shipping'] + $data['refund']['adjustment_refund'] - $data['refund']['adjustment_fee'];
+        $refundAmount = $totals['grand_total']['price'] - $totals['shipping']['price'] + $data['refund']['shipping'] + $data['refund']['adjustment_refund'] - $data['refund']['adjustment_fee'] ;
 
         if (! $refundAmount) {
             session()->flash('error', trans('admin::app.sales.refunds.invalid-refund-amount-error'));

@@ -102,6 +102,7 @@ class InvoiceRepository extends Repository
                 'channel_currency_code' => $order->channel_currency_code,
                 'order_currency_code'   => $order->order_currency_code,
                 'order_address_id'      => $order->billing_address->id,
+                'collection_diff'       => $order ->collection_diff,
             ]);
 
             foreach ($data['invoice']['items'] as $itemId => $qty) {
