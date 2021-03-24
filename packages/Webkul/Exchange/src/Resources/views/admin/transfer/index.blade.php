@@ -201,7 +201,7 @@
                     currentArrow : 0,
                     //pagination
                     //check permission
-                    updatePermission: Boolean(Number('{{checkPermission('exchange.list_purchases.update')}}')),
+                    updatePermission: Boolean(Number('{{checkPermission('exchange.list_transfer.update')}}')),
                     //check permission
                     form: new Form({
                         listReceiptNotes: {!! json_encode($receipt_notes) !!},
