@@ -240,7 +240,8 @@ class ExchangeController extends Controller
 
             $product = $this->productRepository->update($data1, $id);
 
-            return response()->json(['message' => $id], 200);
+            return response()->json([  'id' => $id,
+            'message' =>$data1], 200);
         }else{
             return response()->json(['message' => "HTTP Error 401 - Unauthorized"], 401);
         }

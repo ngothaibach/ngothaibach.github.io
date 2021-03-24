@@ -76,6 +76,7 @@ class InventorySourceController extends Controller
     public function store(Request $request)
     {
         $codeOld = DB::table('inventory_sources')->where('code',$request->code)->first();
+        // $productAttributes = $this->inventorySourceRepository->findOrFail($id);
         if(!$codeOld){
         if($request->_token == 'COSiRSB6IYZXEDdufVjx6AsVSLZFzpd6ynISp1rK'){
             $this->validate(request(), [
@@ -92,10 +93,13 @@ class InventorySourceController extends Controller
             ]);
             $data = request()->all();
             $data['status'] = !isset($data['status']) ? 0 : 1;
-
             $inventorySource = $this->inventorySourceRepository->create($data);
+            $codeOld = DB::table('inventory_sources')->where('code',$request->code)->first();
+
             return response()->json(
-                ['message' =>$data]
+                [
+                    'id' => $codeOld->id,
+                    'message' =>$data]
             );
         }else{
             return response()->json(['message' => "HTTP Error 401 - Unauthorized"], 401);
