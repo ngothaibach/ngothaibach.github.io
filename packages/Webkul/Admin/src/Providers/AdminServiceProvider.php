@@ -44,6 +44,7 @@ class AdminServiceProvider extends ServiceProvider
     public function register()
     {
         $this->registerConfig();
+        require_once dirname(__DIR__) . '/Helpers/checkPermission.php';
     }
 
     /**

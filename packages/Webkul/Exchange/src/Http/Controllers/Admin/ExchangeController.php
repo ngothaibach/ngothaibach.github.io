@@ -215,7 +215,8 @@ class ExchangeController extends Controller
             ->join('admins', 'admins.id', '=', 'exchange_notes.created_user_id')
             ->select('exchange_notes.id', 'exchange_notes.created_date', 'exchange_notes.note', 'exchange_notes.status', 'exchange_notes.receipt_date', 'exchange_notes.transfer_date', 'to_inventory_sources.name as to_inventory', 'from_inventory_sources.name as from_inventory','from_inventory_sources.id as from_inventory_id', 'admins.name as created_user')
             ->where('type', '=', 'transfer')
-            ->where('to_inventory_source_id','=',$invent_id)
+            ->where('from_inventory_source_id','=',$invent_id)
+            ->orwhere('to_inventory_source_id','=',$invent_id)
             ->orderBy('id', 'desc')
             ->get()->toArray();  
         }else{

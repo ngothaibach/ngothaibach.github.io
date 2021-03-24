@@ -11,7 +11,7 @@
             <div class="page-title">
                 <h1>{{ __('admin::app.vpt.inventory.receipt-notes') }}</h1>
             </div>
-            @if($role_id != 2)
+            @if(checkPermission('exchange.list_purchases.create'))
             <div class="page-action">
                 <a href="{{ route('admin.exchange.purchase-order.create') }}" class="btn btn-lg btn-primary">
                     {{ __('admin::app.vpt.inventory.add-receipt-note') }}
@@ -100,7 +100,7 @@
                                                                                                                         <div class="form-group row">
                                                                                                                             <label class="col-sm-4 col-form-label">Trạng thái</label>
                                                                                                                             <div class="col-sm-8">
-                                                                                                                                <select v-model="form.listReceiptNotes[index].status" class="form-control" :disabled="role_id == 2 ? true : form.oldListReceip[index].status == 'temporary' ? false : true ">
+                                                                                                                                <select v-model="form.listReceiptNotes[index].status" class="form-control" :disabled="!updatePermission ? true : form.oldListReceip[index].status == 'temporary' ? false : true ">
                                                                                                                                         <option v-for="item in form.status" :value="item.key" v-text="item.value">
                                                                                                                                         </option>
                                                                                                                                     </select>
@@ -119,7 +119,7 @@
                                                                                                                         <div class="form-group row">
                                                                                                                             <label class="col-sm-4 col-form-label" >Người nhập</label>
                                                                                                                             <div class="col-sm-8">
-                                                                                                                                <select v-model="item.importer" name="user" class="form-control" aria-label="User" :disabled="role_id == 2 ? true : form.oldListReceip[index].status == 'temporary' ? false : true ">
+                                                                                                                                <select v-model="item.importer" name="user" class="form-control" aria-label="User" :disabled="!updatePermission ? true : form.oldListReceip[index].status == 'temporary' ? false : true ">
                                                                                                                                     @foreach ($users as $user)
                                                                                                                                         @if (auth()
             ->guard('admin')
@@ -139,7 +139,7 @@
                                                                                                                         <div class="form-group row">
                                                                                                                             <label class="col-sm-4 col-form-label">Ghi chú</label>
                                                                                                                             <div class="col-sm-8">
-                                                                                                                                <textarea class="form-control" id="exampleFormControlTextarea1" v-model="item.note" :disabled="role_id == 2 ? true : form.oldListReceip[index].status == 'temporary' ? false : true "></textarea>
+                                                                                                                                <textarea class="form-control" id="exampleFormControlTextarea1" v-model="item.note" :disabled="!updatePermission ? true : form.oldListReceip[index].status == 'temporary' ? false : true "></textarea>
                                                                                                                             </div>
                                                                                                                         </div>
                                                                                                                     </div>
@@ -162,7 +162,7 @@
                                                                                                                         <td v-text="product.price"></td>
                                                                                                                         <td>
                                                                                                                             <div class="col-sm-8">
-                                                                                                                            <input type="text" :value="product.receipt_qty" @change.lazy="update_total_price(parseInt($event.target.value),product.receipt_qty,product.price,index1)" class="form-control" :disabled="role_id == 2 ? true : form.oldListReceip[index].status == 'temporary' ? false : true " >
+                                                                                                                            <input type="text" :value="product.receipt_qty" @change.lazy="update_total_price(parseInt($event.target.value),product.receipt_qty,product.price,index1)" class="form-control" :disabled="!updatePermission ? true : form.oldListReceip[index].status == 'temporary' ? false : true " >
                                                                                                                             </div>
                                                                                                                         </td>
                                                                                                                     </tr>
@@ -170,7 +170,7 @@
                                                                                                             </table>
                                                                                                             <span class="font-weight-bold">Tổng giá trị:</span> <span class="text-danger font-weight-bold" v-text="price_total"></span>
                                                                                                             <div class="text-right">
-                                                                                                                <button type="button" class="btn btn-success" v-on:click="save_inventory(item.id,item.note,item.status,item.importer,item.type,item.inventoryID,price_total)" :disabled="role_id == 2 ? true : form.oldListReceip[index].status == 'temporary' ? false : true " >Lưu</button>
+                                                                                                                <button type="button" class="btn btn-success" v-on:click="save_inventory(item.id,item.note,item.status,item.importer,item.type,item.inventoryID,price_total)" :disabled="!updatePermission ? true : form.oldListReceip[index].status == 'temporary' ? false : true " >Lưu</button>
                                                                                                             </div>
                                                                                                         </div>
                                                                                                     </div>
@@ -211,6 +211,9 @@
                     arrow: "custom-arrow-icon-down",
                     currentArrow : 0,
                     //pagination
+                    //check permission
+                    updatePermission: Boolean(Number('{{checkPermission('exchange.list_purchases.update')}}')),
+                    //check permission
                     form: new Form({
                         listReceiptNotes: {!! json_encode($receipt_notes) !!},
                         oldListReceip: {!! json_encode($receipt_notes) !!},
@@ -263,8 +266,7 @@
 
                     product_list: null,
                     selected_transfer: null,
-                    price_total: null,
-                    role_id : {!! json_encode($role_id) !!}
+                    price_total: null
                 };
             },
             watch: {},
