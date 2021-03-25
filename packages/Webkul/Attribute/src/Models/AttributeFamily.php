@@ -41,7 +41,13 @@ class AttributeFamily extends Model implements AttributeFamilyContract
     {
         return $this->custom_attributes()->get();
     }
-
+    /**
+     * Get attributes by Id for the attribute groups.
+     */
+    public function getCustomAttributesAttributebyGroup($id)
+    {
+        return $this->custom_attributes()->where('attribute_group_id','=',$id)->get();
+    }
     /**
      * Get all of the attribute groups.
      */
@@ -57,7 +63,26 @@ class AttributeFamily extends Model implements AttributeFamilyContract
     {
         return $this->custom_attributes()->where('attributes.is_configurable', 1)->where('attributes.type', 'select')->get();
     }
+    /**
+     * Retrieve type instance of product
+     *
+     * 
+     */
+    public function getSimpleTypeInstance()
+    {
+        $this->typeInstance = app(config('product_types.' . 'simple' . '.class'));
 
+        return $this->typeInstance;
+    }
+    /**
+     * Returns additional views
+     *
+     * @return array
+     */
+    public function getAdditionalViews()
+    {
+        return $this->additionalViews;
+    }
     /**
      * Get all of the products.
      */

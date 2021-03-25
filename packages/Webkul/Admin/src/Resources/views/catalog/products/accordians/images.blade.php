@@ -1,14 +1,19 @@
-{!! view_render_event('bagisto.admin.catalog.product.edit_form_accordian.images.before', ['product' => $product]) !!}
-
+@if(isset($product))
+    {!! view_render_event('bagisto.admin.catalog.product.edit_form_accordian.images.before', ['product' => $product]) !!}
+@else
+    {!! view_render_event('bagisto.admin.catalog.product.create_form_accordian.images.before') !!}
+@endif
 <accordian :title="'{{ __('admin::app.catalog.products.images') }}'" :active="false">
     <div slot="body">
-
-        {!! view_render_event('bagisto.admin.catalog.product.edit_form_accordian.images.controls.before', ['product' => $product]) !!}
-
+        @if(isset($product))
+            {!! view_render_event('bagisto.admin.catalog.product.edit_form_accordian.images.controls.before', ['product' => $product]) !!}
+        @else
+            {!! view_render_event('bagisto.admin.catalog.product.create_form_accordian.images.controls.before') !!}
+        @endif
         <div class="control-group {!! $errors->has('images.*') ? 'has-error' : '' !!}">
             <label>{{ __('admin::app.catalog.categories.image') }}</label>
-
-            <product-image></product-image>
+            
+            <product-image ></product-image>
 
             <span class="control-error" v-if="{!! $errors->has('images.*') !!}">
                 @php $count=1 @endphp
@@ -17,14 +22,18 @@
                 @endforeach
             </span>
         </div>
-
-        {!! view_render_event('bagisto.admin.catalog.product.edit_form_accordian.images.controls.after', ['product' => $product]) !!}
-
+        @if(isset($product))
+            {!! view_render_event('bagisto.admin.catalog.product.edit_form_accordian.images.controls.after', ['product' => $product]) !!}
+        @else
+            {!! view_render_event('bagisto.admin.catalog.product.create_form_accordian.images.controls.after') !!}
+        @endif
     </div>
 </accordian>
-
-{!! view_render_event('bagisto.admin.catalog.product.edit_form_accordian.images.after', ['product' => $product]) !!}
-
+@if(isset($product))
+    {!! view_render_event('bagisto.admin.catalog.product.edit_form_accordian.images.after', ['product' => $product]) !!}
+@else
+    {!! view_render_event('bagisto.admin.catalog.product.create_form_accordian.images.after') !!}
+@endif
 @push('scripts')
     @parent
 
@@ -61,14 +70,14 @@
     </script>
 
     <script>
+    
         Vue.component('product-image', {
-
+            
             template: '#product-image-template',
             
             data: function() {
                 return {
-                    images: @json($product->images),
-
+                    images : <?php echo (isset($product)) ? json_encode($product->images) : 'null'; ?>,
                     imageCount: 0,
 
                     items: []
@@ -83,7 +92,6 @@
 
             created: function() {
                 var this_this = this;
-
                 this.images.forEach(function(image) {
                     this_this.items.push(image)
 

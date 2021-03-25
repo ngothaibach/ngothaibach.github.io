@@ -1,23 +1,29 @@
-{!! view_render_event('bagisto.admin.catalog.product.edit_form_accordian.inventories.before', ['product' => $product]) !!}
-
+@if(isset($product)) 
+    {!! view_render_event('bagisto.admin.catalog.product.edit_form_accordian.inventories.before', ['product' => $product]) !!}
+@else
+    {!! view_render_event('bagisto.admin.catalog.product.create_form_accordian.inventories.before') !!}
+@endif
 <accordian :title="'{{ __('admin::app.catalog.products.inventories') }}'" :active="false">
     <div slot="body">
-
-        {!! view_render_event('bagisto.admin.catalog.product.edit_form_accordian.inventories.controls.before', ['product' => $product]) !!}
-
+        @if(isset($product))
+            {!! view_render_event('bagisto.admin.catalog.product.edit_form_accordian.inventories.controls.before', ['product' => $product]) !!}
+        @else
+            {!! view_render_event('bagisto.admin.catalog.product.create_form_accordian.inventories.controls.before') !!}
+        @endif
         @foreach ($inventorySources as $inventorySource)
             <?php
 
                 $qty = 0;
-                foreach ($product->inventories as $inventory) {
-                    if ($inventory->inventory_source_id == $inventorySource->id) {
-                        $qty = $inventory->qty;
-                        break;
+                if(isset($product)){
+                    foreach ($product->inventories as $inventory) {
+                        if ($inventory->inventory_source_id == $inventorySource->id) {
+                            $qty = $inventory->qty;
+                            break;
+                        }
                     }
-                }
 
-                $qty = old('inventories[' . $inventorySource->id . ']') ?: $qty;
-
+                    $qty = old('inventories[' . $inventorySource->id . ']') ?: $qty;
+                }        
             ?>
             <div class="control-group" :class="[errors.has('inventories[{{ $inventorySource->id }}]') ? 'has-error' : '']">
                 <label>{{ $inventorySource->name }}</label>
@@ -29,9 +35,17 @@
         
         @endforeach
 
-        {!! view_render_event('bagisto.admin.catalog.product.edit_form_accordian.inventories.controls.after', ['product' => $product]) !!}
+        @if(isset($product)) 
+            {!! view_render_event('bagisto.admin.catalog.product.edit_form_accordian.inventories.controls.after', ['product' => $product]) !!} 
+        @else
+            {!! view_render_event('bagisto.admin.catalog.product.create_form_accordian.inventories.controls.after') !!}
+        @endif
 
     </div>
 </accordian>
 
-{!! view_render_event('bagisto.admin.catalog.product.edit_form_accordian.inventories.after', ['product' => $product]) !!}
+@if(isset($product)) 
+    {!! view_render_event('bagisto.admin.catalog.product.edit_form_accordian.inventories.after', ['product' => $product]) !!} 
+@else
+    {!! view_render_event('bagisto.admin.catalog.product.create_form_accordian.inventories.after') !!}
+@endif
