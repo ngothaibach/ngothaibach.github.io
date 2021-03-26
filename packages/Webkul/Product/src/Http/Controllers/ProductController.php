@@ -143,14 +143,19 @@ class ProductController extends Controller
     public function create()
     {
         $families = $this->attributeFamilyRepository->all();
-
+        $attributeGroups=[];
+        foreach($families as $family){
+            $attributeGroups = $family->attribute_groups;
+        }
         $configurableFamily = null;
+        $categories = $this->categoryRepository->getCategoryTree();
 
+        $inventorySources = $this->inventorySourceRepository->findWhere(['status' => 1]);
         if ($familyId = request()->get('family')) {
             $configurableFamily = $this->attributeFamilyRepository->find($familyId);
         }
 
-        return view($this->_config['view'], compact('families', 'configurableFamily'));
+        return view($this->_config['view'], compact('families','attributeGroups', 'configurableFamily','categories', 'inventorySources'));
     }
 
     /**
@@ -160,36 +165,46 @@ class ProductController extends Controller
      */
     public function store()
     {
-        if (! request()->get('family')
-            && ProductType::hasVariants(request()->input('type'))
-            && request()->input('sku') != ''
-        ) {
-            return redirect(url()->current() . '?type=' . request()->input('type') . '&family=' . request()->input('attribute_family_id') . '&sku=' . request()->input('sku'));
+        $data = request()->all();
+        
+        $multiselectAttributeCodes = array();
+        $families = $this->attributeFamilyRepository->all();
+        $attributeGroups=[];
+        foreach($families as $family){
+            $attributeGroups = $family->attribute_groups;
+
+            foreach ($attributeGroups as  $attributeGroup) {
+                $customAttributes = $family->getCustomAttributesAttributebyGroup($attributeGroup->id);
+                if (count($customAttributes)) {
+                    foreach ($customAttributes as $attribute) {
+                        if ($attribute->type == 'multiselect') {
+                            array_push($multiselectAttributeCodes, $attribute->code);
+                        }
+                    }
+                }
+            }
+        }   
+        if (count($multiselectAttributeCodes)) {
+            foreach ($multiselectAttributeCodes as $multiselectAttributeCode) {
+                if (! isset($data[$multiselectAttributeCode])) {
+                    $data[$multiselectAttributeCode] = array();
+                }
+            }
         }
-
-        if (ProductType::hasVariants(request()->input('type'))
-            && (! request()->has('super_attributes')
-                || ! count(request()->get('super_attributes')))
-        ) {
-            session()->flash('error', trans('admin::app.catalog.products.configurable-error'));
-
-            return back();
-        }
-
         $this->validate(request(), [
             'type'                => 'required',
             'attribute_family_id' => 'required',
             'sku'                 => ['required', 'unique:products,sku', new Slug],
         ]);
+        //default value
+        
 
-        // Set default values
         request()->all()['status'] = "Active";
-
-        $product = $this->productRepository->create(request()->all());
+        $product = $this->productRepository->create($data);
 
         session()->flash('success', trans('admin::app.response.create-success', ['name' => 'Product']));
 
-        return redirect()->route($this->_config['redirect'], ['id' => $product->id]);
+        return redirect()->route($this->_config['redirect']);
     }
 
     /**
@@ -202,7 +217,6 @@ class ProductController extends Controller
     public function edit($id)
     {
         $product = $this->productRepository->with(['variants', 'variants.inventories'])->findOrFail($id);
-
         $categories = $this->categoryRepository->getCategoryTree();
 
         $inventorySources = $this->inventorySourceRepository->findWhere(['status' => 1]);
@@ -221,7 +235,6 @@ class ProductController extends Controller
     public function update(ProductForm $request, $id)
     {
         $data = request()->all();
-
         $multiselectAttributeCodes = array();
 
         $productAttributes = $this->productRepository->findOrFail($id);

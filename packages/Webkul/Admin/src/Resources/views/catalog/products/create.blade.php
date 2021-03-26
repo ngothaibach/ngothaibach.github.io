@@ -21,7 +21,9 @@
 
 @section('content')
     <div class="content">
-        <form method="POST" action="" @submit.prevent="onSubmit">
+        <?php $locale = request()->get('locale') ?: app()->getLocale(); ?>
+        <?php $channel = request()->get('channel') ?: core()->getDefaultChannelCode(); ?>
+        <form method="POST" action="" @submit.prevent="onSubmit" enctype="multipart/form-data">
 
             <div class="page-header">
                 <div class="page-title">
@@ -30,8 +32,33 @@
 
                         {{ __('admin::app.catalog.products.add-title') }}
                     </h1>
-                </div>
+                
+                <div class="control-group">
+                        <select class="control" id="channel-switcher" name="channel">
+                            @foreach (core()->getAllChannels() as $channelModel)
 
+                                <option
+                                    value="{{ $channelModel->code }}" {{ ($channelModel->code) == $channel ? 'selected' : '' }}>
+                                    {{ $channelModel->name }}
+                                </option>
+
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="control-group">
+                        <select class="control" id="locale-switcher" name="locale">
+                            @foreach (core()->getAllLocales() as $localeModel)
+
+                                <option
+                                    value="{{ $localeModel->code }}" {{ ($localeModel->code) == $locale ? 'selected' : '' }}>
+                                    {{ $localeModel->name }}
+                                </option>
+
+                            @endforeach
+                        </select>
+                    </div>
+                    </div>
                 <div class="page-action">
                     <button type="submit" class="btn btn-lg btn-primary">
                         {{ __('admin::app.catalog.products.save-btn-title') }}
@@ -41,17 +68,35 @@
 
             <div class="page-content">
                 @csrf()
+                
+                <?php
 
+                    // Hide some unused attributes
+                    $hidden_attribute_groups = array(
+                        "Meta Description",
+                        "Shipping"
+                    );
+                    $hidden_attributes = array(
+                        "guest_checkout",
+                        "size",
+                        "color",
+                        "depth",
+                        "height",
+                        "width",
+                        "meta_keywords",
+                        "meta_title",
+                        "special_price_to",
+                        "special_price_from",
+                        "special_price",
+                        "status",
+                        "visible_individually",
+                        "featured",
+                        "new",
+                        "tax_category_id",
+                    );
+                ?>
                 <?php $familyId = request()->input('family') ?>
-
-                {!! view_render_event('bagisto.admin.catalog.product.create_form_accordian.general.before') !!}
-
-                <accordian :title="'{{ __('admin::app.catalog.products.general') }}'" :active="true">
-                    <div slot="body">
-
-                        {!! view_render_event('bagisto.admin.catalog.product.create_form_accordian.general.controls.before') !!}
-
-                        <div style="display:none" class="control-group" :class="[errors.has('type') ? 'has-error' : '']">
+                <div style="display:none" class="control-group" :class="[errors.has('type') ? 'has-error' : '']">
                             <label for="type" class="required">{{ __('admin::app.catalog.products.product-type') }}</label>
                             <select class="control" v-validate="'required'" id="type" name="type" {{ $familyId ? 'disabled' : '' }} data-vv-as="&quot;{{ __('admin::app.catalog.products.product-type') }}&quot;">
 
@@ -85,72 +130,128 @@
                             <span class="control-error" v-if="errors.has('attribute_family_id')">@{{ errors.first('attribute_family_id') }}</span>
                         </div>
 
-                        <div class="control-group" :class="[errors.has('sku') ? 'has-error' : '']">
-                            <label for="sku" class="required">{{ __('admin::app.catalog.products.sku') }}</label>
-                            <input type="text" v-validate="{ required: true, regex: /^[A-Za-z0-9_.]+(?:-[A-Za-z0-9_.]+)*$/ }" class="control" id="sku" name="sku" value="{{ request()->input('sku') ?: old('sku') }}" data-vv-as="&quot;{{ __('admin::app.catalog.products.sku') }}&quot;"/>
-                            <span class="control-error" v-if="errors.has('sku')">@{{ errors.first('sku') }}</span>
-                        </div>
+                @foreach($families as $family)
+                    @foreach($attributeGroups as $index => $attributeGroup)
+                    <?php
+                        if (in_array($attributeGroup->name, $hidden_attribute_groups)) {
+                            continue;
+                        }
+                    ?>
+                    <?php 
+                    $customAttributes = $family->getCustomAttributesAttributebyGroup($attributeGroup->id); 
+                    
+                    ?>
+                    <accordian :title="'{{ __('admin::app.vpt.attribute_group_'.$attributeGroup->id) }}'"
+                                   :active="{{$index == 0 ? 'true' : 'false'}}">
+                            <div slot="body">
+                                {!! view_render_event('bagisto.admin.catalog.product.edit_form_accordian.' . $attributeGroup->name . '.controls.before') !!}
 
-                        {!! view_render_event('bagisto.admin.catalog.product.create_form_accordian.general.controls.after') !!}
+                                @foreach ($customAttributes as $attribute)
 
-                    </div>
-                </accordian>
+                                    <?php
+                                        if ($attribute->code == "status") {
+                                            ?>
+                                            <input type="hidden"  id="{{ $attribute->code }}" name="{{ $attribute->code }}" value="1">
+                                            <?php
+                                        }
+                                        if (in_array($attribute->code, $hidden_attributes)) {
+                                            continue;
+                                        }
 
-                {!! view_render_event('bagisto.admin.catalog.product.create_form_accordian.general.after') !!}
+                                        if ($attribute->code == 'guest_checkout' && ! core()->getConfigData('catalog.products.guest-checkout.allow-guest-checkout')) {
+                                            continue;
+                                        }
 
-                @if ($familyId)
+                                        $validations = [];
 
-                    {!! view_render_event('bagisto.admin.catalog.product.create_form_accordian.configurable_attributes.before') !!}
+                                        if ($attribute->is_required) {
+                                            array_push($validations, 'required');
+                                        }
 
-                    <accordian :title="'{{ __('admin::app.catalog.products.configurable-attributes') }}'" :active="true">
-                        <div slot="body">
+                                        if ($attribute->type == 'price') {
+                                            array_push($validations, 'decimal');
+                                        }
 
-                            {!! view_render_event('bagisto.admin.catalog.product.create_form_accordian.configurable_attributes.controls.before') !!}
+                                        if ($attribute->type == 'file') {
+                                            $retVal = (core()->getConfigData('catalog.products.attribute.file_attribute_upload_size')) ? core()->getConfigData('catalog.products.attribute.file_attribute_upload_size') : '2048' ;
+                                            array_push($validations, 'size:' . $retVal);
+                                        }
 
-                            <div class="table">
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th>{{ __('admin::app.catalog.products.attribute-header') }}</th>
-                                            <th>{{ __('admin::app.catalog.products.attribute-option-header') }}</th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
+                                        if ($attribute->type == 'image') {
+                                            $retVal = (core()->getConfigData('catalog.products.attribute.image_attribute_upload_size')) ? core()->getConfigData('catalog.products.attribute.image_attribute_upload_size') : '2048' ;
+                                            array_push($validations, 'size:' . $retVal . '|mimes:bmp,jpeg,jpg,png,webp');
+                                        }
 
-                                    <tbody>
-                                        @foreach ($configurableFamily->configurable_attributes as $attribute)
-                                            <tr>
-                                                <td>
-                                                    {{ $attribute->admin_name }}
-                                                </td>
-                                                <td>
-                                                    @foreach ($attribute->options as $option)
-                                                        <span class="label">
-                                                            <input type="hidden" name="super_attributes[{{$attribute->code}}][]" value="{{ $option->id }}"/>
-                                                            {{ $option->admin_name }}
+                                        array_push($validations, $attribute->validation);
 
-                                                            <i class="icon cross-icon"></i>
-                                                        </span>
-                                                    @endforeach
-                                                </td>
-                                                <td class="actions">
-                                                    <i class="icon trash-icon"></i>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
+                                        $validations = implode('|', array_filter($validations));
+                                    ?>
 
-                                </table>
+                                    @if (view()->exists($typeView = 'admin::catalog.products.field-types.' . $attribute->type))
+
+                                        <div class="control-group {{ $attribute->type }}"
+                                             @if ($attribute->type == 'multiselect') :class="[errors.has('{{ $attribute->code }}[]') ? 'has-error' : '']"
+                                             @else :class="[errors.has('{{ $attribute->code }}') ? 'has-error' : '']" @endif>
+
+                                            <label
+                                                for="{{ $attribute->code }}" {{ $attribute->is_required ? 'class=required' : '' }}>
+                                                {{ $attribute->admin_name }}
+
+                                                @if ($attribute->type == 'price')
+                                                    <!-- <span class="currency-code">({{ core()->currencySymbol(core()->getBaseCurrencyCode()) }})</span> -->
+                                                @endif
+                                                <?php
+                                                $channel_locale = [];
+
+                                                if ($attribute->value_per_channel) {
+                                                    array_push($channel_locale, $channel);
+                                                }
+
+                                                if ($attribute->value_per_locale) {
+                                                    array_push($channel_locale, $locale);
+                                                }
+                                                ?>
+
+                                                @if (count($channel_locale))
+                                                    <!-- <span class="locale">[{{ implode(' - ', $channel_locale) }}]</span> -->
+                                                @endif
+                                                
+                                            </label>
+
+                                            @include ($typeView)
+
+                                            <span class="control-error"
+                                                  @if ($attribute->type == 'multiselect') v-if="errors.has('{{ $attribute->code }}[]')"
+                                                  @else  v-if="errors.has('{{ $attribute->code }}')"  @endif>
+                                                @if ($attribute->type == 'multiselect')
+                                                    @{{ errors.first('{!! $attribute->code !!}[]') }}
+                                                @else
+                                                    @{{ errors.first('{!! $attribute->code !!}') }}
+                                                @endif
+                                            </span>
+                                        </div>
+
+                                    @endif
+
+                                @endforeach
+
+                                
+
+                                {!! view_render_event('bagisto.admin.catalog.product.edit_form_accordian.' . $attributeGroup->name . '.controls.after') !!}
                             </div>
+                        </accordian>
 
-                            {!! view_render_event('bagisto.admin.catalog.product.create_form_accordian.configurable_attributes.controls.after') !!}
+                    @endforeach
+                
+                    {!! view_render_event('bagisto.admin.catalog.product.create_form_accordian.additional_views.before')!!}
+                    @foreach ($family->getSimpleTypeInstance()->getAdditionalViews() as $view)
 
-                        </div>
-                    </accordian>
+                        @include ($view)
 
-                    {!! view_render_event('bagisto.admin.catalog.product.create_form_accordian.configurable_attributes.after') !!}
-                @endif
+                    @endforeach
 
+                    {!! view_render_event('bagisto.admin.catalog.product.create_form_accordian.additional_views.after')!!}
+                @endforeach
             </div>
 
         </form>
@@ -158,6 +259,27 @@
 @stop
 
 @push('scripts')
+<script src="{{ asset('vendor/webkul/admin/assets/js/tinyMCE/tinymce.min.js') }}"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#channel-switcher, #locale-switcher').on('change', function (e) {
+                $('#channel-switcher').val()
+                var query = '?channel=' + $('#channel-switcher').val() + '&locale=' + $('#locale-switcher').val();
+
+                window.location.href = "{{ route('admin.catalog.products.create')  }}" + query;
+            })
+
+            tinymce.init({
+                selector: 'textarea#description, textarea#short_description',
+                height: 200,
+                width: "100%",
+                plugins: 'image imagetools media wordcount save fullscreen code table lists link hr',
+                toolbar1: 'formatselect | bold italic strikethrough forecolor backcolor link hr | alignleft aligncenter alignright alignjustify | numlist bullist outdent indent  | removeformat | code | table',
+                image_advtab: true
+            });
+        });
+    </script>
     <script>
         $(document).ready(function () {
             $('.label .cross-icon').on('click', function(e) {
