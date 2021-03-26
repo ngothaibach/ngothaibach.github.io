@@ -6,6 +6,7 @@ use Webkul\Core\Models\Locale;
 use Webkul\Core\Models\Channel;
 use Webkul\Ui\DataGrid\DataGrid;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class ProductDataGrid extends DataGrid
 {
@@ -64,6 +65,7 @@ class ProductDataGrid extends DataGrid
             ->leftJoin('products', 'product_flat.product_id', '=', 'products.id')
             ->leftJoin('attribute_families', 'products.attribute_family_id', '=', 'attribute_families.id')
             ->leftJoin('product_inventories', 'product_flat.product_id', '=', 'product_inventories.product_id')
+            ->leftJoin('product_images', 'product_flat.product_id', '=', 'product_images.product_id')
             ->select(
                 'product_flat.locale',
                 'product_flat.channel',
@@ -75,6 +77,7 @@ class ProductDataGrid extends DataGrid
                 'product_flat.status',
                 'product_flat.price',
                 'attribute_families.name as attribute_family',
+                'product_images.path as product_image',
                 DB::raw('SUM(DISTINCT ' . DB::getTablePrefix() . 'product_inventories.qty) as quantity')
             );
 
@@ -113,7 +116,23 @@ class ProductDataGrid extends DataGrid
             'sortable'   => true,
             'filterable' => true,
         ]);
-
+        $this->addColumn([
+            'index'      => 'product_image',
+            'label'      => "ảnh sản phẩm",
+            'type'       => 'image',
+            'searchable' => false,
+            'sortable'   => false,
+            'filterable' => false,
+            'wrapper'    => function ($value) {
+                if (is_null($value->product_image)) {
+                    return '';
+                } else {   
+                echo('<img src="'.Storage::url($value->product_image).'" style="position: relative;height: 100px;width: 100px;margin-right: 5px;">');
+                }
+            },
+            
+            
+        ]);
         $this->addColumn([
             'index'      => 'product_number',
             'label'      => trans('admin::app.datagrid.product-number'),

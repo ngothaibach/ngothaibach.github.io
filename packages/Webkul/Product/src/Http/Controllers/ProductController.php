@@ -235,7 +235,6 @@ class ProductController extends Controller
     public function update(ProductForm $request, $id)
     {
         $data = request()->all();
-        dd($data);
         $multiselectAttributeCodes = array();
 
         $productAttributes = $this->productRepository->findOrFail($id);
