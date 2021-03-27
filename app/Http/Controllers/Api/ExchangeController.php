@@ -12,6 +12,8 @@ use Carbon\Carbon;
 use Webkul\Product\Helpers\ProductType;
 use Webkul\Core\Contracts\Validations\Slug;
 use Webkul\Product\Repositories\ProductRepository;
+use Storage;
+
 class ExchangeController extends Controller
 {
     /**
@@ -150,10 +152,10 @@ class ExchangeController extends Controller
             "price"=> $request->price,
             "cost"=> $request->cost,
             "inventories" => json_decode($request->inventories),
-            "images" => $request->file('images'),
             "channels" => json_decode($request->channels),
             "categories" =>  json_decode($request->categories),
             "_token" => $request->_token,
+            "imageURL" =>json_decode( $request->imageURL),
         ];
             $product1 = $this->productRepository->update($data1, $id);
             // var_dump($request->file('images'));
@@ -192,6 +194,9 @@ class ExchangeController extends Controller
      */
     public function update(Request $request, $id)
     {
+
+     
+
         if($request->_token == 'bIHy1ZvVOkZOVYlf0aGQtwxNwfXwLQjJ0ky7JRWM'){
         $productAttributes = $this->productRepository->findOrFail($id);
 
@@ -234,8 +239,8 @@ class ExchangeController extends Controller
             "inventories" => json_decode($request->inventories),
             "channels" => json_decode($request->channels),
             "categories" =>  json_decode($request->categories),
-            "images" =>  $request->file('images'),
             "_token" => $request->_token,
+            "imageURL" =>json_decode( $request->imageURL),
         ];
 
             $product = $this->productRepository->update($data1, $id);

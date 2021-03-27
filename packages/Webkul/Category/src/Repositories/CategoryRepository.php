@@ -205,7 +205,6 @@ class CategoryRepository extends Repository
     {
         if (isset($data[$type])) {
             $request = request();
-
             foreach ($data[$type] as $imageId => $image) {
                 $file = $type . '.' . $imageId;
                 $dir = 'category/' . $category->id;
