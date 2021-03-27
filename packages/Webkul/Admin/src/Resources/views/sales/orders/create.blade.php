@@ -389,6 +389,3 @@
         });
     </script>
 @endpush
-<script>
-
-</script>

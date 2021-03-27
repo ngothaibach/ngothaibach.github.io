@@ -107,15 +107,17 @@ class RefundController extends Controller
 
         $data = request()->all();
 
-        if (! $data['refund']['shipping']) {
-            $data['refund']['shipping'] = 0;
-        }
+        // if (! $data['refund']['shipping']) {
+        //     $data['refund']['shipping'] = 0;
+        // }
 
         $totals = $this->refundRepository->getOrderItemsRefundSummary($data['refund']['items'], $orderId);
 
-        $maxRefundAmount = $totals['grand_total']['price'] - $order->refunds()->sum('base_adjustment_refund') ;
+        // $maxRefundAmount = $totals['grand_total']['price'] - $order->refunds()->sum('base_adjustment_refund') ;
+        $maxRefundAmount = $totals['grand_total']['price']  ;
 
-        $refundAmount = $totals['grand_total']['price'] - $totals['shipping']['price'] + $data['refund']['shipping'] + $data['refund']['adjustment_refund'] - $data['refund']['adjustment_fee'] ;
+        // $refundAmount = $totals['grand_total']['price'] - $totals['shipping']['price'] + $data['refund']['shipping'] + $data['refund']['adjustment_refund'] - $data['refund']['adjustment_fee'] ;
+        $refundAmount = $totals['grand_total']['price'] ;
 
         if (! $refundAmount) {
             session()->flash('error', trans('admin::app.sales.refunds.invalid-refund-amount-error'));
@@ -133,7 +135,13 @@ class RefundController extends Controller
 
         session()->flash('success', trans('admin::app.response.create-success', ['name' => 'Refund']));
 
-        return redirect()->route($this->_config['redirect'], $orderId);
+        // return redirect()->route($this->_config['redirect'], $orderId);
+        return response()->json(
+            [
+                'success' => true,
+                'message' => 'Save susscessfully',
+            ]
+        );
     }
 
     /**
