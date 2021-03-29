@@ -61,26 +61,52 @@ class ProductDataGrid extends DataGrid
         }
 
         /* query builder */
-        $queryBuilder = DB::table('product_flat')
-            ->leftJoin('products', 'product_flat.product_id', '=', 'products.id')
-            ->leftJoin('attribute_families', 'products.attribute_family_id', '=', 'attribute_families.id')
-            ->leftJoin('product_inventories', 'product_flat.product_id', '=', 'product_inventories.product_id')
-            ->leftJoin('product_images', 'product_flat.product_id', '=', 'product_images.product_id')
-            ->select(
-                'product_flat.locale',
-                'product_flat.channel',
-                'product_flat.product_id',
-                'products.sku as product_sku',
-                'product_flat.product_number',
-                'product_flat.name as product_name',
-                'products.type as product_type',
-                'product_flat.status',
-                'product_flat.price',
-                'attribute_families.name as attribute_family',
-                'product_images.path as product_image',
-                DB::raw('SUM(DISTINCT ' . DB::getTablePrefix() . 'product_inventories.qty) as quantity')
-            );
-
+        if(auth()->guard('admin')->user()->role['id'] == 1){
+            $queryBuilder = DB::table('product_flat')
+                ->leftJoin('products', 'product_flat.product_id', '=', 'products.id')
+                ->leftJoin('attribute_families', 'products.attribute_family_id', '=', 'attribute_families.id')
+                ->leftJoin('product_inventories', 'product_flat.product_id', '=', 'product_inventories.product_id')
+                ->leftJoin('product_images', 'product_flat.product_id', '=', 'product_images.product_id')
+                ->select(
+                    'product_flat.locale',
+                    'product_flat.channel',
+                    'product_flat.product_id',
+                    'products.sku as product_sku',
+                    'product_flat.product_number',
+                    'product_flat.name as product_name',
+                    'products.type as product_type',
+                    'product_flat.status',
+                    'product_flat.price',
+                    'attribute_families.name as attribute_family',
+                    'product_images.path as product_image',
+                    DB::raw('SUM(DISTINCT ' . DB::getTablePrefix() . 'product_inventories.qty) as quantity')
+                );
+            }else{
+                $inventory_id = $invent_id = auth()->guard('admin')->user()->inventory_id;
+                $queryBuilder = DB::table('product_flat')
+                ->leftJoin('products', 'product_flat.product_id', '=', 'products.id')
+                ->leftJoin('attribute_families', 'products.attribute_family_id', '=', 'attribute_families.id')
+                ->leftJoin('product_images', 'product_flat.product_id', '=', 'product_images.product_id')
+                ->Join('product_inventories', function($join)use($inventory_id){
+                    $join->on('product_flat.product_id', '=', 'product_inventories.product_id')
+                        ->where('product_inventories.inventory_source_id', '=', $inventory_id )
+                        ->where('product_inventories.qty','!=',0);
+                })  
+                ->select(
+                    'product_flat.locale',
+                    'product_flat.channel',
+                    'product_flat.product_id',
+                    'products.sku as product_sku',
+                    'product_flat.product_number',
+                    'product_flat.name as product_name',
+                    'products.type as product_type',
+                    'product_flat.status',
+                    'product_flat.price',
+                    'attribute_families.name as attribute_family',
+                    'product_images.path as product_image',
+                    DB::raw('SUM(DISTINCT ' . DB::getTablePrefix() . 'product_inventories.qty) as quantity')
+                );
+            }
         $queryBuilder->groupBy('product_flat.product_id', 'product_flat.locale', 'product_flat.channel');
 
         $queryBuilder->whereIn('product_flat.locale', $whereInLocales);
@@ -127,11 +153,9 @@ class ProductDataGrid extends DataGrid
                 if (is_null($value->product_image)) {
                     return '';
                 } else {   
-                echo('<img src="'.Storage::url($value->product_image).'" style="position: relative;height: 100px;width: 100px;margin-right: 5px;">');
+                echo('<img src="'.Storage::url($value->product_image).'" style="position: relative;height: 50px;width: 50px;margin-right: 5px;">');
                 }
             },
-            
-            
         ]);
         $this->addColumn([
             'index'      => 'product_number',
@@ -193,7 +217,7 @@ class ProductDataGrid extends DataGrid
             'searchable' => false,
             'filterable' => true,
         ]);
-
+        
         $this->addColumn([
             'index'      => 'quantity',
             'label'      => trans('admin::app.datagrid.qty'),
@@ -213,50 +237,57 @@ class ProductDataGrid extends DataGrid
 
     public function prepareActions()
     {
-        $this->addAction([
-            'title'     => trans('admin::app.datagrid.edit'),
-            'method'    => 'GET',
-            'route'     => 'admin.catalog.products.edit',
-            'icon'      => 'icon pencil-lg-icon',
-            'condition' => function () {
-                return true;
-            },
-        ]);
-
-        $this->addAction([
-            'title'        => trans('admin::app.datagrid.delete'),
-            'method'       => 'POST',
-            'route'        => 'admin.catalog.products.delete',
-            'confirm_text' => trans('ui::app.datagrid.massaction.delete', ['resource' => 'product']),
-            'icon'         => 'icon trash-icon',
-        ]);
+        if(checkPermission('catalog.products.edit')){
+            $this->addAction([
+                'title'     => trans('admin::app.datagrid.edit'),
+                'method'    => 'GET',
+                'route'     => 'admin.catalog.products.edit',
+                'icon'      => 'icon pencil-lg-icon',
+                'condition' => function () {
+                    return true;
+                },
+            ]);
+        }
+        if(checkPermission('catalog.products.delete')){
+            $this->addAction([
+                'title'        => trans('admin::app.datagrid.delete'),
+                'method'       => 'POST',
+                'route'        => 'admin.catalog.products.delete',
+                'confirm_text' => trans('ui::app.datagrid.massaction.delete', ['resource' => 'product']),
+                'icon'         => 'icon trash-icon',
+            ]);
+        }
     }
 
     public function prepareMassActions()
     {
-        $this->addAction([
-            'title'  => trans('admin::app.datagrid.copy'),
-            'method' => 'GET',
-            'route'  => 'admin.catalog.products.copy',
-            'icon'   => 'icon copy-icon',
-        ]);
-
-        $this->addMassAction([
-            'type'   => 'delete',
-            'label'  => trans('admin::app.datagrid.delete'),
-            'action' => route('admin.catalog.products.massdelete'),
-            'method' => 'DELETE',
-        ]);
-
-        $this->addMassAction([
-            'type'    => 'update',
-            'label'   => trans('admin::app.datagrid.update-status'),
-            'action'  => route('admin.catalog.products.massupdate'),
-            'method'  => 'PUT',
-            'options' => [
-                'Active'   => 1,
-                'Inactive' => 0,
-            ],
-        ]);
+        if(checkPermission('catalog.products.create')){
+            $this->addAction([
+                'title'  => trans('admin::app.datagrid.copy'),
+                'method' => 'GET',
+                'route'  => 'admin.catalog.products.copy',
+                'icon'   => 'icon copy-icon',
+            ]);
+        }
+        if(checkPermission('catalog.products.delete')){
+            $this->addMassAction([
+                'type'   => 'delete',
+                'label'  => trans('admin::app.datagrid.delete'),
+                'action' => route('admin.catalog.products.massdelete'),
+                'method' => 'DELETE',
+            ]);
+        }
+        if(checkPermission('catalog.products.edit')){
+            $this->addMassAction([
+                'type'    => 'update',
+                'label'   => trans('admin::app.datagrid.update-status'),
+                'action'  => route('admin.catalog.products.massupdate'),
+                'method'  => 'PUT',
+                'options' => [
+                    'Active'   => 1,
+                    'Inactive' => 0,
+                ],
+            ]);
+        }
     }
 }
