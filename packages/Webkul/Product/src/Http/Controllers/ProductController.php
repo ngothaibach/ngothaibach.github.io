@@ -16,7 +16,7 @@ use Webkul\Inventory\Repositories\InventorySourceRepository;
 use Webkul\Product\Repositories\ProductDownloadableLinkRepository;
 use Webkul\Product\Repositories\ProductDownloadableSampleRepository;
 use Webkul\Product\Repositories\ProductAttributeValueRepository;
-
+use Illuminate\Http\UploadedFile;
 class ProductController extends Controller
 {
     /**
@@ -160,6 +160,7 @@ class ProductController extends Controller
      */
     public function store()
     {
+       
         if (! request()->get('family')
             && ProductType::hasVariants(request()->input('type'))
             && request()->input('sku') != ''
@@ -190,6 +191,9 @@ class ProductController extends Controller
         session()->flash('success', trans('admin::app.response.create-success', ['name' => 'Product']));
 
         return redirect()->route($this->_config['redirect'], ['id' => $product->id]);
+        // return response()->json(
+        //    ['id' => $product->id]
+        // );
     }
 
     /**
@@ -199,14 +203,15 @@ class ProductController extends Controller
      *
      * @return \Illuminate\View\View
      */
+
     public function edit($id)
     {
+        
         $product = $this->productRepository->with(['variants', 'variants.inventories'])->findOrFail($id);
 
         $categories = $this->categoryRepository->getCategoryTree();
 
         $inventorySources = $this->inventorySourceRepository->findWhere(['status' => 1]);
-
         return view($this->_config['view'], compact('product', 'categories', 'inventorySources'));
     }
 
@@ -218,10 +223,13 @@ class ProductController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function update(ProductForm $request, $id)
+    public function update($id)
     {
-        $data = request()->all();
 
+  
+        $data = request()->all();
+       
+        
         $multiselectAttributeCodes = array();
 
         $productAttributes = $this->productRepository->findOrFail($id);
@@ -245,12 +253,16 @@ class ProductController extends Controller
                 }
             }
         }
-
+        
+        
         $product = $this->productRepository->update($data, $id);
+
 
         session()->flash('success', trans('admin::app.response.update-success', ['name' => 'Product']));
 
         return redirect()->route($this->_config['redirect']);
+            //  return response()->json(['message' => $data], 200);
+
     }
 
     /**
@@ -364,6 +376,7 @@ class ProductController extends Controller
     }
 
     /**
+     * 
      * Mass updates the products
      *
      * @return \Illuminate\Http\Response
