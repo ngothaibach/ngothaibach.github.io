@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Event;
 use Webkul\User\Http\Requests\UserForm;
 use Webkul\User\Repositories\RoleRepository;
 use Webkul\User\Repositories\AdminRepository;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -71,8 +72,12 @@ class UserController extends Controller
     public function create()
     {
         $roles = $this->roleRepository->all();
+        $inventory_list = DB::table('inventory_sources')
+        ->where('id', '!=', '1')
+        ->orderBy('id', 'desc')
+        ->get()->toArray();
 
-        return view($this->_config['view'], compact('roles'));
+        return view($this->_config['view'], compact('roles','inventory_list'));
     }
 
     /**
@@ -112,8 +117,12 @@ class UserController extends Controller
         $user = $this->adminRepository->findOrFail($id);
 
         $roles = $this->roleRepository->all();
+        $inventory_list = DB::table('inventory_sources')
+        ->where('id', '!=', '1')
+        ->orderBy('id', 'desc')
+        ->get()->toArray();
 
-        return view($this->_config['view'], compact('user', 'roles'));
+        return view($this->_config['view'], compact('user', 'roles','inventory_list'));
     }
 
     /**
@@ -166,7 +175,6 @@ class UserController extends Controller
     public function destroy($id)
     {
         $user = $this->adminRepository->findOrFail($id);
-
         if ($this->adminRepository->count() == 1) {
             session()->flash('error', trans('admin::app.response.last-delete-error', ['name' => 'Admin']));
         } else {
@@ -185,7 +193,7 @@ class UserController extends Controller
 
                 Event::dispatch('user.admin.delete.after', $id);
 
-                return response()->json(['message' => true], 200);
+                return redirect()->route('admin.users.index');
             } catch (Exception $e) {
                 session()->flash('error', trans('admin::app.response.delete-failed', ['name' => 'Admin']));
             }

@@ -163,16 +163,29 @@ class ExchangeController extends Controller
      */
     public function list_purchases()
     {
-        $users = DB::table('admins')->select('id', 'name')->get();
-        $receipt_notes = DB::table('exchange_notes')
-        ->join('suppliers', 'suppliers.id', '=', 'exchange_notes.supplier_id')
-        ->join('inventory_sources', 'inventory_sources.id', '=', 'exchange_notes.to_inventory_source_id')
-        ->join('admins', 'admins.id', '=', 'exchange_notes.created_user_id')
-        ->select('exchange_notes.id', 'exchange_notes.created_date', 'exchange_notes.note', 'exchange_notes.status','exchange_notes.type','exchange_notes.importer', 'exchange_notes.receipt_date', 'suppliers.name as supplier', 'inventory_sources.name as inventory','inventory_sources.id as inventoryID', 'admins.name as created_user')
-        ->where('type', '=', 'receipt')
-        ->orderBy('id', 'desc')
-        ->get()->toArray();
-      
+        $users = DB::table('admins')->select('id', 'name','inventory_id')->get();
+        $role_id = auth()->guard('admin')->user()->role['id'];
+        if( $role_id != 1){
+            $invent_id = auth()->guard('admin')->user()->inventory_id;
+            $receipt_notes = DB::table('exchange_notes')
+            ->join('suppliers', 'suppliers.id', '=', 'exchange_notes.supplier_id')
+            ->join('inventory_sources', 'inventory_sources.id', '=', 'exchange_notes.to_inventory_source_id')
+            ->join('admins', 'admins.id', '=', 'exchange_notes.created_user_id')
+            ->select('exchange_notes.id', 'exchange_notes.created_date', 'exchange_notes.note', 'exchange_notes.status','exchange_notes.type','exchange_notes.importer', 'exchange_notes.receipt_date', 'suppliers.name as supplier', 'inventory_sources.name as inventory','inventory_sources.id as inventoryID', 'admins.name as created_user','exchange_notes.total')
+            ->where('type', '=', 'receipt')
+            ->where('to_inventory_source_id','=',$invent_id)
+            ->orderBy('id', 'desc')
+            ->get()->toArray();
+        }else{
+            $receipt_notes = DB::table('exchange_notes')
+            ->join('suppliers', 'suppliers.id', '=', 'exchange_notes.supplier_id')
+            ->join('inventory_sources', 'inventory_sources.id', '=', 'exchange_notes.to_inventory_source_id')
+            ->join('admins', 'admins.id', '=', 'exchange_notes.created_user_id')
+            ->select('exchange_notes.id', 'exchange_notes.created_date', 'exchange_notes.note', 'exchange_notes.status','exchange_notes.type','exchange_notes.importer', 'exchange_notes.receipt_date', 'suppliers.name as supplier', 'inventory_sources.name as inventory','inventory_sources.id as inventoryID', 'admins.name as created_user','exchange_notes.total')
+            ->where('type', '=', 'receipt')
+            ->orderBy('id', 'desc')
+            ->get()->toArray();
+        }
 
         // $productInventoryQty = $this->productInventoryRepository->where('inventory_source_id', '=', request()->from_inventory_source)->where('product_id', '=', $product['id'])
 
@@ -182,7 +195,7 @@ class ExchangeController extends Controller
 
         // $receipt_notes = DB::table('exchange_notes')->orderBy('id', 'DESC')->get()->toArray();
 
-        return view($this->_config['view'], compact('receipt_notes','users'));
+        return view($this->_config['view'], compact('receipt_notes','users','role_id'));
     }
 
     /**
@@ -192,16 +205,33 @@ class ExchangeController extends Controller
      */
     public function list_transfers()
     {
-        $receipt_notes = DB::table('exchange_notes')
-        // ->join('suppliers', 'suppliers.id', '=', 'exchange_notes.supplier_id')
-        ->leftJoin('inventory_sources as to_inventory_sources', 'to_inventory_sources.id', '=', 'exchange_notes.to_inventory_source_id')
-        ->leftJoin('inventory_sources as from_inventory_sources', 'from_inventory_sources.id', '=', 'exchange_notes.from_inventory_source_id')
-        ->join('admins', 'admins.id', '=', 'exchange_notes.created_user_id')
-        ->select('exchange_notes.id', 'exchange_notes.created_date', 'exchange_notes.note', 'exchange_notes.status', 'exchange_notes.receipt_date', 'exchange_notes.transfer_date', 'to_inventory_sources.name as to_inventory', 'from_inventory_sources.name as from_inventory','from_inventory_sources.id as from_inventory_id', 'admins.name as created_user')
-        ->where('type', '=', 'transfer')
-        ->orderBy('id', 'desc')
-        ->get()->toArray();
-        return view($this->_config['view'], compact('receipt_notes'));
+        $role_id = auth()->guard('admin')->user()->role['id'];
+        if($role_id != 1){
+            $invent_id = auth()->guard('admin')->user()->inventory_id;
+            $receipt_notes = DB::table('exchange_notes')
+            // ->join('suppliers', 'suppliers.id', '=', 'exchange_notes.supplier_id')
+            ->leftJoin('inventory_sources as to_inventory_sources', 'to_inventory_sources.id', '=', 'exchange_notes.to_inventory_source_id')
+            ->leftJoin('inventory_sources as from_inventory_sources', 'from_inventory_sources.id', '=', 'exchange_notes.from_inventory_source_id')
+            ->join('admins', 'admins.id', '=', 'exchange_notes.created_user_id')
+            ->select('exchange_notes.id', 'exchange_notes.created_date', 'exchange_notes.note', 'exchange_notes.status', 'exchange_notes.receipt_date', 'exchange_notes.transfer_date', 'to_inventory_sources.name as to_inventory', 'from_inventory_sources.name as from_inventory','from_inventory_sources.id as from_inventory_id', 'admins.name as created_user')
+            ->where('type', '=', 'transfer')
+            ->where('from_inventory_source_id','=',$invent_id)
+            ->orwhere('to_inventory_source_id','=',$invent_id)
+            ->orderBy('id', 'desc')
+            ->get()->toArray();  
+        }else{
+            $receipt_notes = DB::table('exchange_notes')
+            // ->join('suppliers', 'suppliers.id', '=', 'exchange_notes.supplier_id')
+            ->leftJoin('inventory_sources as to_inventory_sources', 'to_inventory_sources.id', '=', 'exchange_notes.to_inventory_source_id')
+            ->leftJoin('inventory_sources as from_inventory_sources', 'from_inventory_sources.id', '=', 'exchange_notes.from_inventory_source_id')
+            ->join('admins', 'admins.id', '=', 'exchange_notes.created_user_id')
+            ->select('exchange_notes.id', 'exchange_notes.created_date', 'exchange_notes.note', 'exchange_notes.status', 'exchange_notes.receipt_date', 'exchange_notes.transfer_date', 'to_inventory_sources.name as to_inventory', 'from_inventory_sources.name as from_inventory','from_inventory_sources.id as from_inventory_id', 'admins.name as created_user')
+            ->where('type', '=', 'transfer')
+            ->orderBy('id', 'desc')
+            ->get()->toArray();
+        }
+        
+        return view($this->_config['view'], compact('receipt_notes','role_id'));
     }
 
     /**
@@ -370,12 +400,14 @@ class ExchangeController extends Controller
         $product_list = request() -> product_list;
         $type = request() -> type;
         $inventoryID = request() -> inventoryID;
+        $total = request() -> total;
 
         // $name = $item->id;
         $exchaneNote = ExchangeNote::find($id);
         $exchaneNote->status = $status;
         $exchaneNote->note = $note;
         $exchaneNote->importer = $importer;
+        $exchaneNote->total = $total;
         $exchaneNote->save();
         foreach ($product_list as $product){
             // cập nhật các trường thay đổi số lượng
@@ -384,7 +416,7 @@ class ExchangeController extends Controller
                 ['exchange_note_id', $id ],
                 ['id',$product['id'] ],
             ])
-            ->update(['transfer_qty' => $product['transfer_qty']]);
+            ->update(['receipt_qty' => $product['receipt_qty']],);
              // cập nhật số lượng trong kho
             if($status == 'received'){
                 $productInventory = $this->productInventoryRepository->where('inventory_source_id', '=', $inventoryID )->where('product_id', '=', $product['product_id'])

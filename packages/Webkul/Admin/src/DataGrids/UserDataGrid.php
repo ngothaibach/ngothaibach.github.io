@@ -90,7 +90,7 @@ class UserDataGrid extends DataGrid
 
         $this->addAction([
             'title'  => trans('admin::app.datagrid.delete'),
-            'method' => 'POST',
+            'method' => 'GET',
             'route'  => 'admin.users.delete',
             'icon'   => 'icon trash-icon',
         ]);

@@ -110,7 +110,7 @@
                 @if ($order->billing_address || $order->shipping_address)
                     <accordian :title="'{{ __('admin::app.sales.orders.address') }}'" :active="true">
                         <div slot="body">
-
+                            
                             @if ($order->billing_address)
                                 <div class="sale-section">
                                     <div class="secton-title">
@@ -174,7 +174,7 @@
                             </div>
                         </div>
 
-                        <div class="sale-section">
+                        {{-- <div class="sale-section">
                             <div class="secton-title">
                                 <span>{{ __('admin::app.sales.orders.shipping-info') }}</span>
                             </div>
@@ -200,7 +200,7 @@
                                     </span>
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
                     </div>
                 </accordian>
 
@@ -217,7 +217,7 @@
                                         <th>{{ __('admin::app.sales.orders.qty') }}</th>
                                         <th>{{ __('admin::app.sales.orders.subtotal') }}</th>
                                         <th>{{ __('admin::app.sales.orders.tax-amount') }}</th>
-                                        <th>{{ __('admin::app.sales.orders.discount-amount') }}</th>
+                                        {{-- <th>{{ __('admin::app.sales.orders.discount-amount') }}</th> --}}
                                         <th>{{ __('admin::app.sales.orders.grand-total') }}</th>
                                     </tr>
                                 </thead>
@@ -250,9 +250,10 @@
 
                                             <td>{{ core()->formatBasePrice($item->base_tax_amount) }}</td>
 
-                                            <td>{{ core()->formatBasePrice($item->base_discount_amount) }}</td>
+                                            {{-- <td>{{ core()->formatBasePrice($item->base_discount_amount) }}</td> --}}
 
-                                            <td>{{ core()->formatBasePrice($item->base_total + $item->base_tax_amount - $item->base_discount_amount) }}</td>
+                                            {{-- <td>{{ core()->formatBasePrice($item->base_total + $item->base_tax_amount - $item->base_discount_amount) }}</td> --}}
+                                            <td>{{ core()->formatBasePrice($item->base_total + $item->base_tax_amount) }}</td>
                                         </tr>
                                     @endforeach
 
@@ -294,6 +295,14 @@
                                     <td>{{ __('admin::app.sales.orders.discount') }}</td>
                                     <td>-</td>
                                     <td>-{{ core()->formatBasePrice($refund->base_discount_amount) }}</td>
+                                </tr>
+                            @endif
+
+                            @if ($refund->collection_diff != 0)
+                                <tr>
+                                    <td>Thu khác</td>
+                                    <td>-</td>
+                                    <td>{{ core()->formatBasePrice($refund->collection_diff) }}</td>
                                 </tr>
                             @endif
 

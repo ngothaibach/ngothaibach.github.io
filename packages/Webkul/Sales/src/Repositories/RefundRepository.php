@@ -104,6 +104,7 @@ class RefundRepository extends Repository
                 'base_adjustment_fee'    => $data['refund']['adjustment_fee'],
                 'shipping_amount'        => core()->convertPrice($data['refund']['shipping'], $order->order_currency_code),
                 'base_shipping_amount'   => $data['refund']['shipping'],
+                'collection_diff'        => $order->collection_diff,
             ]);
 
             foreach ($data['refund']['items'] as $itemId => $qty) {
@@ -221,8 +222,8 @@ class RefundRepository extends Repository
             $refund->base_discount_amount += $refundItem->base_discount_amount;
         }
 
-        $refund->grand_total = $refund->sub_total + $refund->tax_amount + $refund->shipping_amount + $refund->adjustment_refund - $refund->adjustment_fee - $refund->discount_amount;
-        $refund->base_grand_total = $refund->base_sub_total + $refund->base_tax_amount + $refund->base_shipping_amount + $refund->base_adjustment_refund - $refund->base_adjustment_fee - $refund->base_discount_amount;
+        $refund->grand_total = $refund->sub_total + $refund->tax_amount + $refund->shipping_amount + $refund->adjustment_refund - $refund->adjustment_fee - $refund->discount_amount + $refund->collection_diff;
+        $refund->base_grand_total = $refund->base_sub_total + $refund->base_tax_amount + $refund->base_shipping_amount + $refund->base_adjustment_refund - $refund->base_adjustment_fee - $refund->base_discount_amount + $refund->collection_diff;
 
         $refund->save();
 
@@ -244,6 +245,7 @@ class RefundRepository extends Repository
             'tax'         => ['price' => 0],
             'shipping'    => ['price' => 0],
             'grand_total' => ['price' => 0],
+            'collection_diff' => ['price' => 0],
         ];
 
         foreach ($data as $orderItemId => $qty) {
@@ -266,11 +268,16 @@ class RefundRepository extends Repository
 
         $summary['shipping']['price'] += $order->base_shipping_invoiced - $order->base_shipping_refunded - $order->base_shipping_discount_amount;
 
-        $summary['grand_total']['price'] += $summary['subtotal']['price'] + $summary['tax']['price'] + $summary['shipping']['price'] - $summary['discount']['price'];
+        $summary['collection_diff']['price'] = $order->collection_diff;
+        $summary['discount']['price'] = $order->discount_amount;
+
+        $summary['grand_total']['price'] += $summary['subtotal']['price'] + $summary['tax']['price'] + $summary['shipping']['price'] - $summary['discount']['price'] + $summary['collection_diff']['price'];
 
         $summary['subtotal']['formated_price'] = core()->formatBasePrice($summary['subtotal']['price']);
 
         $summary['discount']['formated_price'] = core()->formatBasePrice($summary['discount']['price']);
+
+        $summary['collection_diff']['formated_price'] = core()->formatBasePrice($summary['collection_diff']['price']);
 
         $summary['tax']['formated_price'] = core()->formatBasePrice($summary['tax']['price']);
 

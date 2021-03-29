@@ -61,13 +61,14 @@ class ProductRepository extends Repository
      *
      * @return \Webkul\Product\Contracts\Product
      */
-    public function create(array $data)
+    public function create(array $data, $attribute = "id")
     {
         Event::dispatch('catalog.product.create.before');
 
         $typeInstance = app(config('product_types.' . $data['type'] . '.class'));
 
         $product = $typeInstance->create($data);
+        $product = $product->getTypeInstance()->update($data, $product->id, $attribute);
 
         Event::dispatch('catalog.product.create.after', $product);
 

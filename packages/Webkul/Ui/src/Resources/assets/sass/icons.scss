@@ -205,7 +205,20 @@
     width: 17px;
     height: 13px;
 }
-
+.custom-arrow-icon-down {
+    border: solid black;
+    border-width: 0 3px 3px 0;
+    display: inline-block;
+    padding: 3px;
+    transform: rotate(45deg);
+}
+.custom-arrow-icon-up {
+    border: solid black;
+    border-width: 0 3px 3px 0;
+    display: inline-block;
+    padding: 3px;
+    transform: rotate(-135deg);
+}
 .arrow-up-white-icon {
     background-image: url("../images/up-arrow-white.svg");
     width: 17px;

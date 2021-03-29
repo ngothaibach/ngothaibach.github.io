@@ -29,12 +29,12 @@ class Order extends Model implements OrderContract
     ];
 
     protected $statusLabel = [
-        self::STATUS_PENDING         => 'Pending',
-        self::STATUS_PENDING_PAYMENT => 'Pending Payment',
-        self::STATUS_PROCESSING      => 'Processing',
-        self::STATUS_COMPLETED       => 'Completed',
-        self::STATUS_CANCELED        => 'Canceled',
-        self::STATUS_CLOSED          => 'Closed',
+        self::STATUS_PENDING         => 'Dừng',
+        self::STATUS_PENDING_PAYMENT => 'Dừng thanh toán',
+        self::STATUS_PROCESSING      => 'Đang xử lý',
+        self::STATUS_COMPLETED       => 'Hoàn thành',
+        self::STATUS_CANCELED        => 'Hủy',
+        self::STATUS_CLOSED          => 'Đóng',
         self::STATUS_FRAUD           => 'Fraud',
     ];
 

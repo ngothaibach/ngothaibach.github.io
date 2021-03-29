@@ -60,7 +60,7 @@ class RolesDataGrid extends DataGrid
 
         $this->addAction([
             'title'  => trans('admin::app.datagrid.delete'),
-            'method' => 'POST',
+            'method' => 'GET',
             'route'  => 'admin.roles.delete',
             'icon'   => 'icon trash-icon',
         ]);

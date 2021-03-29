@@ -11,11 +11,13 @@
             <div class="page-title">
                 <h1>{{ __('admin::app.vpt.inventory.receipt-notes') }}</h1>
             </div>
+            @if(checkPermission('exchange.list_purchases.create'))
             <div class="page-action">
                 <a href="{{ route('admin.exchange.purchase-order.create') }}" class="btn btn-lg btn-primary">
                     {{ __('admin::app.vpt.inventory.add-receipt-note') }}
                 </a>
             </div>
+            @endif
         </div>
         <div class="page-content">
             <vpt-list-receipt-notes></vpt-list-receipt-notes>
@@ -23,29 +25,26 @@
     </div>
 @stop
 
-
-
-
 @push('scripts')
     <script type="text/x-template" id="vpt-list-receipt-notes-template">
         <form action="#" class="form newtopic" @submit.prevent="save">
-
-                                        <div>
+                                        <div>                                               
                                                                                         <table class="table table-bordered">
                                                                                             <thead>
                                                                                             <tr>
-                                                                                                <th v-for="table_header in table_headers" class="grid_head">
-                                                                                                    <p v-text="table_header"></p>
+                                                                                                <th v-for="(table_header,index) in table_headers" >
+                                                                                                    <p  v-text="table_header" v-on:click = "sort(sort_list[index]);showArrow(index)" ></p><p :class="arrow" v-if="currentArrow == index" ></p>
+                                                                                                </p>
                                                                                                 </th>
                                                                                             </tr>
                                                                                             </thead>
-                                                                                            <tbody v-for="(item,index) in form.listReceiptNotes">
+                                                                                            <tbody v-for="(item,index) in pageOfItems" :key="item.id">
                                                                                             
                                                                                                 <tr :class="[selected_transfer ===  item.id ? 'table-info' : '']" v-on:click="load_product(item.id)">
                                                                                                     <td v-text="'MDH00' + item.id"></td>
                                                                                                     <td v-text="item.created_date"></td>
                                                                                                     <td v-text="item.supplier"></td>
-                                                                                                    <td v-text="item.id"></td>
+                                                                                                    <td v-text="item.total"></td>
                                                                                                     <td v-if="item.status == 'temporary'" >Lưu tạm</td>
                                                                                                     <td v-if="item.status == 'received'" >Đã nhận</td>
                                                                                                     <td v-if="item.status == 'cancel'" >Hủy</td>
@@ -101,7 +100,7 @@
                                                                                                                         <div class="form-group row">
                                                                                                                             <label class="col-sm-4 col-form-label">Trạng thái</label>
                                                                                                                             <div class="col-sm-8">
-                                                                                                                                <select v-model="form.listReceiptNotes[index].status" class="form-control" :disabled="form.oldListReceip[index].status == 'temporary' ? false : true">
+                                                                                                                                <select v-model="form.listReceiptNotes[index].status" class="form-control" :disabled="!updatePermission ? true : form.oldListReceip[index].status == 'temporary' ? false : true ">
                                                                                                                                         <option v-for="item in form.status" :value="item.key" v-text="item.value">
                                                                                                                                         </option>
                                                                                                                                     </select>
@@ -120,7 +119,7 @@
                                                                                                                         <div class="form-group row">
                                                                                                                             <label class="col-sm-4 col-form-label" >Người nhập</label>
                                                                                                                             <div class="col-sm-8">
-                                                                                                                                <select v-model="item.importer" name="user" class="form-control" aria-label="User" :disabled="form.oldListReceip[index].status == 'temporary' ? false : true">
+                                                                                                                                <select v-model="item.importer" name="user" class="form-control" aria-label="User" :disabled="!updatePermission ? true : form.oldListReceip[index].status == 'temporary' ? false : true ">
                                                                                                                                     @foreach ($users as $user)
                                                                                                                                         @if (auth()
             ->guard('admin')
@@ -140,7 +139,7 @@
                                                                                                                         <div class="form-group row">
                                                                                                                             <label class="col-sm-4 col-form-label">Ghi chú</label>
                                                                                                                             <div class="col-sm-8">
-                                                                                                                                <textarea class="form-control" id="exampleFormControlTextarea1" v-model="item.note" :disabled="form.oldListReceip[index].status == 'temporary' ? false : true"></textarea>
+                                                                                                                                <textarea class="form-control" id="exampleFormControlTextarea1" v-model="item.note" :disabled="!updatePermission ? true : form.oldListReceip[index].status == 'temporary' ? false : true "></textarea>
                                                                                                                             </div>
                                                                                                                         </div>
                                                                                                                     </div>
@@ -163,7 +162,7 @@
                                                                                                                         <td v-text="product.price"></td>
                                                                                                                         <td>
                                                                                                                             <div class="col-sm-8">
-                                                                                                                                <input type="text" v-model="product_list[index1].receipt_qty" class="form-control" :disabled="form.oldListReceip[index].status == 'temporary' ? false : true" >
+                                                                                                                            <input type="text" :value="product.receipt_qty" @change.lazy="update_total_price(parseInt($event.target.value),product.receipt_qty,product.price,index1)" class="form-control" :disabled="!updatePermission ? true : form.oldListReceip[index].status == 'temporary' ? false : true " >
                                                                                                                             </div>
                                                                                                                         </td>
                                                                                                                     </tr>
@@ -171,7 +170,7 @@
                                                                                                             </table>
                                                                                                             <span class="font-weight-bold">Tổng giá trị:</span> <span class="text-danger font-weight-bold" v-text="price_total"></span>
                                                                                                             <div class="text-right">
-                                                                                                                <button type="button" class="btn btn-success" v-on:click="save_inventory(item.id,item.note,item.status,item.importer,item.type,item.inventoryID)" :disabled="form.oldListReceip[index].status == 'temporary' ? false : true" >Lưu</button>
+                                                                                                                <button type="button" class="btn btn-success" v-on:click="save_inventory(item.id,item.note,item.status,item.importer,item.type,item.inventoryID,price_total)" :disabled="!updatePermission ? true : form.oldListReceip[index].status == 'temporary' ? false : true " >Lưu</button>
                                                                                                             </div>
                                                                                                         </div>
                                                                                                     </div>
@@ -179,15 +178,42 @@
                                                                                                 </tr>
                                                                                             </tbody>
                                                                                         </table>
+                                                                                        <div class="card-footer pb-0 pt-3">
+                                                                                            <sort-pagination 
+                                                                                            v-bind:items="form.listReceiptNotes"
+                                                                                            v-bind:pageSize = "perPage"
+                                                                                            v-bind:sortBy ="sortBy"
+                                                                                            v-bind:currentSortDir ="currentSortDir"
+                                                                                            @changePage="onChangePage">
+                                                                                            </sort-pagination>
+                                                                                        </div>
                                                                                     </div>
-                                                                                </form>
-                                                                                </script>
+                                                                                </form> 
+                                                                                </script> 
 
     <script>
         Vue.component('vpt-list-receipt-notes', {
             template: '#vpt-list-receipt-notes-template',
             data() {
                 return {
+                    //pagination
+                    sort_list: [
+                        "id",
+                        "created_date",
+                        "supplier",
+                        "total",
+                        "status"
+                    ],
+                    currentSortDir: "desc",
+                    sortBy: "id",
+                    pageOfItems: [],
+                    perPage: 10,
+                    arrow: "custom-arrow-icon-down",
+                    currentArrow : 0,
+                    //pagination
+                    //check permission
+                    updatePermission: Boolean(Number('{{checkPermission('exchange.list_purchases.update')}}')),
+                    //check permission
                     form: new Form({
                         listReceiptNotes: {!! json_encode($receipt_notes) !!},
                         oldListReceip: {!! json_encode($receipt_notes) !!},
@@ -240,18 +266,17 @@
 
                     product_list: null,
                     selected_transfer: null,
-                    price_total: null,
+                    price_total: null
                 };
             },
             watch: {},
             methods: {
-                update_total_price() {
-                    this.price_total = 0;
-                    for (product in this.product_list) {
-                        this.price_total += product.price * product.qty
-                    }
+                update_total_price(newQty, oldQty, price,pos){
+                    this.price_total += price * (newQty - oldQty);
+                    this.product_list[pos].receipt_qty = newQty;
+                    this.product_list.push();
                 },
-                save_inventory(exchange_note_id, note, status, importer, type, inventoryID) {
+                save_inventory(exchange_note_id, note, status, importer, type, inventoryID,price_total) {
 
                     var sites = {!! json_encode($receipt_notes) !!};
                     this.form.idExchange = exchange_note_id;
@@ -260,22 +285,17 @@
                     this.form.status = status;
                     this.form.type = type;
                     this.form.inventoryID = inventoryID;
+                    this.form.total = price_total;
 
-                    console.log('dataSource', this.form.inventoryID)
-
+                    console.log('dataSource', this.form.inventoryID);
 
                     this.form.post("{{ route('admin.exchange.update') }}")
                         .then((response) => {
-
-                            // var attr = document.getElementById("text");
-                            // attr.innerHTML = response.data.message;
-                            console.error('loix ne ', response);
                             if (response.data.success == true) {
-                                console.error("save exchange successfull");
                                 window.location.href =
                                     "{{ route('admin.exchange.purchase-order.list') }}";
                             } else {
-                                console.debug("save exchange NOT successfull");
+                                console.error("save exchange NOT successfull");
                             }
                         })
                 },
@@ -291,21 +311,36 @@
                         .then(response => {
                             this.product_list = response.data.transfered_products;
                             this.form.product_list = response.data.transfered_products;
-                            console.log('this.product_list', this.product_list)
-                            console.error(this.product_list);
                             this.price_total = 0;
                             for (product of this.product_list) {
                                 this.price_total += product.price * product.receipt_qty;
                             }
                         });
-                    // this.update_total_price();
-                    // this.price_total = 0;
-                    //this.showModal = true;
                 },
+                //pagination
+                onChangePage(pageOfItems) {
+                    // update page of items
+                    this.pageOfItems = pageOfItems;
+                },    
+                sort(name){
+                    if(this.sortBy != name){
+                        this.sortBy = name;
+                        this.currentSortDir = 'desc';
+                        this.arrow = 'custom-arrow-icon-down';
+                        
+                    }else{
+                        this.currentSortDir = this.currentSortDir==='asc'?'desc':'asc';
+                        this.arrow = this.arrow=== 'custom-arrow-icon-down' ? 'custom-arrow-icon-up' : 'custom-arrow-icon-down';
+                    }
+                },
+                showArrow(number) {
+                    this.currentArrow = number;
+                },
+                //pagination
                 closeModal() {
                     this.showModal = false;
                 }
-            }
+            },
         });
 
     </script>

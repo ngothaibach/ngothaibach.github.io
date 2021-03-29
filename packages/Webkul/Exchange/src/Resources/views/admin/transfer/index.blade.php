@@ -11,11 +11,13 @@
             <div class="page-title">
                 <h1>{{ __('admin::app.vpt.inventory.transfer-note') }}</h1>
             </div>
+            @if(checkPermission('exchange.list_transfer.create'))
             <div class="page-action">
                 <a href="{{ route('admin.exchange.transfer.create') }}" class="btn btn-lg btn-primary">
                     {{ __('admin::app.vpt.inventory.transfer') }}
                 </a>
             </div>
+            @endif
         </div>
         <div class="page-content">
             <vpt-list-receipt-notes></vpt-list-receipt-notes>
@@ -30,8 +32,8 @@
                 <table class="table table-bordered">
                     <thead>
                     <tr>
-                        <th v-for="table_header in table_headers" class="grid_head">
-                            <p v-text="table_header"></p>
+                        <th v-for="(table_header,index) in table_headers" class="grid_head">
+                        <p  v-text="table_header" v-on:click = "sort(sort_list[index]);showArrow(index)" ></p><p :class="arrow" v-if="currentArrow == index" ></p>
                         </th>
                     </tr>
                     </thead>
@@ -97,7 +99,7 @@
                                                 <div class="form-group row">
                                                     <label class="col-sm-4 col-form-label">Trạng thái</label>
                                                     <div class="col-sm-8">
-                                                        <select v-model="form.listReceiptNotes[index].status" class="form-control" :disabled="form.oldListReceip[index].status == 'temporary' ? false : form.oldListReceip[index].status == 'transfering' ? false : true">
+                                                        <select v-model="form.listReceiptNotes[index].status" class="form-control" :disabled="!updatePermission ? true : form.oldListReceip[index].status == 'temporary' ? false : form.oldListReceip[index].status == 'transfering' ? false : true">
                                                                 <option v-for="item in form.status" :value="item.key" v-text="item.value">
                                                                 </option>
                                                             </select>
@@ -116,7 +118,7 @@
                                                 <div class="form-group row">
                                                     <label class="col-sm-4 col-form-label">Ngày nhận</label>
                                                     <div class="col-sm-8">
-                                                        <vuejs-datepicker v-model="item.receipt_date" :disabled="form.oldListReceip[index].status == 'temporary' ? false : form.oldListReceip[index].status == 'transfering' ? false : true"></vuejs-datepicker>
+                                                        <vuejs-datepicker v-model="item.receipt_date" :disabled="!updatePermission ? true : form.oldListReceip[index].status == 'temporary' ? false : form.oldListReceip[index].status == 'transfering' ? false : true"></vuejs-datepicker>
                                                     </div>
                                                 </div>
                                             </div>
@@ -126,7 +128,7 @@
                                                 <div class="form-group row">
                                                     <label class="col-sm-4 col-form-label">Ghi chú</label>
                                                     <div class="col-sm-8">
-                                                        <textarea class="form-control" id="exampleFormControlTextarea1" v-model="item.note" :disabled="form.oldListReceip[index].status == 'temporary' ? false : form.oldListReceip[index].status == 'transfering' ? false : true"></textarea>
+                                                        <textarea class="form-control" id="exampleFormControlTextarea1" v-model="item.note" :disabled="!updatePermission ? true : form.oldListReceip[index].status == 'temporary' ? false : form.oldListReceip[index].status == 'transfering' ? false : true"></textarea>
                                                     </div>
                                                 </div>
                                             </div>
@@ -149,7 +151,7 @@
                                                 <td v-text="product.price"></td>
                                                 <td>
                                                     <div class="col-sm-8">
-                                                        <input type="text" v-model="product_list[index1].transfer_qty" class="form-control" :disabled="form.oldListReceip[index].status == 'temporary' ? false : form.oldListReceip[index].status == 'transfering' ? false : true">
+                                                        <input type="text" v-model="product_list[index1].transfer_qty" class="form-control" :disabled="!updatePermission ? true : form.oldListReceip[index].status == 'temporary' ? false : form.oldListReceip[index].status == 'transfering' ? false : true">
                                                     </div>
                                                 </td>
                                             </tr>
@@ -157,7 +159,7 @@
                                     </table>
                                     <span class="font-weight-bold">Tổng giá trị:</span> <span class="text-danger font-weight-bold" v-text="price_total"></span>
                                     <div class="text-right">
-                                        <button type="button" class="btn btn-success" v-on:click="save_inventory(item.id,item.note,item.status,item.importer,item.type,item.from_inventory_id,item.receipt_date)" :disabled="form.oldListReceip[index].status == 'temporary' ? false : form.oldListReceip[index].status == 'transfering' ? false : true" >Lưu</button>
+                                        <button type="button" class="btn btn-success" v-on:click="save_inventory(item.id,item.note,item.status,item.importer,item.type,item.from_inventory_id,item.receipt_date)" :disabled="!updatePermission ? true : form.oldListReceip[index].status == 'temporary' ? false : form.oldListReceip[index].status == 'transfering' ? false : true" >Lưu</button>
                                     </div>
                                 </div>
                             </div>
@@ -165,6 +167,15 @@
                         </tr>
                     </tbody>
                 </table>
+                <div class="card-footer pb-0 pt-3">
+                    <sort-pagination 
+                    v-bind:items="form.listReceiptNotes"
+                    v-bind:pageSize = "perPage"
+                    v-bind:sortBy ="sortBy"
+                    v-bind:currentSortDir ="currentSortDir"
+                    @changePage="onChangePage">
+                    </sort-pagination>
+                </div>
             </div>
           </form>
         </script>
@@ -174,6 +185,24 @@
             template: '#vpt-list-receipt-notes-template',
             data() {
                 return {
+                     //pagination
+                     sort_list: [
+                        "id",
+                        "transfer_date",
+                        "from_inventory",
+                        "to_inventory",
+                        "status"
+                    ],
+                    currentSortDir: "desc",
+                    sortBy: "id",
+                    pageOfItems: [],
+                    perPage: 10,
+                    arrow: "custom-arrow-icon-down",
+                    currentArrow : 0,
+                    //pagination
+                    //check permission
+                    updatePermission: Boolean(Number('{{checkPermission('exchange.list_transfer.update')}}')),
+                    //check permission
                     form: new Form({
                         listReceiptNotes: {!! json_encode($receipt_notes) !!},
                         oldListReceip : {!! json_encode($receipt_notes) !!},
@@ -230,7 +259,7 @@
                     ],
                     product_list: null,
                     selected_transfer: null,
-                    price_total: null,
+                    price_total: null
                 };
             },
             watch: {},
@@ -297,6 +326,26 @@
 
                     //this.showModal = true;
                 },
+                //pagination
+                onChangePage(pageOfItems) {
+                    // update page of items
+                    this.pageOfItems = pageOfItems;
+                },    
+                sort(name){
+                    if(this.sortBy != name){
+                        this.sortBy = name;
+                        this.currentSortDir = 'desc';
+                        this.arrow = 'custom-arrow-icon-down';
+                        
+                    }else{
+                        this.currentSortDir = this.currentSortDir==='asc'?'desc':'asc';
+                        this.arrow = this.arrow=== 'custom-arrow-icon-down' ? 'custom-arrow-icon-up' : 'custom-arrow-icon-down';
+                    }
+                },
+                showArrow(number) {
+                    this.currentArrow = number;
+                },
+                //pagination
                 closeModal() {
                     this.showModal = false;
                 }

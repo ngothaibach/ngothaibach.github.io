@@ -6,7 +6,68 @@ return [
         'name'  => 'admin::app.acl.dashboard',
         'route' => 'admin.dashboard.index',
         'sort'  => 1,
-    ], [
+    ], 
+    [
+        'key' => 'exchange',
+        'name' => 'Quản lý kho',
+        'route' => 'exchange.admin.index',
+        'sort' => 2
+    ],
+    [
+        'key' => 'exchange.list_purchases',
+        'name' => 'Nhập hàng',
+        'route' => 'admin.exchange.purchase-order.list',
+        'sort' => 1
+    ],
+    [
+        'key' => 'exchange.list_purchases.view',
+        'name' => 'Xem',
+        'route' => 'admin.exchange.purchase-order.list',
+        'sort' => 1
+    ],
+    [
+        'key'   => 'exchange.list_purchases.create',
+        'name'  => 'Thêm',
+        'route' => 'admin.exchange.purchase-order.create',
+        'sort'  => 2
+    ],
+    [
+        'key'   => 'exchange.list_purchases.update',
+        'name'  => 'Sửa',
+        'route' => 'admin.exchange.update',
+        'sort'  => 3
+    ],
+    [
+        'key' => 'exchange.list_transfer',
+        'name' => 'Chuyển hàng',
+        'route' => 'admin.exchange.transfer.list',
+        'sort' => 2
+    ],
+    [
+        'key' => 'exchange.list_transfer.view',
+        'name' => 'xem',
+        'route' => 'admin.exchange.transfer.list',
+        'sort' => 1
+    ],
+    [
+        'key' => 'exchange.list_transfer.create',
+        'name' => 'Thêm',
+        'route' => 'admin.exchange.transfer.create',
+        'sort' => 2
+    ],
+    [
+        'key' => 'exchange.list_transfer.update',
+        'name' => 'Sửa',
+        'route' => 'admin.exchange.updateTransfer',
+        'sort' => 3
+    ],
+    [
+        'key' => 'exchange.vptinventory',
+        'name' => 'Tồn kho',
+        'route'=> 'admin.inventory_sources.inventories',
+        'sort' => 3
+    ],
+    [
         'key'   => 'sales',
         'name'  => 'admin::app.acl.sales',
         'route' => 'admin.sales.orders.index',
@@ -37,20 +98,25 @@ return [
         'route' => 'admin.catalog.products.index',
         'sort'  => 1,
     ], [
+        'key'   => 'catalog.products.view',
+        'name'  => 'Xem',
+        'route' => 'admin.catalog.products.index',
+        'sort'  => 1,
+    ],[
         'key'   => 'catalog.products.create',
         'name'  => 'admin::app.acl.create',
         'route' => 'admin.catalog.products.create',
-        'sort'  => 1,
+        'sort'  => 2,
     ], [
         'key'   => 'catalog.products.edit',
         'name'  => 'admin::app.acl.edit',
         'route' => 'admin.catalog.products.edit',
-        'sort'  => 2,
+        'sort'  => 3,
     ], [
         'key'   => 'catalog.products.delete',
         'name'  => 'admin::app.acl.delete',
         'route' => 'admin.catalog.products.delete',
-        'sort'  => 3,
+        'sort'  => 4,
     ], [
         'key'   => 'catalog.categories',
         'name'  => 'admin::app.acl.categories',
@@ -221,12 +287,14 @@ return [
         'name'  => 'admin::app.acl.delete',
         'route' => 'admin.currencies.delete',
         'sort'  => 3,
-    ], [
+    ], 
+    [
         'key'   => 'settings.exchange_rates',
         'name'  => 'admin::app.acl.exchange-rates',
         'route' => 'admin.exchange_rates.index',
         'sort'  => 3,
-    ], [
+    ], 
+    [
         'key'   => 'settings.exchange_rates.create',
         'name'  => 'admin::app.acl.create',
         'route' => 'admin.exchange_rates.create',
@@ -241,7 +309,8 @@ return [
         'name'  => 'admin::app.acl.delete',
         'route' => 'admin.exchange_rates.delete',
         'sort'  => 3,
-    ], [
+    ], 
+    [
         'key'   => 'settings.inventory_sources',
         'name'  => 'admin::app.acl.inventory-sources',
         'route' => 'admin.inventory_sources.index',

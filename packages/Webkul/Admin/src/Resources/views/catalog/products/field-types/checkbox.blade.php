@@ -2,7 +2,7 @@
 
     @foreach ($attribute->options as $option)
         <span class="checkbox" style="margin-top: 5px;">
-            <input  type="checkbox" name="{{ $attribute->code }}[]" value="{{ $option->id }}" {{ in_array($option->id, explode(',', $product[$attribute->code])) ? 'checked' : ''}}>
+            <input  type="checkbox" name="{{ $attribute->code }}[]" value="{{ $option->id }}" @if(isset($product)) {{ in_array($option->id, explode(',', $product[$attribute->code])) ? 'checked' : ''}} @endif >
             </input>
 
             <label class="checkbox-view"></label>

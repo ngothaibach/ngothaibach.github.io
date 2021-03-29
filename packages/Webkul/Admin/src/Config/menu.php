@@ -85,20 +85,23 @@ return [
         'route'      => 'admin.customer.review.index',
         'sort'       => 3,
         'icon-class' => '',
-    ]
-    // ], [
+    
+    ], 
+    // [
     //     'key'        => 'configuration',
     //     'name'       => 'admin::app.layouts.configure',
     //     'route'      => 'admin.configuration.index',
     //     'sort'       => 7,
     //     'icon-class' => 'configuration-icon',
-    // ], [
-    //     'key'        => 'settings',
-    //     'name'       => 'admin::app.layouts.settings',
-    //     'route'      => 'admin.locales.index',
-    //     'sort'       => 6,
-    //     'icon-class' => 'settings-icon',
-    // ], [
+    // ], 
+    [
+        'key'        => 'settings',
+        'name'       => 'admin::app.layouts.settings',
+        'route'      => 'admin.locales.index',
+        'sort'       => 6,
+        'icon-class' => 'settings-icon',
+    ], 
+    // [
     //     'key'        => 'settings.locales',
     //     'name'       => 'admin::app.layouts.locales',
     //     'route'      => 'admin.locales.index',
@@ -128,25 +131,27 @@ return [
     //     'route'      => 'admin.channels.index',
     //     'sort'       => 5,
     //     'icon-class' => '',
-    // ], [
-    //     'key'        => 'settings.users',
-    //     'name'       => 'admin::app.layouts.users',
-    //     'route'      => 'admin.users.index',
-    //     'sort'       => 6,
-    //     'icon-class' => '',
-    // ], [
-    //     'key'        => 'settings.users.users',
-    //     'name'       => 'admin::app.layouts.users',
-    //     'route'      => 'admin.users.index',
-    //     'sort'       => 1,
-    //     'icon-class' => '',
-    // ], [
-    //     'key'        => 'settings.users.roles',
-    //     'name'       => 'admin::app.layouts.roles',
-    //     'route'      => 'admin.roles.index',
-    //     'sort'       => 2,
-    //     'icon-class' => '',
-    // ], [
+    // ], 
+    [
+        'key'        => 'settings.users',
+        'name'       => 'admin::app.layouts.users',
+        'route'      => 'admin.users.index',
+        'sort'       => 6,
+        'icon-class' => '',
+    ], [
+        'key'        => 'settings.users.users',
+        'name'       => 'admin::app.layouts.users',
+        'route'      => 'admin.users.index',
+        'sort'       => 1,
+        'icon-class' => '',
+    ], [
+        'key'        => 'settings.users.roles',
+        'name'       => 'admin::app.layouts.roles',
+        'route'      => 'admin.roles.index',
+        'sort'       => 2,
+        'icon-class' => '',
+    ], 
+    // [
     //     'key'        => 'settings.sliders',
     //     'name'       => 'admin::app.layouts.sliders',
     //     'route'      => 'admin.sliders.index',

@@ -71,7 +71,14 @@
                                 </select>
                                 <span class="control-error" v-if="errors.has('role_id')">@{{ errors.first('role_id') }}</span>
                             </div>
-
+                            <div class="control-group" >
+                                <label >Chi nhánh</label>
+                                <select class="control" name="inventory_id">
+                                    @foreach ($inventory_list as $inventory)
+                                        <option value="{{ $inventory->id }}" {{ $user->inventory_id == $inventory->id ? 'selected' : '' }}>{{ $inventory->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
                             <div class="control-group">
                                 <label for="status">{{ __('admin::app.users.users.status') }}</label>
 

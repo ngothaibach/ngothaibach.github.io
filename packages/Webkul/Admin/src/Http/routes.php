@@ -276,7 +276,7 @@ Route::group(['middleware' => ['web', 'admin_locale']], function () {
                 ])->name('admin.catalog.products.create');
 
                 Route::post('/products/create', 'Webkul\Product\Http\Controllers\ProductController@store')->defaults('_config', [
-                    'redirect' => 'admin.catalog.products.edit',
+                    'redirect' => 'admin.catalog.products.index',
                 ])->name('admin.catalog.products.store');
 
                 Route::get('products/copy/{id}', 'Webkul\Product\Http\Controllers\ProductController@copy')->defaults('_config', [
@@ -431,7 +431,7 @@ Route::group(['middleware' => ['web', 'admin_locale']], function () {
             ])->name('admin.users.update');
 
             //delete backend user
-            Route::post('/users/delete/{id}', 'Webkul\User\Http\Controllers\UserController@destroy')->name('admin.users.delete');
+            Route::get('/users/delete/{id}', 'Webkul\User\Http\Controllers\UserController@destroy')->name('admin.users.delete');
 
             Route::get('/users/confirm/{id}', 'Webkul\User\Http\Controllers\UserController@confirm')->defaults('_config', [
                 'view' => 'admin::customers.confirm-password',
@@ -462,7 +462,7 @@ Route::group(['middleware' => ['web', 'admin_locale']], function () {
                 'redirect' => 'admin.roles.index',
             ])->name('admin.roles.update');
 
-            Route::post('/roles/delete/{id}', 'Webkul\User\Http\Controllers\RoleController@destroy')->name('admin.roles.delete');
+            Route::get('/roles/delete/{id}', 'Webkul\User\Http\Controllers\RoleController@destroy')->name('admin.roles.delete');
 
 
             // Locale Routes
