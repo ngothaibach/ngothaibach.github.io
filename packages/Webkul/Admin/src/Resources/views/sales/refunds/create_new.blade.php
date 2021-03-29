@@ -127,9 +127,12 @@ Trả hàng
                     <div class="mb-3">
                         <div class="row_new">
                             Hoàn thu khác
-                            <div class="col-right1">
+                            {{-- <div class="col-right1">
                                 <span v-text="form.collection_diff_show"></span>
-                            </div>
+                            </div> --}}
+                            <div class="col-right">
+                                <input type="text" class="w3-input" id="collection_diff" v-on:change="fn_change_collection_diff" style="text-align: right; width: 150px" placeholder="0" onClick="this.select();">
+                            </div> 
                         </div>
                     </div>
 
@@ -189,7 +192,7 @@ Trả hàng
                         discount: {{$order->discount_amount}},
                         refund_fee: 0,
                         collection_diff: {{$order->collection_diff}},
-                        collection_diff_show: this.numberFormatter({{$order->collection_diff}}),
+                        // collection_diff_show: this.numberFormatter({{$order->collection_diff}}),
                         money_must_back: this.numberFormatter({{$order->grand_total}}),
                         money_back: 0,
                         refund: {},
@@ -206,7 +209,7 @@ Trả hàng
                     this.refund.items[{{$item->id}}] = {{ $item->qty_to_refund }};
                 @endforeach
                 document.getElementById('discount').value = this.numberFormatter({{$order->discount_amount}});
-                
+                document.getElementById('collection_diff').value = this.numberFormatter({{$order->collection_diff}});
                 this.updateQty();
             },
 
@@ -264,6 +267,17 @@ Trả hàng
                     } else {
                         this.form.money_back = inputMoneyBack;
                         document.getElementById('money_back').value = this.numberFormatter(inputMoneyBack);
+                    }
+                },
+                fn_change_collection_diff: function() {
+                    var inputCollectionDiff = document.getElementById('collection_diff').value;
+                    if(isNaN(inputCollectionDiff)) {
+                        alert('Bạn phải nhập số');
+                        document.getElementById('collection_diff').value = this.numberFormatter({{$order->collection_diff}});
+                    } else {
+                        this.form.collection_diff = inputCollectionDiff;
+                        document.getElementById('collection_diff').value = this.numberFormatter(inputCollectionDiff);
+                        this.form.money_must_back = this.numberFormatter(parseInt(this.form.refund_total) - parseInt(this.form.discount) + parseInt(this.form.collection_diff) - parseInt(this.form.refund_fee));
                     }
                 },
                 save() {

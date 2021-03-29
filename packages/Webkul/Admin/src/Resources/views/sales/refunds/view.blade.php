@@ -216,9 +216,9 @@
                                         <th>{{ __('admin::app.sales.orders.price') }}</th>
                                         <th>{{ __('admin::app.sales.orders.qty') }}</th>
                                         <th>{{ __('admin::app.sales.orders.subtotal') }}</th>
-                                        <th>{{ __('admin::app.sales.orders.tax-amount') }}</th>
+                                        {{-- <th>{{ __('admin::app.sales.orders.tax-amount') }}</th> --}}
                                         {{-- <th>{{ __('admin::app.sales.orders.discount-amount') }}</th> --}}
-                                        <th>{{ __('admin::app.sales.orders.grand-total') }}</th>
+                                        {{-- <th>{{ __('admin::app.sales.orders.grand-total') }}</th> --}}
                                     </tr>
                                 </thead>
 
@@ -248,12 +248,12 @@
 
                                             <td>{{ core()->formatBasePrice($item->base_total) }}</td>
 
-                                            <td>{{ core()->formatBasePrice($item->base_tax_amount) }}</td>
+                                            {{-- <td>{{ core()->formatBasePrice($item->base_tax_amount) }}</td> --}}
 
                                             {{-- <td>{{ core()->formatBasePrice($item->base_discount_amount) }}</td> --}}
 
                                             {{-- <td>{{ core()->formatBasePrice($item->base_total + $item->base_tax_amount - $item->base_discount_amount) }}</td> --}}
-                                            <td>{{ core()->formatBasePrice($item->base_total + $item->base_tax_amount) }}</td>
+                                            {{-- <td>{{ core()->formatBasePrice($item->base_total + $item->base_tax_amount) }}</td> --}}
                                         </tr>
                                     @endforeach
 
@@ -307,6 +307,11 @@
                             @endif
 
                             <tr>
+                                <td>Phí hoàn lại</td>
+                                <td>-</td>
+                                <td>-{{ core()->formatBasePrice($refund->refund_fee) }}</td>
+                            </tr>
+                            {{-- <tr>
                                 <td>{{ __('admin::app.sales.refunds.adjustment-refund') }}</td>
                                 <td>-</td>
                                 <td>{{ core()->formatBasePrice($refund->base_adjustment_refund) }}</td>
@@ -316,7 +321,7 @@
                                 <td>{{ __('admin::app.sales.refunds.adjustment-fee') }}</td>
                                 <td>-</td>
                                 <td>{{ core()->formatBasePrice($refund->base_adjustment_fee) }}</td>
-                            </tr>
+                            </tr> --}}
 
                             <tr class="bold">
                                 <td>{{ __('admin::app.sales.orders.grand-total') }}</td>
