@@ -266,7 +266,6 @@ class ProductController extends Controller
         
         $product = $this->productRepository->update($data, $id);
 
-
         session()->flash('success', trans('admin::app.response.update-success', ['name' => 'Product']));
 
         return redirect()->route($this->_config['redirect']);
