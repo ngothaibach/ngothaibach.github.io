@@ -311,7 +311,7 @@
                                                 {{-- <th>Số lượng đã đặt</th> --}}
                                                 <th>{{ __('admin::app.sales.orders.subtotal') }}</th>
                                                 {{-- <th>Thành tiền</th> --}}
-                                                <th>{{ __('admin::app.sales.orders.tax-percent') }}</th>
+                                                {{-- <th>{{ __('admin::app.sales.orders.tax-percent') }}</th> --}}
                                                 {{-- <th>% Thuế</th> --}}
                                                 <th>{{ __('admin::app.sales.orders.tax-amount') }}</th>
                                                 {{-- <th>Tiền thuế</th> --}}
@@ -372,7 +372,7 @@
 
                                                     <td>{{ core()->formatBasePrice($item->base_total) }}</td>
 
-                                                    <td>{{ $item->tax_percent }}%</td>
+                                                    {{-- <td>{{ $item->tax_percent }}%</td> --}}
 
                                                     <td>{{ core()->formatBasePrice($item->base_tax_amount) }}</td>
 
@@ -380,7 +380,8 @@
                                                         <td>{{ core()->formatBasePrice($item->base_discount_amount) }}</td>
                                                     @endif
 
-                                                    <td>{{ core()->formatBasePrice($item->base_total + $item->base_tax_amount - $item->base_discount_amount) }}</td>
+                                                    {{-- <td>{{ core()->formatBasePrice($item->base_total + $item->base_tax_amount - $item->base_discount_amount) }}</td> --}}
+                                                    <td>{{ core()->formatBasePrice($item->base_total + $item->base_tax_amount) }}</td>
                                                 </tr>
                                             @endforeach
                                     </table>

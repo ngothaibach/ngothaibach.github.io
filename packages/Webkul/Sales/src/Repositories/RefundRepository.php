@@ -98,13 +98,22 @@ class RefundRepository extends Repository
                 'base_currency_code'     => $order->base_currency_code,
                 'channel_currency_code'  => $order->channel_currency_code,
                 'order_currency_code'    => $order->order_currency_code,
-                'adjustment_refund'      => core()->convertPrice($data['refund']['adjustment_refund'], $order->order_currency_code),
-                'base_adjustment_refund' => $data['refund']['adjustment_refund'],
-                'adjustment_fee'         => core()->convertPrice($data['refund']['adjustment_fee'], $order->order_currency_code),
-                'base_adjustment_fee'    => $data['refund']['adjustment_fee'],
-                'shipping_amount'        => core()->convertPrice($data['refund']['shipping'], $order->order_currency_code),
-                'base_shipping_amount'   => $data['refund']['shipping'],
+                // 'adjustment_refund'      => core()->convertPrice($data['refund']['adjustment_refund'], $order->order_currency_code),
+                // 'base_adjustment_refund' => $data['refund']['adjustment_refund'],
+                'adjustment_refund'      => core()->convertPrice(0, $order->order_currency_code),
+                'base_adjustment_refund' => 0,
+                // 'adjustment_fee'         => core()->convertPrice($data['refund']['adjustment_fee'], $order->order_currency_code),
+                // 'base_adjustment_fee'    => $data['refund']['adjustment_fee'],
+                'adjustment_fee'         => core()->convertPrice(0, $order->order_currency_code),
+                'base_adjustment_fee'    => 0,
+                // 'shipping_amount'        => core()->convertPrice($data['refund']['shipping'], $order->order_currency_code),
+                // 'base_shipping_amount'   => $data['refund']['shipping'],
+                'shipping_amount'        => core()->convertPrice(0, $order->order_currency_code),
+                'base_shipping_amount'   => 0,
                 'collection_diff'        => $order->collection_diff,
+                'refund_fee'             => $data['refund_fee'],
+                'discount_amount'        => $data['discount'],
+                'base_discount_amount'   => $data['discount'],
             ]);
 
             foreach ($data['refund']['items'] as $itemId => $qty) {
@@ -209,7 +218,7 @@ class RefundRepository extends Repository
     {
         $refund->sub_total = $refund->base_sub_total = 0;
         $refund->tax_amount = $refund->base_tax_amount = 0;
-        $refund->discount_amount = $refund->base_discount_amount = 0;
+        // $refund->discount_amount = $refund->base_discount_amount = 0;
 
         foreach ($refund->items as $refundItem) {
             $refund->sub_total += $refundItem->total;
@@ -218,12 +227,17 @@ class RefundRepository extends Repository
             $refund->tax_amount += $refundItem->tax_amount;
             $refund->base_tax_amount += $refundItem->base_tax_amount;
 
-            $refund->discount_amount += $refundItem->discount_amount;
-            $refund->base_discount_amount += $refundItem->base_discount_amount;
+            // $refund->discount_amount += $refundItem->discount_amount;
+            // $refund->base_discount_amount += $refundItem->base_discount_amount;
         }
 
-        $refund->grand_total = $refund->sub_total + $refund->tax_amount + $refund->shipping_amount + $refund->adjustment_refund - $refund->adjustment_fee - $refund->discount_amount + $refund->collection_diff;
-        $refund->base_grand_total = $refund->base_sub_total + $refund->base_tax_amount + $refund->base_shipping_amount + $refund->base_adjustment_refund - $refund->base_adjustment_fee - $refund->base_discount_amount + $refund->collection_diff;
+        //minhpd sửa giảm giá 
+        // if ($refund->order->discount_percent == 0) {
+        //     $refund->discount_amount = $refund->base_discount_amount = $refund->order->discount_amount;
+        // }
+
+        $refund->grand_total = $refund->sub_total + $refund->tax_amount + $refund->shipping_amount + $refund->adjustment_refund - $refund->adjustment_fee - $refund->discount_amount + $refund->collection_diff - $refund->refund_fee;
+        $refund->base_grand_total = $refund->base_sub_total + $refund->base_tax_amount + $refund->base_shipping_amount + $refund->base_adjustment_refund - $refund->base_adjustment_fee - $refund->base_discount_amount + $refund->collection_diff - $refund->refund_fee;
 
         $refund->save();
 
