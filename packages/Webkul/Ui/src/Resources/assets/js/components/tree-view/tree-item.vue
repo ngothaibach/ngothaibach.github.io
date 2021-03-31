@@ -181,6 +181,16 @@
                             value: this.savedValues
                         }
                     })
+                } else if(this.inputType == 'radio-category') {
+                    return this.$createElement('tree-radio-category', {
+                        props: {
+                            id: this.items[this.idField],
+                            label: this.caption,
+                            nameField: this.nameField,
+                            modelValue: this.items[this.valueField],
+                            value: this.savedValues
+                        }
+                    })
                 }
             },
 

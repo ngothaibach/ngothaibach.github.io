@@ -12,6 +12,7 @@ use Webkul\Product\Http\Requests\ProductForm;
 use Webkul\Product\Repositories\ProductRepository;
 use Webkul\Category\Repositories\CategoryRepository;
 use Webkul\Attribute\Repositories\AttributeFamilyRepository;
+use Webkul\Attribute\Repositories\AttributeRepository;
 use Webkul\Inventory\Repositories\InventorySourceRepository;
 use Webkul\Product\Repositories\ProductDownloadableLinkRepository;
 use Webkul\Product\Repositories\ProductDownloadableSampleRepository;
@@ -60,7 +61,12 @@ class ProductController extends Controller
      * @var \Webkul\Attribute\Repositories\AttributeFamilyRepository
      */
     protected $attributeFamilyRepository;
-
+    /**
+     * AttributeRepository object
+     *
+     * @var \Webkul\Attribute\Repositories\AttributeRepository
+     */
+    protected $attributeRepository;
     /**
      * InventorySourceRepository object
      *
@@ -95,7 +101,8 @@ class ProductController extends Controller
         ProductDownloadableSampleRepository $productDownloadableSampleRepository,
         AttributeFamilyRepository $attributeFamilyRepository,
         InventorySourceRepository $inventorySourceRepository,
-        ProductAttributeValueRepository $productAttributeValueRepository
+        ProductAttributeValueRepository $productAttributeValueRepository,
+        AttributeRepository $attributeRepository
     )
     {
         $this->_config = request('_config');
@@ -113,6 +120,8 @@ class ProductController extends Controller
         $this->inventorySourceRepository = $inventorySourceRepository;
 
         $this->productAttributeValueRepository = $productAttributeValueRepository;
+        
+        $this->attributeRepository = $attributeRepository;
     }
 
     /**
@@ -149,15 +158,31 @@ class ProductController extends Controller
         }
         $configurableFamily = null;
         $categories = $this->categoryRepository->getCategoryTree();
+        $attributes = $this->attributeRepository->findWhere(['is_filterable' =>  1]);
 
         $inventorySources = $this->inventorySourceRepository->findWhere(['status' => 1]);
         if ($familyId = request()->get('family')) {
             $configurableFamily = $this->attributeFamilyRepository->find($familyId);
         }
 
-        return view($this->_config['view'], compact('families','attributeGroups', 'configurableFamily','categories', 'inventorySources'));
+        return view($this->_config['view'], compact('families','attributeGroups', 'configurableFamily','categories','attributes', 'inventorySources'));
     }
-
+    public function addCategory(){
+        
+        $this->validate(request(), [
+            'slug'                => ['required', 'unique:category_translations,slug', new \Webkul\Core\Contracts\Validations\Slug],
+            'categoryName'        => 'required',
+            'image.*'             => 'mimes:bmp,jpeg,jpg,png,webp',
+            'categoryDescription' => 'required_if:display_mode,==,description_only,products_and_description',
+        ]);
+        $data = request()->all();
+        $data['name'] = $data['categoryName'];
+        $data['status'] = $data['categoryStatus'];
+        $data['description'] = $data['categoryDescription'];
+        $category = $this->categoryRepository->create($data);
+        session()->flash('success', trans('admin::app.response.create-success', ['name' => 'Category']));
+        return redirect()->route('admin.catalog.products.create');
+    }
     /**
      * Store a newly created resource in storage.
      *
