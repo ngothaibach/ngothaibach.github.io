@@ -396,7 +396,7 @@
                                             <label
                                                 for="{{ $attribute->code }}" {{ $attribute->is_required ? 'class=required' : '' }}>
                                                 {{ $attribute->admin_name }}
-
+                                                    
                                                 @if ($attribute->type == 'price')
                                                     <!-- <span class="currency-code">({{ core()->currencySymbol(core()->getBaseCurrencyCode()) }})</span> -->
                                                 @endif
@@ -417,8 +417,13 @@
                                                 @endif
                                                 
                                             </label>
-
-                                            @include ($typeView)
+                                            @if($attribute->code == "name")
+                                                <input type="text" v-validate="'{{$validations}}'" class="control" id="{{ $attribute->code }}" name="{{ $attribute->code }}" value="{{ old($attribute->code) }}"data-vv-as="&quot;{{ $attribute->admin_name }}&quot;"v-slugify-target="'url_key'" />
+                                            @elseif($attribute->code == "url_key")
+                                                <input type="text" v-validate="'{{$validations}}'" class="control" id="{{ $attribute->code }}" name="{{ $attribute->code }}" value="{{ old($attribute->code) }}"data-vv-as="&quot;{{ $attribute->admin_name }}&quot;"v-slugify />
+                                            @else
+                                                @include ($typeView)
+                                            @endif
 
                                             <span class="control-error"
                                                   @if ($attribute->type == 'multiselect') v-if="errors.has('{{ $attribute->code }}[]')"
@@ -451,6 +456,20 @@
                     @endforeach
 
                     {!! view_render_event('bagisto.admin.catalog.product.create_form_accordian.additional_views.after')!!}
+                            <div style="display:none" class="control-group" :class="[errors.has('channels[]') ? 'has-error' : '']">
+                                <label for="channels" class="required">{{ __('admin::app.catalog.products.channel') }}</label>
+                                <select class="control" name="channels[]" v-validate="'required'" data-vv-as="&quot;{{ __('admin::app.catalog.products.channel') }}&quot;" multiple>
+                                    @foreach (app('Webkul\Core\Repositories\ChannelRepository')->all() as $channel)
+                                        <option value="{{ $channel->id }}" @if($channel->name == "Offline") selected @endif>
+                                            {{ $channel->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+
+                                <span class="control-error" v-if="errors.has('channels[]')">
+                                    @{{ errors.first('channels[]') }}
+                                </span>
+                            </div>
                 @endforeach
                 
             </div>
