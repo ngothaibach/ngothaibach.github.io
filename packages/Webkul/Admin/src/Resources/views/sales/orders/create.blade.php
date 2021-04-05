@@ -56,14 +56,15 @@
                                 <td>{{ __('admin::app.vpt.inventory.no-data') }}</td>
                             </tr>
                             <tr v-else v-for="item in form.added_products">
-                                <td v-text="item.id"></td>
+                                {{-- <td v-text="item.id"></td> --}}
+                                <td v-text="item.sku"></td>
                                 <td><img style="width: 60xp; height: 60px;" v-bind:src="'/cache/small/' + item.featured_image"/></td>
                                 <td v-text="item.name"></td>
                                 <td v-text="item.price"></td>
                                 <td>
                                     <input type="text" class="form-control" v-model="item.qty" v-on:change="update_price">
                                 </td>
-                                <td v-text="item.in_stock"></td>
+                                {{-- <td v-text="item.in_stock"></td> --}}
                                 <td><button v-on:click="remove_product(item)" type="button" class="btn btn-danger">{{ __('admin::app.vpt.inventory.delete') }}</button></td>
                             </tr>
                             </tbody>
@@ -188,7 +189,7 @@
                         "{{ __('admin::app.vpt.inventory.name') }}",
                         "{{ __('admin::app.vpt.inventory.price') }}",
                         "{{ __('admin::app.vpt.inventory.qty') }}",
-                        "{{ __('admin::app.vpt.inventory.remain') }}",
+                        // "{{ __('admin::app.vpt.inventory.remain') }}",
                         "{{ __('admin::app.vpt.inventory.delete') }}"
                     ],
                     form: new Form({
@@ -230,7 +231,7 @@
                     // console.error(this.results);
                 },
                 add_product: function (result) {
-                    added_item = {id:result.id, name:result.name, qty:1, price:result.price, in_stock: 0, featured_image:result.featured_image};
+                    added_item = {id:result.id, name:result.name, qty:1, price:result.price, in_stock: 0, featured_image:result.featured_image, sku:result.sku};
                     this.form.added_products.push(added_item);
                     this.results = [];
                     this.form.price_total = parseInt(this.form.price_total) + parseInt(result.price);
