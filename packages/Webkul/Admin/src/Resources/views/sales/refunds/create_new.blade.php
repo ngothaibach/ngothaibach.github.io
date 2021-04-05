@@ -41,9 +41,9 @@ Trả hàng
                                 <tr>
                                     <td style="padding-top: 23px;">{{ Webkul\Product\Helpers\ProductType::hasVariants($item->type) ? $item->child->sku : $item->sku }}</td>
                                     <td style="padding-top: 23px;">{{ $item->name }}</td>
-                                    <td style="padding-top: 23px;">{{ core()->formatBasePrice($item->base_price) }}</td>
+                                    <td style="padding-top: 23px;">{{ $item->base_price }}</td>
                                     <td style="padding-top: 23px;">{{ $item->qty_ordered }}</td>
-                                    <td style="padding-top: 23px;">{{ core()->formatBasePrice($item->base_total)  }}</td>
+                                    <td style="padding-top: 23px;">{{ $item->base_total  }}</td>
                                     <td>
                                         <div class="control-group" :class="[errors.has('refund[items][{{ $item->id }}]') ? 'has-error' : '']">
                                             <input type="text" v-validate="'required|numeric|min:0'" v-on:change="updateQty" onClick="this.select();" 
@@ -92,7 +92,7 @@ Trả hàng
                             <tbody>
                             <tr v-for="item in form.added_products">
                                 <td v-text="item.sku"></td>
-                                <td><img style="width: 60xp; height: 60px;" v-bind:src="'/cache/small/' + item.featured_image"/></td>
+                                {{-- <td><img style="width: 60xp; height: 60px;" v-bind:src="'/cache/small/' + item.featured_image"/></td> --}}
                                 <td v-text="item.name"></td>
                                 <td v-text="item.price"></td>
                                 <td>
@@ -105,9 +105,9 @@ Trả hàng
                     </div>
                 </div>
 
-                <div class="col-3">
+                <div class="col-3" style="">
                     <h3>Trả hàng <a href="{{ route('admin.sales.orders.view', $order->id) }}">{{ $order->increment_id }}</a> - {{ $order->customer_full_name }}</h3>
-                    
+                <div style="">
                     <div class="mb-3">
                         <div class="row_new">
                             Tổng giá gốc hàng mua
@@ -161,7 +161,7 @@ Trả hàng
                             </div>
                         </div>
                     </div>
-
+                </div>
                     {{-- <div class="mb-3">
                         <div class="row_new">
                             Tiền trả khách
@@ -241,7 +241,7 @@ Trả hàng
                     results: [],
                     table_headers_doi: [
                         "{{ __('admin::app.vpt.inventory.code') }}",
-                        "{{ __('admin::app.vpt.inventory.image') }}",
+                        // "{{ __('admin::app.vpt.inventory.image') }}",
                         "{{ __('admin::app.vpt.inventory.name') }}",
                         "Đơn giá",
                         "{{ __('admin::app.vpt.inventory.qty') }}",
