@@ -31,9 +31,11 @@ use Excel;
 use Webkul\Exchange\Http\Models\ImportProduct;
 use Webkul\Exchange\Models\ExchangeNote;
 use Webkul\Exchange\Models\ProductExchangeNote;
+use Webkul\Admin\Helpers\FilterCollection;
 
 class ExchangeController extends Controller
 {
+    
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
     /**
@@ -165,28 +167,29 @@ class ExchangeController extends Controller
     {
         $users = DB::table('admins')->select('id', 'name','inventory_id')->get();
         $role_id = auth()->guard('admin')->user()->role['id'];
+        $searchfields = [
+                ['name'=> 'Mã đơn hàng', 'key'=> 'id', 'columnType'=> 'number', 'value' => 'exchange_notes.id'],
+                ['name'=> 'Thời gian', 'key'=> 'created_date', 'columnType'=> 'datetime', 'value'=>'exchange_notes.created_date'], 
+                ['name'=> 'Nhà cung cấp', 'key'=> 'supplier', 'columnType'=> 'string','value' => 'suppliers.name'],
+                ['name'=> 'Tổng tiền', 'key'=>'total', 'columnType'=> 'number','value' =>'exchange_notes.total'],
+                ['name'=> 'Trạng thái', 'key'=>'status', 'columnType'=> 'string','value'=>'exchange_notes.status']
+        ];
+        $query = DB::table('exchange_notes')
+        ->join('suppliers', 'suppliers.id', '=', 'exchange_notes.supplier_id')
+        ->join('inventory_sources', 'inventory_sources.id', '=', 'exchange_notes.to_inventory_source_id')
+        ->join('admins', 'admins.id', '=', 'exchange_notes.created_user_id')
+        ->select('exchange_notes.id', 'exchange_notes.created_date', 'exchange_notes.note', 'exchange_notes.status','exchange_notes.type','exchange_notes.importer', 'exchange_notes.receipt_date', 'suppliers.name as supplier', 'inventory_sources.name as inventory','inventory_sources.id as inventoryID', 'admins.name as created_user','exchange_notes.total')
+        ->where('type', '=', 'receipt');
         if( $role_id != 1){
             $invent_id = auth()->guard('admin')->user()->inventory_id;
-            $receipt_notes = DB::table('exchange_notes')
-            ->join('suppliers', 'suppliers.id', '=', 'exchange_notes.supplier_id')
-            ->join('inventory_sources', 'inventory_sources.id', '=', 'exchange_notes.to_inventory_source_id')
-            ->join('admins', 'admins.id', '=', 'exchange_notes.created_user_id')
-            ->select('exchange_notes.id', 'exchange_notes.created_date', 'exchange_notes.note', 'exchange_notes.status','exchange_notes.type','exchange_notes.importer', 'exchange_notes.receipt_date', 'suppliers.name as supplier', 'inventory_sources.name as inventory','inventory_sources.id as inventoryID', 'admins.name as created_user','exchange_notes.total')
-            ->where('type', '=', 'receipt')
-            ->where('to_inventory_source_id','=',$invent_id)
-            ->orderBy('id', 'desc')
-            ->get()->toArray();
-        }else{
-            $receipt_notes = DB::table('exchange_notes')
-            ->join('suppliers', 'suppliers.id', '=', 'exchange_notes.supplier_id')
-            ->join('inventory_sources', 'inventory_sources.id', '=', 'exchange_notes.to_inventory_source_id')
-            ->join('admins', 'admins.id', '=', 'exchange_notes.created_user_id')
-            ->select('exchange_notes.id', 'exchange_notes.created_date', 'exchange_notes.note', 'exchange_notes.status','exchange_notes.type','exchange_notes.importer', 'exchange_notes.receipt_date', 'suppliers.name as supplier', 'inventory_sources.name as inventory','inventory_sources.id as inventoryID', 'admins.name as created_user','exchange_notes.total')
-            ->where('type', '=', 'receipt')
-            ->orderBy('id', 'desc')
-            ->get()->toArray();
+            $query = $query->where('to_inventory_source_id','=',$invent_id);
         }
-
+        if(isset($_GET['search'])){
+            $filter = new filterCollection();
+            $query = $filter->filterCollection($query,$searchfields);
+        }
+        $query = $query->orderBy('id', 'desc');
+        $receipt_notes=$query->get()->toArray();
         // $productInventoryQty = $this->productInventoryRepository->where('inventory_source_id', '=', request()->from_inventory_source)->where('product_id', '=', $product['id'])
 
         // $data = DB::table('exchange_notes')->get()->toJson();
@@ -495,5 +498,4 @@ class ExchangeController extends Controller
     {
 
     }
-
 }

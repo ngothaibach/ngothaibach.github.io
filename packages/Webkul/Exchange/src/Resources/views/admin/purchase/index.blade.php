@@ -20,6 +20,16 @@
             @endif
         </div>
         <div class="page-content">
+                <filter-and-search 
+                :url='"{{ route("admin.exchange.purchase-order.list") }}"'
+                :searchfields = "[
+                {name: 'Mã đơn hàng', value: 'id', columnType: 'number' },
+                {name: 'Thời gian', value: 'created_date', columnType: 'datetime'}, 
+                {name: 'Nhà cung cấp', value: 'supplier', columnType: 'string'},
+                {name: 'Tổng tiền', value:'total', columnType: 'number'},
+                {name: 'Trạng thái', value:'status', columnType: 'string'}
+                ]"
+                ></filter-and-search>
             <vpt-list-receipt-notes></vpt-list-receipt-notes>
         </div>
     </div>
