@@ -3,7 +3,7 @@
 <div class="datagrid-filters">
     <div class="dropdown-filters">
         <div class="dropdown-toggle">
-            <div class="grid-dropdown-header">
+            <div class="grid-dropdown-header" >
                 <span class="name">Bộ lọc</span>
                 <i class="icon arrow-down-icon active"></i>
             </div>
@@ -14,7 +14,7 @@
                     <div class="control-group">
                         <select class="filter-column-select control" v-model="filterColumn" @change="getSelectedType(filterColumn)">
                             <option selected disabled>Chọn cột</option>
-                            <option  v-for="field in searchfields" :value="field.value">{{field.name}}</option>
+                            <option  v-for="field in searchfields" :value="field.key">{{field.name}}</option>
                         </select>
                     </div>
                 </li>
@@ -114,6 +114,20 @@
         </div>
     </div>
 </div>
+<div class="filtered-tags">
+    <span class="filter-tag" v-if="filters.length > 0" v-for="filter in filters" style="text-transform: capitalize;">
+        <span v-if="filter.column == 'perPage'">perPage</span>
+        <span v-else>{{ filter.label }}</span>
+        <span class="wrapper" v-if="filter.prettyValue">
+            {{ filter.prettyValue }}
+            <span class="icon cross-icon" v-on:click="removeFilter(filter)"></span>
+        </span>
+        <span class="wrapper" v-else>
+            {{ decodeURIComponent(filter.val) }}
+            <span class="icon cross-icon" v-on:click="removeFilter(filter)"></span>
+        </span>
+    </span>
+</div>
 </div>
 </template>
 
@@ -143,20 +157,65 @@
                     datetimeValue: '2000-01-01',
                     numberValue: 0,
                     filters: [],
-                    parsedUrl : []
+                    parsedUrl : [],
+                    currentUrl:new URL(window.location.href)
                     
                 }
             },
+            mounted: function () {
+                this.setParamsAndUrl();
+            },
             methods: {
-                newRoute(){
-                    if(this.filterColumn != null && this.stringValue != null){
-                        window.location.href = this.url + '?' + 'field=' + this.filterColumn + '&key=' + this.stringValue;
+                setParamsAndUrl: function () {
+                    let params = (new URL(window.location.href)).search;
+                    if (params.slice(1, params.length).length > 0) {
+                        let obj = {};
+                        const processedUrl = this.currentUrl.search.slice(1, this.currentUrl.length);
+                        let splitted = [];
+                        let moreSplitted = [];
+
+                        splitted = processedUrl.split('&');
+
+                        for (let i = 0; i < splitted.length; i++) {
+                            moreSplitted.push(splitted[i].split('='));
+                        }
+
+                        for (let i = 0; i < moreSplitted.length; i++) {
+                            const key = decodeURI(moreSplitted[i][0]);
+                            let value = decodeURI(moreSplitted[i][1]);
+
+                            if (value.includes('+')) {
+                                value = value.replace('+', ' ');
+                            }
+
+                            obj.column = key.replace(']', '').split('[')[0];
+                            obj.cond = key.replace(']', '').split('[')[1]
+                            obj.val = value;
+ 
+                            for (let colIndex in this.columns) {
+                                if (this.columns[colIndex].index === obj.column) {
+                                    obj.label = this.columns[colIndex].label;
+                                    if (this.columns[colIndex].type === 'boolean') {
+                                        if (obj.val === '1') {
+                                            obj.val = 'true';
+                                        } else {
+                                            obj.val = 'false';
+                                        }
+                                    }
+                                }
+                            }
+                            if (obj.column !== undefined && obj.val !== undefined) {
+                                this.filters.push(obj);
+                            }
+
+                            obj = {};
+                        }
                     }
                 },
-                getSelectedType(value){
-                    this.selectedValue = value;
+                getSelectedType(key){
+                    this.selectedValue = key;
                     for (let index in this.searchfields) {
-                        if (this.searchfields[index].value === this.selectedValue) {
+                        if (this.searchfields[index].key === this.selectedValue) {
                             this.selectedType = this.searchfields[index].columnType;
                         }
                     } 
@@ -167,7 +226,7 @@
                 getResponse: function() {
                     let label = '';
                     for (let index in this.searchfields) {
-                        if (this.searchfields[index].value == this.selectedValue) {
+                        if (this.searchfields[index].key == this.selectedValue) {
                             label = this.searchfields[index].name;
                             break;
                         }
@@ -224,71 +283,6 @@
                                     this.makeURL();
                                 }
                             }
-                            if (column === "sort") {
-                                let sort_exists = false;
-                                for (let j = 0; j < this.filters.length; j++) {
-                                    if (this.filters[j].column === "sort") {
-                                        if (this.filters[j].column === column && this.filters[j].cond === condition) {
-                                            this.findCurrentSort();
-                                            if (this.currentSort === "asc") {
-                                                this.filters[j].column = column;
-                                                this.filters[j].cond = condition;
-                                                this.filters[j].val = this.sortDesc;
-                                                this.makeURL();
-                                            } else {
-                                                this.filters[j].column = column;
-                                                this.filters[j].cond = condition;
-                                                this.filters[j].val = this.sortAsc;
-                                                this.makeURL();
-                                            }
-                                        } else {
-                                            this.filters[j].column = column;
-                                            this.filters[j].cond = condition;
-                                            this.filters[j].val = response;
-                                            this.filters[j].label = label;
-                                            this.makeURL();
-                                        }
-                                        sort_exists = true;
-                                    }
-                                }
-                                if (sort_exists === false) {
-                                    if (this.currentSort === null)
-                                        this.currentSort = this.sortAsc;
-                                    obj.column = column;
-                                    obj.cond = condition;
-                                    obj.val = this.currentSort;
-                                    obj.label = label;
-                                    this.filters.push(obj);
-                                    obj = {};
-                                    this.makeURL();
-                                }
-                            }
-                            if (column === "search") {
-                                let search_found = false;
-                                for (let j = 0; j < this.filters.length; j++) {
-                                    if (this.filters[j].column === "search") {
-                                        this.filters[j].column = column;
-                                        this.filters[j].cond = condition;
-                                        this.filters[j].val = encodeURIComponent(response);
-                                        this.filters[j].label = label;
-                                        this.makeURL();
-                                    }
-                                }
-                                for (let j = 0; j < this.filters.length; j++) {
-                                    if (this.filters[j].column === "search") {
-                                        search_found = true;
-                                    }
-                                }
-                                if (search_found === false) {
-                                    obj.column = column;
-                                    obj.cond = condition;
-                                    obj.val = encodeURIComponent(response);
-                                    obj.label = label;
-                                    this.filters.push(obj);
-                                    obj = {};
-                                    this.makeURL();
-                                }
-                            }
                         } else {
                             obj.column = column;
                             obj.cond = condition;
@@ -303,19 +297,12 @@
                 makeURL: function () {
                     let newParams = '';
                     for(let i = 0; i < this.filters.length; i++) {
-                        if (this.filters[i].column == 'status' || this.filters[i].column == 'value_per_locale' || this.filters[i].column == 'value_per_channel' || this.filters[i].column == 'is_unique') {
-                            if (this.filters[i].val.includes("True")) {
-                                this.filters[i].val = 1;
-                            } else if (this.filters[i].val.includes("False")) {
-                                this.filters[i].val = 0;
-                            }
-                        }
                         let condition = '';
                         if (this.filters[i].cond !== undefined) {
                             condition = '[' + this.filters[i].cond + ']';
                         }
                         if (i == 0) {
-                            newParams = '?search=true&' + this.filters[i].column + condition + '=' + this.filters[i].val;
+                            newParams = '?' + this.filters[i].column + condition + '=' + this.filters[i].val;
                         } else {
                             newParams = newParams + '&' + this.filters[i].column + condition + '=' + this.filters[i].val;
                         }
@@ -324,7 +311,45 @@
                     var clean_uri = uri.substring(0, uri.indexOf("?")).trim();
                     window.location.href = clean_uri + newParams;
                 },
+                removeFilter: function (filter) {
+                    for (let i in this.filters) {
+                        if (this.filters[i].column === filter.column
+                            && this.filters[i].cond === filter.cond
+                            && this.filters[i].val === filter.val) {
+                            this.filters.splice(i, 1);
+                            this.makeURL();
+                        }
+                    }
+                },
             },
+            
            
         }
 </script>
+<style lang="scss" scoped>
+.grid-dropdown-header {
+    display: inline-flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 36px;
+    width: 500px ;
+    border: 2px solid #C7C7C7;
+    border-radius: 3px;
+    color: #8E8E8E;
+    padding: 0px 5px 0px 5px;
+}
+.control-group .control {
+    background: #fff;
+    border: 2px solid #C7C7C7;
+    border-radius: 3px;
+    width: 90%;
+    height: 36px;
+    display: inline-block;
+    vertical-align: middle;
+    transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    padding: 0px 10px;
+    font-size: 15px;
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+</style>
