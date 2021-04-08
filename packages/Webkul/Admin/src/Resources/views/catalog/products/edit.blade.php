@@ -372,7 +372,13 @@
                                                 @endif
                                             </label>
 
-                                            @include ($typeView)
+                                            @if($attribute->code == "name")
+                                                <input type="text" v-validate="'{{$validations}}'" class="control" id="{{ $attribute->code }}" name="{{ $attribute->code }}" value="{{ old($attribute->code) ?: $product[$attribute->code] }}"data-vv-as="&quot;{{ $attribute->admin_name }}&quot;"v-slugify-target="'url_key'" />
+                                            @elseif($attribute->code == "url_key")
+                                                <input type="text" v-validate="'{{$validations}}'" class="control" id="{{ $attribute->code }}" name="{{ $attribute->code }}" value="{{ old($attribute->code) ?: $product[$attribute->code] }}"data-vv-as="&quot;{{ $attribute->admin_name }}&quot;"v-slugify />
+                                            @else
+                                                @include ($typeView)
+                                            @endif
 
                                             <span class="control-error"
                                                   @if ($attribute->type == 'multiselect') v-if="errors.has('{{ $attribute->code }}[]')"
