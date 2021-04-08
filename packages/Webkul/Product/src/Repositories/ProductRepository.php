@@ -508,6 +508,7 @@ class ProductRepository extends Repository
 		    $query->where('products.sku', 'like', '%' . $term . '%')
 		    ->orWhere('product_flat.name', 'like', '%' . urldecode($term) . '%');
 		})
+                ->skip(0)->take(30)
                 ->orderBy('product_id', 'desc');
         })->get();
     }
