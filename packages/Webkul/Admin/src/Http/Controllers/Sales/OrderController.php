@@ -348,7 +348,6 @@ class OrderController extends Controller
         $order->grand_total = request()->price_must_paid;
         $order->base_grand_total = request()->price_must_paid;
         $order->sub_total = request()->price_total;
-        $order->sub_total = request()->price_total;
         $order->base_sub_total = request()->price_total;
         // $order->base_grand_total_invoiced = request()->price_must_paid;
         $order->channel_id = 1;

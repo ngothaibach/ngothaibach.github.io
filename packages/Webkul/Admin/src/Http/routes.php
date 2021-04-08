@@ -242,7 +242,8 @@ Route::group(['middleware' => ['web', 'admin_locale']], function () {
                 ])->name('admin.sales.refunds.index');
 
                 Route::get('/refunds/create/{order_id}', 'Webkul\Admin\Http\Controllers\Sales\RefundController@create')->defaults('_config', [
-                    'view' => 'admin::sales.refunds.create',
+                    // 'view' => 'admin::sales.refunds.create',
+                    'view' => 'admin::sales.refunds.create_new',
                 ])->name('admin.sales.refunds.create');
 
                 Route::post('/refunds/create/{order_id}', 'Webkul\Admin\Http\Controllers\Sales\RefundController@store')->defaults('_config', [

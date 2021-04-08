@@ -17,7 +17,7 @@ use Webkul\Inventory\Repositories\InventorySourceRepository;
 use Webkul\Product\Repositories\ProductDownloadableLinkRepository;
 use Webkul\Product\Repositories\ProductDownloadableSampleRepository;
 use Webkul\Product\Repositories\ProductAttributeValueRepository;
-
+use Illuminate\Http\UploadedFile;
 class ProductController extends Controller
 {
     /**
@@ -232,7 +232,10 @@ class ProductController extends Controller
 
         session()->flash('success', trans('admin::app.response.create-success', ['name' => 'Product']));
 
-        return redirect()->route($this->_config['redirect']);
+        return redirect()->route($this->_config['redirect'], ['id' => $product->id]);
+        // return response()->json(
+        //    ['id' => $product->id]
+        // );
     }
 
     /**
@@ -242,8 +245,10 @@ class ProductController extends Controller
      *
      * @return \Illuminate\View\View
      */
+
     public function edit($id)
     {
+        
         $product = $this->productRepository->with(['variants', 'variants.inventories'])->findOrFail($id);
         $categories = $this->categoryRepository->getCategoryTree();
         $attributes = $this->attributeRepository->findWhere(['is_filterable' =>  1]);
@@ -264,7 +269,7 @@ class ProductController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function update(ProductForm $request, $id)
+    public function update($id)
     {
         $data = request()->all();
         $multiselectAttributeCodes = array();
@@ -290,12 +295,15 @@ class ProductController extends Controller
                 }
             }
         }
-
+        
+        
         $product = $this->productRepository->update($data, $id);
 
         session()->flash('success', trans('admin::app.response.update-success', ['name' => 'Product']));
 
         return redirect()->route($this->_config['redirect']);
+            //  return response()->json(['message' => $data], 200);
+
     }
 
     /**
@@ -409,6 +417,7 @@ class ProductController extends Controller
     }
 
     /**
+     * 
      * Mass updates the products
      *
      * @return \Illuminate\Http\Response

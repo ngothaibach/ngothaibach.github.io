@@ -28,13 +28,16 @@ class ProductImageRepository extends Repository
     {
         $previousImageIds = $product->images()->pluck('id');
 
+// var_dump($data['imageURL']);
+
         if (isset($data['images'])) {
             foreach ($data['images'] as $imageId => $image) {
                 $file = 'images.' . $imageId;
                 $dir = 'product/' . $product->id;
-
+                
                 if ($image instanceof UploadedFile) {
                     if (request()->hasFile($file)) {
+
                         $this->create([
                             'path'       => request()->file($file)->store($dir),
                             'product_id' => $product->id,
@@ -47,6 +50,27 @@ class ProductImageRepository extends Repository
                 }
             }
         }
+
+        if (isset($data['imageURL'])) {
+            foreach ($data['imageURL'] as $imageId => $image) {
+
+                $file = 'images.' . $imageId;
+                $dir = 'product/' . $product->id;
+                $url = $image;
+            $contents = file_get_contents($url);
+            $name = substr($url, strrpos($url, '/') + 1);
+            Storage::put($dir . '/' . $name, $contents);
+                    if ($contents) {
+                        $this->create([
+                            'path'       => $dir . '/' . $name,
+                            'product_id' => $product->id,
+                        ]);
+
+                    }
+            }
+  
+        }
+
 
         foreach ($previousImageIds as $imageId) {
             if ($imageModel = $this->find($imageId)) {
