@@ -75,6 +75,9 @@
                 if(this.inputType == 'radio')
                     return [this.value];
 
+                if(this.inputType == 'radio-category')
+                    return [this.value];
+
                 return (typeof this.value == 'string') ? JSON.parse(this.value) : this.value;
             }
         },

@@ -279,6 +279,8 @@ Route::group(['middleware' => ['web', 'admin_locale']], function () {
                 Route::post('/products/create', 'Webkul\Product\Http\Controllers\ProductController@store')->defaults('_config', [
                     'redirect' => 'admin.catalog.products.index',
                 ])->name('admin.catalog.products.store');
+                
+                Route::post('/products/create/addCategory', 'Webkul\Product\Http\Controllers\ProductController@addCategory')->name('admin.catalog.products.addCategory');
 
                 Route::get('products/copy/{id}', 'Webkul\Product\Http\Controllers\ProductController@copy')->defaults('_config', [
                     'view' => 'admin::catalog.products.edit',

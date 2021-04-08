@@ -20,6 +20,16 @@
             @endif
         </div>
         <div class="page-content">
+                <filter-and-search 
+                :url='"{{ route("admin.exchange.purchase-order.list") }}"'
+                :searchfields = "[
+                {name: 'Mã đơn hàng', key: 'id', columnType: 'number' },
+                {name: 'Thời gian', key: 'created_date', columnType: 'datetime'}, 
+                {name: 'Nhà cung cấp', key: 'supplier', columnType: 'string'},
+                {name: 'Tổng tiền', key:'total', columnType: 'number'},
+                {name: 'Trạng thái', key:'status', columnType: 'string'}
+                ]"
+                ></filter-and-search>
             <vpt-list-receipt-notes></vpt-list-receipt-notes>
         </div>
     </div>
@@ -100,7 +110,7 @@
                                                                                                                         <div class="form-group row">
                                                                                                                             <label class="col-sm-4 col-form-label">Trạng thái</label>
                                                                                                                             <div class="col-sm-8">
-                                                                                                                                <select v-model="form.listReceiptNotes[index].status" class="form-control" :disabled="!updatePermission ? true : form.oldListReceip[index].status == 'temporary' ? false : true ">
+                                                                                                                                <select v-model="form.listReceiptNotes[index].status" class="form-control" :disabled="role_id != 1 ? true : !updatePermission ? true : form.oldListReceip[index].status == 'temporary' ? false : true ">
                                                                                                                                         <option v-for="item in form.status" :value="item.key" v-text="item.value">
                                                                                                                                         </option>
                                                                                                                                     </select>
@@ -119,7 +129,7 @@
                                                                                                                         <div class="form-group row">
                                                                                                                             <label class="col-sm-4 col-form-label" >Người nhập</label>
                                                                                                                             <div class="col-sm-8">
-                                                                                                                                <select v-model="item.importer" name="user" class="form-control" aria-label="User" :disabled="!updatePermission ? true : form.oldListReceip[index].status == 'temporary' ? false : true ">
+                                                                                                                                <select v-model="item.importer" name="user" class="form-control" aria-label="User" :disabled="role_id != 1 ? true : !updatePermission ? true : form.oldListReceip[index].status == 'temporary' ? false : true ">
                                                                                                                                     @foreach ($users as $user)
                                                                                                                                         @if (auth()
             ->guard('admin')
@@ -139,7 +149,7 @@
                                                                                                                         <div class="form-group row">
                                                                                                                             <label class="col-sm-4 col-form-label">Ghi chú</label>
                                                                                                                             <div class="col-sm-8">
-                                                                                                                                <textarea class="form-control" id="exampleFormControlTextarea1" v-model="item.note" :disabled="!updatePermission ? true : form.oldListReceip[index].status == 'temporary' ? false : true "></textarea>
+                                                                                                                                <textarea class="form-control" id="exampleFormControlTextarea1" v-model="item.note" :disabled="role_id != 1 ? true : !updatePermission ? true : form.oldListReceip[index].status == 'temporary' ? false : true "></textarea>
                                                                                                                             </div>
                                                                                                                         </div>
                                                                                                                     </div>
@@ -213,6 +223,7 @@
                     //pagination
                     //check permission
                     updatePermission: Boolean(Number('{{checkPermission('exchange.list_purchases.update')}}')),
+                    role_id: {!! json_encode($role_id) !!},
                     //check permission
                     form: new Form({
                         listReceiptNotes: {!! json_encode($receipt_notes) !!},

@@ -20,6 +20,16 @@
             @endif
         </div>
         <div class="page-content">
+        <filter-and-search 
+                :url='"{{ route("admin.exchange.transfer.list") }}"'
+                :searchfields = "[
+                {name: 'Mã đơn hàng', key: 'id', columnType: 'number' },
+                {name: 'Thời gian', key: 'transfer_date', columnType: 'datetime'}, 
+                {name: 'Từ chi nhánh', key: 'from_inventory', columnType: 'string'},
+                {name: 'Tới Chi Nhánh', key:'to_inventory', columnType: 'string'},
+                {name: 'Trạng thái', key:'status', columnType: 'string'}
+                ]"
+                ></filter-and-search>
             <vpt-list-receipt-notes></vpt-list-receipt-notes>
         </div>
     </div>
@@ -99,7 +109,7 @@
                                                 <div class="form-group row">
                                                     <label class="col-sm-4 col-form-label">Trạng thái</label>
                                                     <div class="col-sm-8">
-                                                        <select v-model="form.listReceiptNotes[index].status" class="form-control" :disabled="!updatePermission ? true : form.oldListReceip[index].status == 'temporary' ? false : form.oldListReceip[index].status == 'transfering' ? false : true">
+                                                        <select v-model="form.listReceiptNotes[index].status" class="form-control" :disabled="role_id != 1 ? true : !updatePermission ? true : form.oldListReceip[index].status == 'temporary' ? false : form.oldListReceip[index].status == 'transfering' ? false : true">
                                                                 <option v-for="item in form.status" :value="item.key" v-text="item.value">
                                                                 </option>
                                                             </select>
@@ -118,7 +128,7 @@
                                                 <div class="form-group row">
                                                     <label class="col-sm-4 col-form-label">Ngày nhận</label>
                                                     <div class="col-sm-8">
-                                                        <vuejs-datepicker v-model="item.receipt_date" :disabled="!updatePermission ? true : form.oldListReceip[index].status == 'temporary' ? false : form.oldListReceip[index].status == 'transfering' ? false : true"></vuejs-datepicker>
+                                                        <vuejs-datepicker v-model="item.receipt_date" :disabled="role_id != 1 ? true : !updatePermission ? true : form.oldListReceip[index].status == 'temporary' ? false : form.oldListReceip[index].status == 'transfering' ? false : true"></vuejs-datepicker>
                                                     </div>
                                                 </div>
                                             </div>
@@ -128,7 +138,7 @@
                                                 <div class="form-group row">
                                                     <label class="col-sm-4 col-form-label">Ghi chú</label>
                                                     <div class="col-sm-8">
-                                                        <textarea class="form-control" id="exampleFormControlTextarea1" v-model="item.note" :disabled="!updatePermission ? true : form.oldListReceip[index].status == 'temporary' ? false : form.oldListReceip[index].status == 'transfering' ? false : true"></textarea>
+                                                        <textarea class="form-control" id="exampleFormControlTextarea1" v-model="item.note" :disabled="role_id != 1 ? true : !updatePermission ? true : form.oldListReceip[index].status == 'temporary' ? false : form.oldListReceip[index].status == 'transfering' ? false : true"></textarea>
                                                     </div>
                                                 </div>
                                             </div>
@@ -202,6 +212,7 @@
                     //pagination
                     //check permission
                     updatePermission: Boolean(Number('{{checkPermission('exchange.list_transfer.update')}}')),
+                    role_id: {!! json_encode($role_id) !!},
                     //check permission
                     form: new Form({
                         listReceiptNotes: {!! json_encode($receipt_notes) !!},

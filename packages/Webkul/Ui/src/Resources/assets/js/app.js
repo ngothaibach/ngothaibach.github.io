@@ -9,6 +9,7 @@ import TreeView from './components/tree-view/tree-view';
 import TreeItem from './components/tree-view/tree-item';
 import TreeCheckbox from './components/tree-view/tree-checkbox';
 import TreeRadio from './components/tree-view/tree-radio';
+import TreeRadioCategory from './components/tree-view/tree-radio-category';
 import Modal from './components/modal';
 import ImageUpload from './components/image/image-upload';
 import ImageWrapper from './components/image/image-wrapper';
@@ -26,6 +27,7 @@ import OverlayLoader from './components/overlay-loader';
 import VTooltip from 'v-tooltip';
 import Datepicker from 'vuejs-datepicker';
 import SortPagination from './components/sort-pagination';
+import FilterAndSearch from './components/filter-and-search';
 //Import v-from
 import { Form, HasError, AlertError } from 'vform'
 window.Form = Form;
@@ -49,6 +51,7 @@ Vue.component('tree-view', TreeView);
 Vue.component('tree-item', TreeItem);
 Vue.component('tree-checkbox', TreeCheckbox);
 Vue.component('tree-radio', TreeRadio);
+Vue.component('tree-radio-category', TreeRadioCategory);
 Vue.component('modal', Modal);
 Vue.component('image-upload', ImageUpload);
 Vue.component('image-wrapper', ImageWrapper);
@@ -64,6 +67,7 @@ Vue.component('swatch-picker', SwatchPicker);
 Vue.directive('debounce', Debounce);
 Vue.component('overlay-loader', OverlayLoader);
 Vue.component('sort-pagination', SortPagination);
+Vue.component('filter-and-search', FilterAndSearch);
 Vue.filter('truncate', function (value, limit, trail) {
 	if (! value)
         value = '';
