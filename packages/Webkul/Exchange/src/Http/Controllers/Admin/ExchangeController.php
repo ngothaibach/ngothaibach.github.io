@@ -31,7 +31,7 @@ use Excel;
 use Webkul\Exchange\Http\Models\ImportProduct;
 use Webkul\Exchange\Models\ExchangeNote;
 use Webkul\Exchange\Models\ProductExchangeNote;
-use Webkul\Admin\Helpers\FilterCollection;
+
 
 class ExchangeController extends Controller
 {
@@ -184,10 +184,7 @@ class ExchangeController extends Controller
             $invent_id = auth()->guard('admin')->user()->inventory_id;
             $query = $query->where('to_inventory_source_id','=',$invent_id);
         }
-        if(isset($_GET)){
-            $filter = new filterCollection();
-            $query = $filter->filterCollection($query,$searchfields);
-        }
+        
         $query = $query->orderBy('id', 'desc');
         $receipt_notes=$query->get()->toArray();
         // $productInventoryQty = $this->productInventoryRepository->where('inventory_source_id', '=', request()->from_inventory_source)->where('product_id', '=', $product['id'])
@@ -228,10 +225,7 @@ class ExchangeController extends Controller
             $query = $query->where('from_inventory_source_id','=',$invent_id)
             ->orwhere('to_inventory_source_id','=',$invent_id);
         }
-        if(isset($_GET)){
-            $filter = new filterCollection();
-            $query = $filter->filterCollection($query,$searchfields);
-        }
+        
         $query = $query->orderBy('id', 'desc');
         $receipt_notes=$query->get()->toArray();
         return view($this->_config['view'], compact('receipt_notes','role_id'));
