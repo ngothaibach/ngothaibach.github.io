@@ -191,9 +191,13 @@ Route::group(['middleware' => ['web', 'admin_locale']], function () {
                 
                 //minhpd tạo đơn hàng
                 Route::get('/admin/orders/create', 'Webkul\Admin\Http\Controllers\Sales\OrderController@create_orders')->defaults('_config', [
-                    'view' => 'admin::sales.orders.create',
+                    // 'view' => 'admin::sales.orders.create',
+                    'view' => 'admin::sales.orders.create_new',
                 ])->name('admin.sales.orders.create');
                 Route::post('admin/orders/store', 'Webkul\Admin\Http\Controllers\Sales\OrderController@store_orders')->name('admin.sales.orders.store');
+
+                //minhpd live search customer
+                Route::get('customers/live-search-customers', 'Webkul\Admin\Http\Controllers\Sales\OrderController@liveSearchCustomer')->name('admin.sales.orders.live_search_customer');
                 //end minh
 
                 // Sales Invoices Routes
