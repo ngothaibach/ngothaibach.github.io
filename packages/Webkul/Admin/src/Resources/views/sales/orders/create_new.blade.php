@@ -444,17 +444,21 @@
                     }
                 },
                 save () {
-                    if(this.form.price_must_paid != 0 && this.form.customer != "") {
-                        this.form.post("{{ route('admin.sales.orders.store') }}")
-                        .then(( response ) => {
-                            console.error(response);
-                            if (response.data.success == true) {
-                                console.error("Tạo thành công đơn hàng");
-                                window.location.href = "{{ route('admin.sales.orders.index') }}";
-                            } else {
-                                console.debug("Tạo đơn hàng thất bại");
-                            }
-                        })
+                    if(this.form.price_must_paid != 0) {
+                        if(this.form.customer != "") {
+                            this.form.post("{{ route('admin.sales.orders.store') }}")
+                            .then(( response ) => {
+                                console.error(response);
+                                if (response.data.success == true) {
+                                    console.error("Tạo thành công đơn hàng");
+                                    window.location.href = "{{ route('admin.sales.orders.index') }}";
+                                } else {
+                                    console.debug("Tạo đơn hàng thất bại");
+                                }
+                            })
+                        } else {
+                            alert('Khách hàng không tồn tại trong danh sách khách hàng');
+                        }
                     } else {
                         alert('Bạn chưa nhập đủ thông tin ');
                     }
