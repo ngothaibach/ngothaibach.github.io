@@ -25,13 +25,13 @@
                                                                             <div class="col-8" style="align-self: baseline;">
                                                                                 <h2>{{ __('admin::app.vpt.inventory.add-receipt-note') }}</h2>
                                                                                 <div>
-                                                                                    <input class="form-control" type="text" v-model="keywords"  ref="button"  v-on:click="showPopup = true" >
+                                                                                    <input class="form-control" type="text" v-on:input="onChangeKeywords($event.target.value)"  ref="button"  v-on:click="showPopup = true" >
                                                                                     <ul class="list-group" v-if="results.length > 0"  v-show="showPopup"
                                                                                         v-closable="{
                                                                                           exclude:   ['button'],
                                                                                           handler: 'onClose'
                                                                                         }">
-                                                                                        <li v-if="result.name.length" class="list-group-item" v-for="result in results" :key="result.id"  v-on:click="add_product(result)">
+                                                                                        <li v-for="result in results" v-if="result.name != null" class="list-group-item"  :key="result.id"  v-on:click="add_product(result)">
                                                                                             <span v-text="result.name"></span><br/>
                                                                                             <img style="width: 60xp; height: 60px;" v-bind:src="'/cache/small/' + result.featured_image"/>
                                                                                             {{ __('admin::app.vpt.inventory.price') }}: <span v-text="result.price"></span><br/>
@@ -251,11 +251,6 @@ let handleOutsideClick
                     sortKey: ''
                 };
             },
-            watch: {
-                keywords(after, before) {
-                    this.fetch();
-                }
-            },
             filters: {
                 capitalize: function(str) {
                     return str.charAt(0).toUpperCase() + str.slice(1)
@@ -265,6 +260,16 @@ let handleOutsideClick
                 onClose: function() {
                     this.showPopup = false
                 },
+                onChangeKeywords: _.debounce(function (input) {
+                    this.keywords = input;
+                    if(this.keywords != ""){        
+                        this.fetch();
+                    }else{
+                        this.listProduct = [];
+                        this.results = [];
+                        this.showPopup = false;
+                    }
+                    }, 600),
                 fetchDataNotShow() {
                     axios.get("{{ route('admin.catalog.products.live-search-products') }}", {
                             params: {
