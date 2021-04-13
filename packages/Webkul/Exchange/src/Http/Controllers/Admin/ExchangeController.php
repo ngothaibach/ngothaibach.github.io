@@ -298,6 +298,7 @@ class ExchangeController extends Controller
             'transfer_date' => request()->transfer_date,
             'receipt_date' => request()->receipt_date,
             'note' => request()->notes,
+            'total' => request()->price_total,
         ];
 
         $exchangeNote = $this->exchangeNoteRepository->create($exchangeNoteData);
@@ -459,12 +460,14 @@ class ExchangeController extends Controller
         $type = request() -> type;
         $from_inventory_id = request() -> from_inventory_id;
         $receipt_date = request() -> receipt_date;
+        $total = request() -> total;
         // $name = $item->id;
         $exchaneNote = ExchangeNote::find($id);
         $exchaneNote->status = $status;
         $exchaneNote->note = $note;
         $exchaneNote->importer = $importer;
         $exchaneNote->receipt_date = $receipt_date;
+        $exchaneNote->total = $total;
         $exchaneNote->save();
         foreach ($product_list as $product){
             // cập nhật các trường thay đổi số lượng

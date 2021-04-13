@@ -161,7 +161,7 @@
                                                 <td v-text="product.price"></td>
                                                 <td>
                                                     <div class="col-sm-8">
-                                                        <input type="text" v-model="product_list[index1].transfer_qty" class="form-control" :disabled="!updatePermission ? true : form.oldListReceip[index].status == 'temporary' ? false : form.oldListReceip[index].status == 'transfering' ? false : true">
+                                                        <input type="text" :value="product.transfer_qty" @change.lazy="update_total_price(parseInt($event.target.value),product.transfer_qty,product.price,index1)" class="form-control" :disabled="!updatePermission ? true : form.oldListReceip[index].status == 'temporary' ? false : true " >
                                                     </div>
                                                 </td>
                                             </tr>
@@ -169,7 +169,7 @@
                                     </table>
                                     <span class="font-weight-bold">Tổng giá trị:</span> <span class="text-danger font-weight-bold" v-text="price_total"></span>
                                     <div class="text-right">
-                                        <button type="button" class="btn btn-success" v-on:click="save_inventory(item.id,item.note,item.status,item.importer,item.type,item.from_inventory_id,item.receipt_date)" :disabled="!updatePermission ? true : form.oldListReceip[index].status == 'temporary' ? false : form.oldListReceip[index].status == 'transfering' ? false : true" >Lưu</button>
+                                        <button type="button" class="btn btn-success" v-on:click="save_inventory(item.id,item.note,item.status,item.importer,item.type,item.from_inventory_id,item.receipt_date,price_total)" :disabled="!updatePermission ? true : form.oldListReceip[index].status == 'temporary' ? false : form.oldListReceip[index].status == 'transfering' ? false : true" >Lưu</button>
                                     </div>
                                 </div>
                             </div>
@@ -275,13 +275,12 @@
             },
             watch: {},
             methods: {
-                update_total_price() {
-                    this.price_total = 0;
-                    for (product in this.product_list) {
-                        this.price_total += product.price * product.qty
-                    }
+                update_total_price(newQty, oldQty, price,pos){
+                    this.price_total += price * (newQty - oldQty);
+                    this.product_list[pos].transfer_qty = newQty;
+                    this.product_list.push();
                 },
-                save_inventory(exchange_note_id, note, status, importer,type,from_inventory_id,receipt_date) {
+                save_inventory(exchange_note_id, note, status, importer,type,from_inventory_id,receipt_date,price_total) {
 
                     var sites = {!! json_encode($receipt_notes) !!};
                     this.form.idExchange = exchange_note_id;
@@ -291,6 +290,7 @@
                     this.form.type = type;
                     this.form.from_inventory_id = from_inventory_id;
                     this.form.receipt_date = receipt_date;
+                    this.form.total = price_total;
 
                     this.form.post("{{ route('admin.exchange.updateTransfer') }}")
                         .then((response) => {
