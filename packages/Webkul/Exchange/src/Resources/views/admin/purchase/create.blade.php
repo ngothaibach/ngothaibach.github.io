@@ -39,7 +39,7 @@
                                                                                         </li>
                                                                                         <sort-pagination 
                                                                                             v-bind:items="results"
-                                                                                            v-bind:pageSize = "2"
+                                                                                            v-bind:pageSize = "3"
                                                                                             
                                                                                             @changePage="onChangePage">
                                                                                             </sort-pagination>
