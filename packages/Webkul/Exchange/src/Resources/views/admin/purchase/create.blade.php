@@ -31,12 +31,18 @@
                                                                                           exclude:   ['button'],
                                                                                           handler: 'onClose'
                                                                                         }">
-                                                                                        <li v-for="result in results" v-if="result.name != null" class="list-group-item"  :key="result.id"  v-on:click="add_product(result)">
+                                                                                        <li v-for="result in pageOfItems" v-if="result.name != null" class="list-group-item"  :key="result.id"  v-on:click="add_product(result)">
                                                                                             <span v-text="result.name"></span><br/>
                                                                                             <img style="width: 60xp; height: 60px;" v-bind:src="'/cache/small/' + result.featured_image"/>
                                                                                             {{ __('admin::app.vpt.inventory.price') }}: <span v-text="result.price"></span><br/>
                                                                                             {{ __('admin::app.vpt.inventory.remain') }}: <span v-text="result.qty"></span>
                                                                                         </li>
+                                                                                        <sort-pagination 
+                                                                                            v-bind:items="results"
+                                                                                            v-bind:pageSize = "2"
+                                                                                            
+                                                                                            @changePage="onChangePage">
+                                                                                            </sort-pagination>
                                                                                     </ul>
 
                                                                                     <div id="app" >
@@ -248,7 +254,10 @@ let handleOutsideClick
                     parse_header: [],
                     parse_csv: [],
                     sortOrders: {},
-                    sortKey: ''
+                    sortKey: '',
+                    pageOfItems: [],
+                    perPage: 10,
+
                 };
             },
             filters: {
@@ -436,7 +445,14 @@ let handleOutsideClick
                     } else {
                         alert('FileReader are not supported in this browser.');
                     }
-                }
+                },
+                //pagination
+                onChangePage(pageOfItems) {
+                    // update page of items
+                    this.pageOfItems = pageOfItems;
+                }, 
+                //pagination   
+
             },
             beforeMount() {
                 this.fetchDataNotShow();
