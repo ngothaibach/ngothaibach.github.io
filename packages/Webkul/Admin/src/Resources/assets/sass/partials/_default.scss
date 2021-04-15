@@ -429,3 +429,23 @@ body {
     height: 35px;
     align-items: center;
   }
+  .sale-summary {
+    margin-top: 20px;
+    /* height: 130px; */
+    float: right;
+    width: 30%  !important;
+  }
+  .sale-summary td{
+    border: 0px solid #dee2e6  !important;
+  }
+  .txtRight {
+    font-weight: bold;
+  }
+  .btn-summit-right{
+    width:  100%;
+    float: right;
+    text-align: right;
+    margin-right: 5%;
+    margin-top: 10px;
+  }
+  
