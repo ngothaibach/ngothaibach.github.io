@@ -400,7 +400,7 @@ return [
             'title' => 'Hóa đơn',
             'id' => 'Id',
             'invoice' => 'Hóa đơn',
-            'invoice-id' => 'Invoice Id',
+            'invoice-id' => 'Mã hóa đơn',
             'date' => 'Ngày lập hóa đơn',
             'order-id' => 'Id đơn hàng',
             'customer-name' => 'Tên khách hàng',
