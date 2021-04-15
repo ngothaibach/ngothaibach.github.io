@@ -146,14 +146,19 @@
     }
 </script>
 <style lang="scss" scoped>
+    .pagination{
+        margin: 0px!important;
+        padding: 0px!important;
+        display: inline-flex!important;
+    }
     .pagination .page-item {
         background: none !important;
         border: none !important;
         border-radius: 3px;
-        padding: 7px 14px;
-        margin-right: 5px;
+        padding: unset;
+        margin-right: unset;
         font-size: 16px;
-        display: inline-block;
+        display: flex;
         color: #8e8e8e;
         vertical-align: middle;
         text-decoration: none;
