@@ -121,7 +121,7 @@
                         {!! view_render_event('bagisto.admin.catalog.category.create_form_accordian.parent_category.before') !!}
 
                         <accordian :title="'{{ __('admin::app.catalog.categories.parent-category') }}'" :active="true">
-                            <div slot="body">
+                            <div slot="body" style="height: 500px;  overflow: scroll;">
 
                                 {!! view_render_event('bagisto.admin.catalog.category.create_form_accordian.parent_category.controls.before') !!}
 

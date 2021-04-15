@@ -5,7 +5,7 @@
 {!! view_render_event('bagisto.admin.catalog.product.create_form_accordian.categories.before') !!}
 @endif
 <accordian :title="'{{ __('admin::app.catalog.products.categories') }}'" :active="false">
-    <div slot="body">
+    <div slot="body" style="height: 500px;  overflow: scroll;">
         @if(isset($product))
             {!! view_render_event('bagisto.admin.catalog.product.edit_form_accordian.categories.controls.before', ['product' => $product]) !!}
         @else
