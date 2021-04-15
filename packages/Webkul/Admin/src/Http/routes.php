@@ -217,6 +217,17 @@ Route::group(['middleware' => ['web', 'admin_locale']], function () {
                     'view' => 'admin::sales.invoices.view',
                 ])->name('admin.sales.invoices.view');
 
+                Route::get('/invoices/show_detail_invoice', 'Webkul\Admin\Http\Controllers\Sales\InvoiceController@show_detail_invoice')->defaults('_config', [
+                    'view' => 'admin::sales.invoices.show_detail_invoice',
+                ])->name('admin.sales.invoices.show_detail_invoice');
+                Route::get('/invoices/print', 'Webkul\Admin\Http\Controllers\Sales\InvoiceController@print_invoices')->defaults('_config', [
+                    'view' => 'admin::sales.invoices.print_invoices',
+                ])->name('admin.sales.invoices.print_invoices');
+
+                Route::get('/invoices/update_notes', 'Webkul\Admin\Http\Controllers\Sales\InvoiceController@update_notes')->defaults('_config', [
+                    'view' => 'admin::sales.invoices.update_notes',
+                ])->name('admin.sales.invoices.update_notes');
+
                 Route::get('/invoices/print/{id}', 'Webkul\Admin\Http\Controllers\Sales\InvoiceController@print')->defaults('_config', [
                     'view' => 'admin::sales.invoices.print',
                 ])->name('admin.sales.invoices.print');

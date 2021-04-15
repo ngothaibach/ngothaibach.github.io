@@ -6,6 +6,8 @@ use Webkul\Admin\Http\Controllers\Controller;
 use Webkul\Sales\Repositories\OrderRepository;
 use Webkul\Sales\Repositories\InvoiceRepository;
 use PDF;
+use Illuminate\Support\Facades\DB;
+
 
 class InvoiceController extends Controller
 {
@@ -58,7 +60,46 @@ class InvoiceController extends Controller
      */
     public function index()
     {
-        return view($this->_config['view']);
+        $invoice_note = DB::table('invoices')
+            ->leftJoin('orders as ors', 'invoices.order_id', '=', 'ors.id')
+            ->leftJoin('order_comments as comments','invoices.order_id','=','comments.order_id')
+            ->leftJoin('order_payment as payments','invoices.order_id','=','payments.order_id')
+            ->select('invoices.id as id','ors.customer_first_name as first_name','ors.customer_last_name as last_name',
+            'ors.status as status','ors.channel_name as channel_name','ors.collection_diff as collection_diff',
+            'payments.method as method_payment','comments.comment as comment','ors.base_tax_amount as base_tax_amount',
+            'invoices.base_grand_total as base_grand_total','ors.base_sub_total as base_sub_total', 'ors.increment_id as order_id', 
+            'invoices.state as state', 'invoices.base_discount_amount as base_discount_amount', 'invoices.created_at as created_at')
+            ->get()-> toArray();
+
+        $role_id = auth()->guard('admin')->user()->role['id'];
+        if($role_id != 1){
+            $invent_id = auth()->guard('admin')->user()->inventory_id;
+            $receipt_notes = DB::table('exchange_notes')
+            // ->join('suppliers', 'suppliers.id', '=', 'exchange_notes.supplier_id')
+            ->leftJoin('inventory_sources as to_inventory_sources', 'to_inventory_sources.id', '=', 'exchange_notes.to_inventory_source_id')
+            ->leftJoin('inventory_sources as from_inventory_sources', 'from_inventory_sources.id', '=', 'exchange_notes.from_inventory_source_id')
+            ->join('admins', 'admins.id', '=', 'exchange_notes.created_user_id')
+            ->select('exchange_notes.id', 'exchange_notes.created_date', 'exchange_notes.note', 'exchange_notes.status', 'exchange_notes.receipt_date', 'exchange_notes.transfer_date', 'to_inventory_sources.name as to_inventory', 'from_inventory_sources.name as from_inventory','from_inventory_sources.id as from_inventory_id', 'admins.name as created_user')
+            ->where('type', '=', 'transfer')
+            ->where('from_inventory_source_id','=',$invent_id)
+            ->orwhere('to_inventory_source_id','=',$invent_id)
+            ->orderBy('id', 'desc')
+            ->get()->toArray();  
+        }else{
+            $receipt_notes = DB::table('exchange_notes')
+            // ->join('suppliers', 'suppliers.id', '=', 'exchange_notes.supplier_id')
+            ->leftJoin('inventory_sources as to_inventory_sources', 'to_inventory_sources.id', '=', 'exchange_notes.to_inventory_source_id')
+            ->leftJoin('inventory_sources as from_inventory_sources', 'from_inventory_sources.id', '=', 'exchange_notes.from_inventory_source_id')
+            ->join('admins', 'admins.id', '=', 'exchange_notes.created_user_id')
+            ->select('exchange_notes.id', 'exchange_notes.created_date', 'exchange_notes.note', 'exchange_notes.status', 'exchange_notes.receipt_date', 'exchange_notes.transfer_date', 'to_inventory_sources.name as to_inventory', 'from_inventory_sources.name as from_inventory','from_inventory_sources.id as from_inventory_id', 'admins.name as created_user')
+            ->where('type', '=', 'transfer')
+            ->orderBy('id', 'desc')
+            ->get()->toArray();
+        }
+        
+        return view($this->_config['view'], compact('receipt_notes','role_id','invoice_note'));
+
+        // return view($this->_config['view']);
     }
 
     /**
@@ -124,8 +165,62 @@ class InvoiceController extends Controller
      * @param  int  $id
      * @return \Illuminate\View\View
      */
+
+    public function show_detail_invoice()
+    {
+        $invoice_id = request()->input('invoice_id');
+
+        $invoice = DB::table('invoice_items')
+        ->where('invoice_id', '=', $invoice_id)
+        ->get()-> toArray();
+
+        // $invoice = $this->invoiceRepository->findOrFail($invoice_id);
+        return response()->json(
+            [
+                'success' => True,
+                'invoice_product' => $invoice
+            ]
+        );
+    }
+    /**
+     * Show the view for the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\View\View
+     */
+
+    public function update_notes()
+    {
+        $order_id = request()->input('order_id');
+        $comment_content = request()->input('comment_content');
+        $invoice = DB::table('order_comments')
+        ->where('order_id', '=', $order_id)->first();
+        if(!$invoice){
+            DB::table('order_comments')->insert([
+                'comment' => $comment_content,
+                'customer_notified' => 0,
+                'order_id' => $order_id
+            ]);
+        }else{
+            DB::table('order_comments')
+              ->where('order_id', '=', $order_id)
+              ->update(['comment' => $comment_content]);
+        }
+        // ->get()-> toArray();
+        // $invoice = $this->invoiceRepository->findOrFail($invoice_id);
+        session()->flash('success','Cập nhật thành công');
+
+        return response()->json(
+            [
+                'success' => True,
+                'invoice_product' => '12345'
+            ]
+        );
+    }
+
     public function view($id)
     {
+        
         $invoice = $this->invoiceRepository->findOrFail($id);
 
         return view($this->_config['view'], compact('invoice'));
@@ -139,6 +234,17 @@ class InvoiceController extends Controller
      */
     public function print($id)
     {
+        $invoice = $this->invoiceRepository->findOrFail($id);
+
+        $pdf = PDF::loadView('admin::sales.invoices.pdf', compact('invoice'))->setPaper('a4');
+
+        return $pdf->download('invoice-' . $invoice->created_at->format('d-m-Y') . '.pdf');
+    }
+
+    public function print_invoices()
+    {
+        $id = request()->input('id');
+        
         $invoice = $this->invoiceRepository->findOrFail($id);
 
         $pdf = PDF::loadView('admin::sales.invoices.pdf', compact('invoice'))->setPaper('a4');
