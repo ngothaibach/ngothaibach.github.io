@@ -7,6 +7,7 @@
 {{-- <link rel="stylesheet" href="{{ asset('vendor/webkul/admin/assets/css/admin.css') }}"> --}}
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="{{ asset('vendor/webkul/admin/assets/js/tinyMCE/tinymce.min.js') }}"></script>
 <script src="/js/app.js"></script>
 <style>
     input::-webkit-outer-spin-button,
@@ -97,13 +98,8 @@
                         <div class="row_new1">
                             <i class="fa fa-search" style="position: absolute;"></i>
                             <input type="text" class="w3-input" v-model="keywords_customer" id="input_customer" placeholder="Tìm khách hàng" style="padding-left:20px"  onClick="this.select();">
-                            <i class="fa fa-plus" style="position: absolute; right: 17px; "></i>
-                                {{-- <select v-model="form.customer" name="customer" class="w3-input">
-                                    @foreach ($customers as $customer)
-                                        <option value="{{ $customer->id }}" >{{ $customer->first_name }} {{ $customer->last_name }}</option>
-                                    @endforeach
-                                </select> --}}
-                            </div>
+                            <i class="fa fa-plus" style="position: absolute; right: 17px; " onclick="on_click_add_new_customer()"></i>
+                        </div>
                         <div>
                             <ul class="list-group" v-if="list_customer_result.length > 0">
                                 <li class="list-group-item" v-for="result in list_customer_result" :key="result.id"  v-on:click="add_customer(result)" >
@@ -181,6 +177,15 @@
                 </div>
             </div>
         </form>
+        
+        <!--thêm khách hàng mới -->
+        {{-- <div id="add_new_customer" style="display:none">
+            <form id="addNewCustomer" method="POST" enctype="multipart/form-data">
+                <div class="modal-parent scrollable" >
+                    
+                </div>
+            </form>
+        </div> --}}
     </script>
 
     <script>
@@ -471,5 +476,15 @@
                 }
             }
         });
+    </script>
+    <script>
+        // $(document).ready(function () {
+        //     $("#add_new_customer").click(function(){
+        //         alert('vao day roi');
+        //     });
+        // }
+        function on_click_add_new_customer() {
+            alert('vao day');
+        }
     </script>
 @endpush
