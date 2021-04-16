@@ -51,7 +51,56 @@
                     </div>
                 </div>
             </div> -->
+            
+            <div class="profile-info">
+                <div class="dropdown-toggle">
+                    <div style="display: inline-block; vertical-align: middle;">
+                        <span class="name">
+                            Kho
+                        </span>
+                        @if(auth()->guard('admin')->user()->role['id'] == 1)
+                            @if(Session::get('inventory') == 0)
+                                    <span class="role">
+                                        Admin
+                                    </span>
+                            @else
+                                @foreach (core()->getInventorySources() as $inventory)
+                                    @if($inventory->id == Session::get('inventory'))
+                                        <span class="role">
+                                            {{ $inventory->name }}
+                                        </span>
+                                    @endif
+                                @endforeach
+                            @endif    
+                        @else
+                            <span class="role">
+                                {{core()->getInventorySources()->name}}
+                            </span>
+                        @endif
 
+                    </div>
+                    <i class="icon arrow-down-icon active"></i>
+                </div>
+                @if(auth()->guard('admin')->user()->role['id'] == 1)
+                <div class="dropdown-list bottom-right">
+                    <div class="control-group">
+                        <select class="control" onChange="onChangeInventory(this.value)" style="margin-left: 30px;">  
+                                <option disabled selected >
+                                    Chọn kho
+                                </option> 
+                                <option value= "0" >
+                                    Admin
+                                </option> 
+                            @foreach (core()->getInventorySources() as $inventory)
+                                <option value="{{$inventory->id }}">
+                                    {{ $inventory->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                @endif
+            </div>
             <div class="profile-info">
                 <div class="dropdown-toggle">
                     <div style="display: inline-block; vertical-align: middle;">
