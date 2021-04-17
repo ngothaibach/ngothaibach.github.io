@@ -105,9 +105,9 @@ Trả hàng
                     </div>
                 </div>
 
-                <div class="col-3" style="">
-                    <h3>Trả hàng <a href="{{ route('admin.sales.orders.view', $order->id) }}">{{ $order->increment_id }}</a> - {{ $order->customer_full_name }}</h3>
-                <div style="">
+                <div class="col-3" style="position: absolute; right: -12px; top: 2px;">
+                    <h2>Trả hàng <a href="{{ route('admin.sales.orders.view', $order->id) }}">{{ $order->increment_id }}</a> - {{ $order->customer_full_name }}</h2>
+                <div>
                     <div class="mb-3">
                         <div class="row_new">
                             Tổng giá gốc hàng mua
@@ -162,18 +162,8 @@ Trả hàng
                         </div>
                     </div>
                 </div>
-                    {{-- <div class="mb-3">
-                        <div class="row_new">
-                            Tiền trả khách
-                            <div class="col-right">
-                                <input type="text" class="w3-input" id="money_back" v-on:change="fn_change_money_back" placeholder="0" style="text-align: right; width: 150px" onClick="this.select();">
-                            </div> 
-                        </div>
-                    </div> --}}
-
-                    <div v-if="form.added_products.length > 0">
-                        <h3>Mua hàng</h3>
-
+                <div v-if="form.added_products.length > 0" style="">
+                    <h2>Mua hàng</h2>
                         <div class="mb-3">
                             <div class="row_new">
                                 Tổng tiền hàng
@@ -266,7 +256,6 @@ Trả hàng
                         refund_fee: 0,
                         collection_diff: {{$order->collection_diff}},
                         money_must_back: this.numberFormatter({{$order->grand_total}}),
-                        // money_back: 0,
                         refund: {},
                         //phần mua hàng
                         price_total: 0, // tổng tiền hàng
@@ -328,9 +317,15 @@ Trả hàng
                         alert('Bạn phải nhập số');
                         document.getElementById('refund_fee').value = "0";
                     } else {
-                        this.form.refund_fee = inputRefundFee;
-                        document.getElementById('refund_fee').value = this.numberFormatter(inputRefundFee);
-                        this.form.money_must_back = this.numberFormatter(parseInt(this.form.refund_total) - parseInt(this.form.discount) + parseInt(this.form.collection_diff) - parseInt(this.form.refund_fee));
+                        if(inputRefundFee == '') {
+                            this.form.refund_fee = 0;
+                            document.getElementById('refund_fee').value = 0;
+                            this.form.money_must_back = this.numberFormatter(parseInt(this.form.refund_total) - parseInt(this.form.discount) + parseInt(this.form.collection_diff));
+                        } else {
+                            this.form.refund_fee = inputRefundFee;
+                            document.getElementById('refund_fee').value = this.numberFormatter(inputRefundFee);
+                            this.form.money_must_back = this.numberFormatter(parseInt(this.form.refund_total) - parseInt(this.form.discount) + parseInt(this.form.collection_diff) - parseInt(this.form.refund_fee));
+                        }
                     }
                 },
                 fn_change_discount: function() {
@@ -339,30 +334,33 @@ Trả hàng
                         alert('Bạn phải nhập số');
                         document.getElementById('discount').value = this.numberFormatter({{$order->discount_amount}});
                     } else {
-                        this.form.discount = inputDiscount;
-                        document.getElementById('discount').value = this.numberFormatter(inputDiscount);
-                        this.form.money_must_back = this.numberFormatter(parseInt(this.form.refund_total) - parseInt(this.form.discount) + parseInt(this.form.collection_diff) - parseInt(this.form.refund_fee));
+                        if(inputDiscount == '') {
+                            this.form.discount = 0;
+                            document.getElementById('discount').value = 0;
+                            this.form.money_must_back = this.numberFormatter(parseInt(this.form.refund_total) + parseInt(this.form.collection_diff) - parseInt(this.form.refund_fee));
+                        } else {
+                            this.form.discount = inputDiscount;
+                            document.getElementById('discount').value = this.numberFormatter(inputDiscount);
+                            this.form.money_must_back = this.numberFormatter(parseInt(this.form.refund_total) - parseInt(this.form.discount) + parseInt(this.form.collection_diff) - parseInt(this.form.refund_fee));
+                        }
+                        
                     }
                 },
-                // fn_change_money_back: function() {
-                //     var inputMoneyBack = document.getElementById('money_back').value;
-                //     if(isNaN(inputMoneyBack)) {
-                //         alert('Bạn phải nhập số');
-                //         document.getElementById('money_back').value = '0';
-                //     } else {
-                //         this.form.money_back = inputMoneyBack;
-                //         document.getElementById('money_back').value = this.numberFormatter(inputMoneyBack);
-                //     }
-                // },
                 fn_change_collection_diff: function() {
                     var inputCollectionDiff = document.getElementById('collection_diff').value;
                     if(isNaN(inputCollectionDiff)) {
                         alert('Bạn phải nhập số');
                         document.getElementById('collection_diff').value = this.numberFormatter({{$order->collection_diff}});
                     } else {
-                        this.form.collection_diff = inputCollectionDiff;
-                        document.getElementById('collection_diff').value = this.numberFormatter(inputCollectionDiff);
-                        this.form.money_must_back = this.numberFormatter(parseInt(this.form.refund_total) - parseInt(this.form.discount) + parseInt(this.form.collection_diff) - parseInt(this.form.refund_fee));
+                        if (inputCollectionDiff == '') {
+                            this.form.collection_diff = 0;
+                            document.getElementById('collection_diff').value = 0;
+                            this.form.money_must_back = this.numberFormatter(parseInt(this.form.refund_total) - parseInt(this.form.discount) - parseInt(this.form.refund_fee));
+                        } else {
+                            this.form.collection_diff = inputCollectionDiff;
+                            document.getElementById('collection_diff').value = this.numberFormatter(inputCollectionDiff);
+                            this.form.money_must_back = this.numberFormatter(parseInt(this.form.refund_total) - parseInt(this.form.discount) + parseInt(this.form.collection_diff) - parseInt(this.form.refund_fee));
+                        }
                     }
                 },
                 save() {
@@ -437,13 +435,23 @@ Trả hàng
                         alert('Bạn phải nhập số');
                         document.getElementById('discount_orders').value = '0';
                     } else {
-                        this.form.discount_orders = parseInt(input_discount_orders);
-                        this.form.price_sum_total = this.form.price_total - this.form.discount_orders + this.form.collection_diff_orders;
-                        this.form.price_sum_total_show = this.numberFormatter(this.form.price_sum_total);
+                        if (input_discount_orders == '') {
+                            this.form.discount_orders = 0;
+                            this.form.price_sum_total = this.form.price_total - this.form.discount_orders + this.form.collection_diff_orders;
+                            this.form.price_sum_total_show = this.numberFormatter(this.form.price_sum_total);
 
-                        this.form.price_must_paid = Math.abs(this.form.price_sum_total - parseInt((this.form.money_must_back).replace(',','')));
-                        this.form.price_must_paid_show = this.numberFormatter(this.form.price_must_paid);
-                        document.getElementById('discount_orders').value = this.numberFormatter(input_discount_orders);
+                            this.form.price_must_paid = Math.abs(this.form.price_sum_total - parseInt((this.form.money_must_back).replace(',','')));
+                            this.form.price_must_paid_show = this.numberFormatter(this.form.price_must_paid);
+                            document.getElementById('discount_orders').value = 0;
+                        } else {
+                            this.form.discount_orders = parseInt(input_discount_orders);
+                            this.form.price_sum_total = this.form.price_total - this.form.discount_orders + this.form.collection_diff_orders;
+                            this.form.price_sum_total_show = this.numberFormatter(this.form.price_sum_total);
+
+                            this.form.price_must_paid = Math.abs(this.form.price_sum_total - parseInt((this.form.money_must_back).replace(',','')));
+                            this.form.price_must_paid_show = this.numberFormatter(this.form.price_must_paid);
+                            document.getElementById('discount_orders').value = this.numberFormatter(input_discount_orders);
+                        }
                     }
                 },
                 fn_change_collection_diff_orders: function() {
@@ -452,13 +460,24 @@ Trả hàng
                         alert('Bạn phải nhập số');
                         document.getElementById('collection_diff_orders').value = '0';
                     } else {
-                        this.form.collection_diff_orders = parseInt(input_collection_diff_orders);
-                        this.form.price_sum_total = (this.form.price_total + this.form.collection_diff_orders - this.form.discount_orders);
-                        this.form.price_sum_total_show = this.numberFormatter(this.form.price_sum_total);
+                        if(input_collection_diff_orders == '') {
+                            this.form.collection_diff_orders = 0;
+                            this.form.price_sum_total = (this.form.price_total + this.form.collection_diff_orders - this.form.discount_orders);
+                            this.form.price_sum_total_show = this.numberFormatter(this.form.price_sum_total);
 
-                        this.form.price_must_paid = Math.abs(this.form.price_sum_total - parseInt((this.form.money_must_back).replace(',','')));
-                        this.form.price_must_paid_show = this.numberFormatter(this.form.price_must_paid);
-                        document.getElementById('collection_diff_orders').value = this.numberFormatter(input_collection_diff_orders);
+                            this.form.price_must_paid = Math.abs(this.form.price_sum_total - parseInt((this.form.money_must_back).replace(',','')));
+                            this.form.price_must_paid_show = this.numberFormatter(this.form.price_must_paid);
+                            document.getElementById('collection_diff_orders').value = 0;
+                        } else {
+                            this.form.collection_diff_orders = parseInt(input_collection_diff_orders);
+                            this.form.price_sum_total = (this.form.price_total + this.form.collection_diff_orders - this.form.discount_orders);
+                            this.form.price_sum_total_show = this.numberFormatter(this.form.price_sum_total);
+
+                            this.form.price_must_paid = Math.abs(this.form.price_sum_total - parseInt((this.form.money_must_back).replace(',','')));
+                            this.form.price_must_paid_show = this.numberFormatter(this.form.price_must_paid);
+                            document.getElementById('collection_diff_orders').value = this.numberFormatter(input_collection_diff_orders);
+                        }
+                        
                     }
                 },
             }
