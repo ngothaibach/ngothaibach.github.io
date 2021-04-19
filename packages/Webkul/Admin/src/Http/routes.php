@@ -9,7 +9,7 @@ Route::group(['middleware' => ['web', 'admin_locale']], function () {
         Route::get('/login', 'Webkul\User\Http\Controllers\SessionController@create')->defaults('_config', [
             'view' => 'admin::users.sessions.create',
         ])->name('admin.session.create');
-
+        
         //login post route to admin auth controller
         Route::post('/login', 'Webkul\User\Http\Controllers\SessionController@store')->defaults('_config', [
             'redirect' => 'admin.dashboard.index',
@@ -30,19 +30,21 @@ Route::group(['middleware' => ['web', 'admin_locale']], function () {
         Route::post('/reset-password', 'Webkul\User\Http\Controllers\ResetPasswordController@store')->defaults('_config', [
             'redirect' => 'admin.dashboard.index',
         ])->name('admin.reset-password.store');
-
-
+        
+        
         // Admin Routes
         Route::group(['middleware' => ['admin']], function () {
             Route::get('/logout', 'Webkul\User\Http\Controllers\SessionController@destroy')->defaults('_config', [
                 'redirect' => 'admin.session.create',
             ])->name('admin.session.destroy');
-
+            // Change Inventory 
+            Route::get('change-inven', 'Webkul\Admin\Helpers\ChangeSessionInventory@ChangeInventory')->name('admin.changeInventory');
+            
             // Dashboard Route
             Route::get('dashboard', 'Webkul\Admin\Http\Controllers\DashboardController@index')->defaults('_config', [
                 'view' => 'admin::dashboard.index',
             ])->name('admin.dashboard.index');
-
+            
             //Customer Management Routes
             Route::get('customers', 'Webkul\Admin\Http\Controllers\Customer\CustomerController@index')->defaults('_config', [
                 'view' => 'admin::customers.index',

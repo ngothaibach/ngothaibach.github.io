@@ -7,7 +7,7 @@ use Webkul\Core\Models\Channel;
 use Webkul\Ui\DataGrid\DataGrid;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
-
+use Session;
 class ProductDataGrid extends DataGrid
 {
     protected $sortOrder = 'desc';
@@ -61,7 +61,7 @@ class ProductDataGrid extends DataGrid
         }
 
         /* query builder */
-        if(auth()->guard('admin')->user()->role['id'] == 1){
+        if(Session::get('inventory') == 0){
             $queryBuilder = DB::table('product_flat')
                 ->leftJoin('products', 'product_flat.product_id', '=', 'products.id')
                 ->leftJoin('attribute_families', 'products.attribute_family_id', '=', 'attribute_families.id')
@@ -82,7 +82,7 @@ class ProductDataGrid extends DataGrid
                     DB::raw('SUM(DISTINCT ' . DB::getTablePrefix() . 'product_inventories.qty) as quantity')
                 );
             }else{
-                $inventory_id = $invent_id = auth()->guard('admin')->user()->inventory_id;
+                $inventory_id = Session::get('inventory');
                 $queryBuilder = DB::table('product_flat')
                 ->leftJoin('products', 'product_flat.product_id', '=', 'products.id')
                 ->leftJoin('attribute_families', 'products.attribute_family_id', '=', 'attribute_families.id')

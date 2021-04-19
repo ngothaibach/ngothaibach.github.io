@@ -13,6 +13,8 @@ use Webkul\Core\Repositories\LocaleRepository;
 use Webkul\Core\Repositories\CoreConfigRepository;
 use Illuminate\Support\Facades\Config;
 use Webkul\Customer\Repositories\CustomerGroupRepository;
+use Webkul\Inventory\Repositories\InventorySourceRepository;
+use Session;
 
 class Core
 {
@@ -97,7 +99,8 @@ class Core
         CountryStateRepository $countryStateRepository,
         LocaleRepository $localeRepository,
         CustomerGroupRepository $customerGroupRepository,
-        CoreConfigRepository $coreConfigRepository
+        CoreConfigRepository $coreConfigRepository,
+        InventorySourceRepository $inventorySourceRepository
     )
     {
         $this->channelRepository = $channelRepository;
@@ -115,6 +118,8 @@ class Core
         $this->customerGroupRepository = $customerGroupRepository;
 
         $this->coreConfigRepository = $coreConfigRepository;
+
+        $this->inventorySourceRepository = $inventorySourceRepository;
     }
 
     /**
@@ -235,6 +240,32 @@ class Core
         }
 
         return $locales = $this->localeRepository->all();
+    }
+
+    /**
+     * Returns all locales
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function getInventorySources()
+    {
+        static $inventorySources;
+        $role_id = auth()->guard('admin')->user()->role['id'];
+        if ($inventorySources) {
+            return $inventorySources;
+        }
+        if($role_id ==1 ){
+            if(Session::get('inventory') == null){
+                Session::put('inventory', 0);
+            }
+            return $inventorySources = $this->inventorySourceRepository->all();
+        }else{
+            $inventory_id = auth()->guard('admin')->user()->inventory_id;
+            if(Session::get('inventory') == null){
+                Session::put('inventory', $inventory_id);  
+            }
+            return $inventorySources = $this->inventorySourceRepository->find($inventory_id);
+        }
     }
 
     /**
