@@ -32,7 +32,7 @@
                                                                                           handler: 'onClose'
                                                                                         }">
                                                                                         <li v-for="result in pageOfItems" v-if="result.name != null" class="list-group-item"  :key="result.id"  v-on:click="add_product(result)">
-                                                                                            <span v-text="result.name"></span><br/>
+                                                                                            <span v-text="result.name  + ' --- ' + result.sku"></span><br/>
                                                                                             <img style="width: 60xp; height: 60px;" v-bind:src="'/cache/small/' + result.featured_image"/>
                                                                                             {{ __('admin::app.vpt.inventory.price') }}: <span v-text="result.price"></span><br/>
                                                                                             {{ __('admin::app.vpt.inventory.remain') }}: <span v-text="result.qty"></span>

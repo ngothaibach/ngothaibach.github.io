@@ -16,18 +16,23 @@
                                 <div class="col-8" style="align-self: baseline;">
                                     <h2>{{ __('admin::app.vpt.inventory.transfer') }}</h2>
                                     <div>
-                                        <input class="form-control" type="text" v-model="keywords"  ref="button"  v-on:click="showPopup = true" >
+                                        <input class="form-control" type="text" v-on:input="onChangeKeywords($event.target.value)"  ref="button"  v-on:click="showPopup = true" >
                                         <ul class="list-group" v-if="results.length > 0"  v-show="showPopup"
                                             v-closable="{
                                               exclude:   ['button'],
                                               handler: 'onClose'
                                             }">
-                                            <li v-if="result.name.length" class="list-group-item" v-for="result in results" :key="result.id"  v-on:click="add_product(result)">
-                                                <span v-text="result.name"></span><br/>
+                                            <li v-for="result in pageOfItems" v-if="result.name != null" :key="result.id"  v-on:click="add_product(result)">
+                                                <span v-text="result.name  + ' --- ' + result.sku"></span><br/>
                                                 <img style="width: 60xp; height: 60px;" v-bind:src="'/cache/small/' + result.featured_image"/>
                                                 {{ __('admin::app.vpt.inventory.price') }}: <span v-text="result.price"></span><br/>
                                                 {{ __('admin::app.vpt.inventory.remain') }}: <span v-text="result.qty"></span>
                                             </li>
+                                            <sort-pagination 
+                                             v-bind:items="results"
+                                             v-bind:pageSize = "3"
+                                             @changePage="onChangePage">
+                                             </sort-pagination>
                                         </ul>
 
                                         <div id="app" >
@@ -213,18 +218,31 @@
                     parse_header: [],
                     parse_csv: [],
                     sortOrders: {},
-                    sortKey: ''
+                    sortKey: '',
+                    pageOfItems: [],
+                    perPage: 10,
                 };
-            },
-            watch: {
-                keywords(after, before) {
-                    this.fetch();
-                }
             },
             methods: {
                 onClose: function() {
                     this.showPopup = false
                 },
+                onChangeKeywords: _.debounce(function (input) {
+                    this.keywords = input;
+                    if(this.keywords != ""){        
+                        this.fetch();
+                    }else{
+                        this.listProduct = [];
+                        this.results = [];
+                        this.showPopup = false;
+                    }
+                    }, 600),
+                //pagination
+                onChangePage(pageOfItems) {
+                  // update page of items
+                  this.pageOfItems = pageOfItems;
+                }, 
+                //pagination
                 fetchDataNotShow() {
                     axios.get("{{ route('admin.catalog.products.live-search-products') }}", {
                             params: {
