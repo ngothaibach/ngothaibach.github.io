@@ -282,8 +282,10 @@
                     this.form.total_of_qty += 1;
                 },
                 remove_product: function(item) {
+                    let index = this.form.added_products.indexOf(item);
+                    let qty = this.form.added_products[index].qty;
+                    this.form.price_total = parseInt(this.form.price_total) - parseInt(item.price)*parseInt(qty);
                     this.form.added_products.splice(this.form.added_products.indexOf(item), 1);
-                    this.form.price_total = parseInt(this.form.price_total) - parseInt(item.price);
                     this.form.total_of_qty = parseInt(this.form.total_of_qty) - parseInt(item.qty);
                 },
                 update_price: function() {

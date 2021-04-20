@@ -321,8 +321,11 @@ let handleOutsideClick
                     this.form.price_total = parseInt(this.form.price_total) + parseInt(result.price);
                 },
                 remove_product: function(item) {
+                    let index = this.form.added_products.indexOf(item);
+                    let qty = this.form.added_products[index].qty;
+                    this.form.price_total = parseInt(this.form.price_total) - parseInt(item.price)*parseInt(qty);
                     this.form.added_products.splice(this.form.added_products.indexOf(item), 1);
-                    this.form.price_total = parseInt(this.form.price_total) - parseInt(item.price);
+                    
                 },
                 update_price: function() {
                     this.form.price_total = 0;
