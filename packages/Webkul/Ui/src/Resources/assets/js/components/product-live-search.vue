@@ -146,13 +146,16 @@
                 this.added_products.push(added_item);
                 this.showPopup = false;
                 this.price_total = parseInt(this.price_total) + parseInt(result.price);
+                this.$emit('added_product_changed',this.added_products);
+                this.$emit('price_total_changed',this.price_total);
             },
             remove_product: function(item) {
                 let index = this.added_products.indexOf(item);
                 let qty = this.added_products[index].qty;
                 this.price_total = parseInt(this.price_total) - parseInt(item.price)*parseInt(qty);
                 this.added_products.splice(this.added_products.indexOf(item), 1);
-                
+                this.$emit('added_product_changed',this.added_products);
+                this.$emit('price_total_changed',this.price_total);
             },
             update_price: function() {
                 this.price_total = 0;
@@ -160,11 +163,12 @@
                     this.price_total += parseInt(this.added_products[i].qty) * parseInt(
                         this.added_products[i].price);
                 }
+                this.$emit('price_total_changed',this.price_total);
             },
             //pagination
             onChangePage(pageOfItems) {
-                // update page of items
-                this.pageOfItems = pageOfItems;
+            // update page of items
+            this.pageOfItems = pageOfItems;
             }, 
             //pagination 
             
