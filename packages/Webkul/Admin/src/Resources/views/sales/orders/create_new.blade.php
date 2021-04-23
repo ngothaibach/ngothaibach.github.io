@@ -176,16 +176,94 @@
                     </div>
                 </div>
             </div>
+            <!--thêm khách hàng mới -->
+            <div id="add_new_customer" style="display:none">
+                <form method="POST" id="addNewCustomer" action="{{ route('admin.sales.orders.store_customer_in_orders') }}" enctype="multipart/form-data" >
+                {{-- <form id="addNewCustomer" action="#" class="form newtopic" @submit.prevent="saveCustomer"> --}}
+                    @csrf
+                    <div class="modal-parent scrollable" >
+                        <div class="modal-container">
+                            <div class="modal-header">
+                                <slot name="header">
+                                    <h2>Thêm khách hàng</h2>
+                                </slot>
+                                <i class="icon remove-icon" id="hideAddCategoryButton" onclick="on_click_closed_add_customer()" ></i>
+                            </div>
+                            <div class="modal-body">
+                                <div class="control-group" :class="[errors.has('first_name') ? 'has-error' : '']">
+                                    <label for="first_name" class="required">{{ __('admin::app.customers.customers.first_name') }}</label>
+                                    <input type="text" class="control" name="first_name" v-validate="'required'" value="{{ old('first_name') }}" data-vv-as="&quot;{{ __('shop::app.customer.signup-form.firstname') }}&quot;">
+                                    <span class="control-error" v-if="errors.has('first_name')">@{{ errors.first('first_name') }}</span>
+                                </div>
+
+                                <div class="control-group" :class="[errors.has('last_name') ? 'has-error' : '']">
+                                    <label for="first_name" class="required">{{ __('admin::app.customers.customers.last_name') }}</label>
+                                    <input type="text" class="control" name="last_name" v-validate="'required'" value="{{ old('last_name') }}" data-vv-as="&quot;{{ __('shop::app.customer.signup-form.lastname') }}&quot;">
+                                    <span class="control-error" v-if="errors.has('last_name')">@{{ errors.first('last_name') }}</span>
+                                </div>
+
+                                <div class="control-group" :class="[errors.has('email') ? 'has-error' : '']">
+                                    <label for="email" class="required">{{ __('shop::app.customer.signup-form.email') }}</label>
+                                    <input type="email" class="control" name="email" v-validate="'required|email'" value="{{ old('email') }}" data-vv-as="&quot;{{ __('shop::app.customer.signup-form.email') }}&quot;">
+                                    <span class="control-error" v-if="errors.has('email')">@{{ errors.first('email') }}</span>
+                                </div>
+
+                                <div class="control-group" :class="[errors.has('gender') ? 'has-error' : '']">
+                                    <label for="gender" class="required">{{ __('admin::app.customers.customers.gender') }}</label>
+                                    <select name="gender" class="control" v-validate="'required'" data-vv-as="&quot;{{ __('admin::app.customers.customers.gender') }}&quot;">
+                                        <option value=""></option>
+                                        <option value="{{ __('admin::app.customers.customers.male') }}">{{ __('admin::app.customers.customers.male') }}</option>
+                                        <option value="{{ __('admin::app.customers.customers.female') }}">{{ __('admin::app.customers.customers.female') }}</option>
+                                        <option value="{{ __('admin::app.customers.customers.other') }}">{{ __('admin::app.customers.customers.other') }}</option>
+                                    </select>
+                                    <span class="control-error" v-if="errors.has('gender')">@{{ errors.first('gender') }}</span>
+                                </div>
+
+                                <div class="control-group" :class="[errors.has('date_of_birth') ? 'has-error' : '']">
+                                    <label for="dob">{{ __('admin::app.customers.customers.date_of_birth') }}</label>
+                                    <input type="date" class="control" name="date_of_birth" v-validate="" value="{{ old('date_of_birth') }}" placeholder="{{ __('admin::app.customers.customers.date_of_birth_placeholder') }}" data-vv-as="&quot;{{ __('admin::app.customers.customers.date_of_birth') }}&quot;">
+                                    <span class="control-error" v-if="errors.has('date_of_birth')">@{{ errors.first('date_of_birth') }}</span>
+                                </div>
+
+                                <div class="control-group" :class="[errors.has('phone') ? 'has-error' : '']">
+                                    <label for="phone" class="required">{{ __('admin::app.customers.customers.phone') }}</label>
+                                    <input type="text" class="control" name="phone" v-validate="'required'" value="{{ old('phone') }}" data-vv-as="&quot;{{ __('admin::app.customers.customers.phone') }}&quot;">
+                                    <span class="control-error" v-if="errors.has('phone')">@{{ errors.first('phone') }}</span>
+                                </div>
+
+                                <div class="control-group" :class="[errors.has('company_name') ? 'has-error' : '']">
+                                    <label for="company_name">{{ __('shop::app.customer.account.address.create.company_name') }}</label>
+                                    <input type="text" class="control" name="company_name" value="{{ old('company_name') }}" data-vv-as="&quot;{{ __('shop::app.customer.account.address.create.company_name') }}&quot;">
+                                    <span class="control-error" v-if="errors.has('company_name')">@{{ errors.first('company_name') }}</span>
+                                </div>
+
+                                <div class="control-group" :class="[errors.has('address1[]') ? 'has-error' : '']">
+                                    <label for="address_0" class="required">{{ __('shop::app.customer.account.address.edit.street-address') }}</label>
+                                    <input type="text" class="control" name="address1[]" id="address_0" v-validate="'required'" value="{{ old('address1') }}" data-vv-as="&quot;{{ __('shop::app.customer.account.address.create.street-address') }}&quot;">
+                                    <span class="control-error" v-if="errors.has('address1[]')">@{{ errors.first('address1[]') }}</span>
+                                </div>
+            
+                                <div class="control-group" :class="[errors.has('city') ? 'has-error' : '']">
+                                    <label for="city" class="required">{{ __('shop::app.customer.account.address.create.city') }}</label>
+                                    <input type="text" class="control" name="city" v-validate="'required'" value="{{ old('city') }}" data-vv-as="&quot;{{ __('shop::app.customer.account.address.create.city') }}&quot;">
+                                    <span class="control-error" v-if="errors.has('city')">@{{ errors.first('city') }}</span>
+                                </div>
+
+                                {{-- @include ('admin::customers.country-state', ['countryCode' => old('country') ?? config('app.default_country'), 'stateCode' => old('state') ?? '']) --}}
+
+                                <div class="page-action">
+                                    {{-- <button v-on:click="saveCustomer()" type="button" class="btn btn-primary" style="width: 100%; height: 60px">Thêm</button> --}}
+                                    <button  type="submit" form="addNewCustomer" class="btn btn-primary" style="width: 100%; height: 60px">Thêm</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        <!-- end thêm KH mới -->
         </form>
         
-        <!--thêm khách hàng mới -->
-        {{-- <div id="add_new_customer" style="display:none">
-            <form id="addNewCustomer" method="POST" enctype="multipart/form-data">
-                <div class="modal-parent scrollable" >
-                    
-                </div>
-            </form>
-        </div> --}}
+        
     </script>
 
     <script>
@@ -469,22 +547,28 @@
                     }
                     
                 },
-                submit: function () {
-                    axios.get("{{ route('admin.sales.orders.store') }}", { params: { form_data: this.form_data } })
-                        .then(response => this.results = response.data)
-                        .catch(error => {});
+                // submit: function () {
+                //     axios.get("{{ route('admin.sales.orders.store') }}", { params: { form_data: this.form_data } })
+                //         .then(response => this.results = response.data)
+                //         .catch(error => {});
+                // },
+                saveCustomer () {
+                    alert('vao day roi');
+                    this.$http.post("{{ route('admin.sales.orders.store_customer_in_orders') }}")
+                    .then(resp => {
+                        $("#add_new_customer").css("display","none");
+                    })
+                    
                 }
             }
         });
     </script>
     <script>
-        // $(document).ready(function () {
-        //     $("#add_new_customer").click(function(){
-        //         alert('vao day roi');
-        //     });
-        // }
         function on_click_add_new_customer() {
-            alert('vao day');
+            $("#add_new_customer").css("display","block");
+        }
+        function on_click_closed_add_customer(){
+            $("#add_new_customer").css("display","none");
         }
     </script>
 @endpush

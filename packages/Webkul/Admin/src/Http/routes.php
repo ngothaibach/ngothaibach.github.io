@@ -196,8 +196,8 @@ Route::group(['middleware' => ['web', 'admin_locale']], function () {
                 ])->name('admin.sales.orders.create');
                 Route::post('admin/orders/store', 'Webkul\Admin\Http\Controllers\Sales\OrderController@store_orders')->name('admin.sales.orders.store');
 
-                //minhpd live search customer
-                Route::get('customers/live-search-customers', 'Webkul\Admin\Http\Controllers\Sales\OrderController@liveSearchCustomer')->name('admin.sales.orders.live_search_customer');
+                //minhpd tạo khách hàng trong form bán hàng
+                Route::post('admin/orders/store_customer_in_orders', 'Webkul\Admin\Http\Controllers\Sales\OrderController@store_customer_in_orders')->name('admin.sales.orders.store_customer_in_orders');
                 //end minh
 
                 // Sales Invoices Routes

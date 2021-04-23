@@ -19,6 +19,8 @@ use Webkul\Sales\Repositories\OrderItemRepository;
 use Webkul\Sales\Repositories\OrderAddressRepository;
 use Webkul\Checkout\Repositories\CartAddressRepository;
 use Illuminate\Support\Facades\DB;
+use Webkul\Customer\Repositories\CustomerRepository;
+use Webkul\Customer\Repositories\CustomerAddressRepository;
 
 
 class OrderController extends Controller
@@ -79,6 +81,20 @@ class OrderController extends Controller
      */
     protected $orderAddressRepository;
 
+       /**
+     * CustomerRepository object
+     *
+     * @var \Webkul\Customer\Repositories\CustomerRepository
+     */
+    protected $customerRepository;
+
+    /**
+     * CustomerAddress Repository object
+     *
+     * @var \Webkul\Customer\Repositories\CustomerAddressRepository
+     */
+    protected $customerAddressRepository;
+
     /**
      * Create a new controller instance.
      *
@@ -93,7 +109,9 @@ class OrderController extends Controller
         CartItemRepository $cartItemRepository, 
         OrderItemRepository $orderItemRepository, 
         CartAddressRepository $cartAddressRepository, 
-        OrderAddressRepository $orderAddressRepository
+        OrderAddressRepository $orderAddressRepository,
+        CustomerRepository $customerRepository,
+        CustomerAddressRepository $customerAddressRepository
     )
     {
         $this->middleware('admin');
@@ -113,6 +131,10 @@ class OrderController extends Controller
         $this->cartAddressRepository = $cartAddressRepository;
 
         $this->orderAddressRepository = $orderAddressRepository;
+
+        $this->customerRepository = $customerRepository;
+
+        $this->customerAddressRepository = $customerAddressRepository;
     }
 
     /**
@@ -440,5 +462,72 @@ class OrderController extends Controller
                 'message' => 'Save susscessfully',
             ]
         );
+    }
+
+    public function store_customer_in_orders(){
+        // dd(request()->all());
+
+        request()->merge([
+            'address1' => implode(PHP_EOL, array_filter(request()->input('address1'))),
+        ]);
+
+        $this->validate(request(), [
+            'first_name'    => 'string|required',
+            'last_name'     => 'string|required',
+            'gender'        => 'required',
+            'email'         => 'required|unique:customers,email',
+            'date_of_birth' => 'date|before:today',
+            'company_name' => 'string',
+            'address1'     => 'string|required',
+            'state'        => 'string|required',
+            'city'         => 'string|required',
+        ]);
+        
+        
+
+        $dataCustomer = [
+            'first_name'    => request()->first_name,
+            'last_name'     => request()->last_name,
+            'gender'        => request()->gender,
+            'email'         => request()->email,
+            'date_of_birth' => request()->date_of_birth,
+            'phone'         => request()->phone,
+            'customer_group_id'=> 2,
+        ];
+
+        $password = rand(100000, 10000000);
+
+        $dataCustomer['password'] = bcrypt($password);
+
+        $dataCustomer['is_verified'] = 1;
+
+        Event::dispatch('customer.registration.before');
+
+        $customer = $this->customerRepository->create($dataCustomer);
+
+        $dataAddress = [
+            'first_name'    => request()->first_name,
+            'last_name'     => request()->last_name,
+            'gender'        => request()->gender,
+            'email'         => request()->email,
+            'company_name' => request()->company_name,
+            'address1'     => request()->address1,
+            'country'      => 'VN',
+            'state'        => 'hoạt động',
+            'city'         => request()->city,
+            'postcode'     => '10000',
+            'phone'        => request()->phone,
+            'vat_id'       => '',
+            'customer_id'  => $customer->id,
+            'address_type' => 'customer',
+            'default_address' => 1,
+        ];
+        $addresses = $this->customerAddressRepository->create($dataAddress);
+
+        Event::dispatch('customer.registration.after', $customer);
+
+        session()->flash('success', trans('admin::app.response.create-success', ['name' => 'Customer']));
+
+        return redirect()->route('admin.sales.orders.create');
     }
 }
