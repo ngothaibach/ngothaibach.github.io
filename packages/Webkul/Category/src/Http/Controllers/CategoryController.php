@@ -226,4 +226,11 @@ class CategoryController extends Controller
 
         return response()->json(['product_count' => $product_count], 200);
     }
+
+    public function liveSearchCategory()
+    {
+        return response()->json(
+            $this->categoryRepository->searchSimpleCategory(request()->input('key'))
+        );
+    }
 }

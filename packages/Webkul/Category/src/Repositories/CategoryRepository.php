@@ -250,4 +250,18 @@ class CategoryRepository extends Repository
 
         return $trimmed;
     }
+    /**
+     * Search simple products for grouped product association
+     *
+     * @param string $term
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function searchSimpleCategory($term)
+    {
+        $results = $this->model->whereTranslationLike('name','%' . $term . '%')
+        ->orderBy('position', 'ASC')
+        ->get();
+        return $results;
+    }
 }
