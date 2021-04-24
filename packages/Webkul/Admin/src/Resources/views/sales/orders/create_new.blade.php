@@ -469,7 +469,11 @@
                         alert('Bạn phải nhập số');
                         document.getElementById('inputDiscount').value = '0';
                     } else {
-                        this.form.discount = parseInt(input_discount);
+                        if(input_discount == '') {
+                            this.form.discount = 0;
+                        } else {
+                            this.form.discount = parseInt(input_discount);
+                        }
                         if(this.form.discount_type == 1){
                             this.form.price_must_paid = this.form.price_total - this.form.discount ;
                             if (this.form.customer_paid != 0){
@@ -492,6 +496,9 @@
                         alert('Bạn phải nhập số');
                         document.getElementById('customer_paid').value = "";
                     } else {
+                        if (inputCustomer_paid == '') {
+                            inputCustomer_paid = 0;
+                        }
                         if(inputCustomer_paid == 0) {
                             this.form.customer_remain = 0;
                             this.form.customer_paid = 0;

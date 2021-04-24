@@ -348,7 +348,9 @@ class OrderController extends Controller
             $cartAddress = $this->cartAddressRepository->create($cartAddressData);
             
         }
-        
+        //lấy kho được phân quyền
+        // $inventory_id = Session::get('inventory');
+
         //lưu dữ liệu vào orders
         $order = new Order();
         $order->increment_id = $this->orderRepository->generateIncrementId();
@@ -382,6 +384,8 @@ class OrderController extends Controller
         $order->collection_diff = request()->collection_diff;
         $order->customer_paid = request()->customer_paid;
         $order->customer_remain = request()->customer_remain;
+        $order->inventory_id = '';
+        $order->sales_id = '';
         $order->save();
 
         //luư dữ liệu vào order items
@@ -454,7 +458,7 @@ class OrderController extends Controller
             $orderComent->save();
         }
 
-        session()->flash('success', trans('admin::app.settings.inventory_sources.create-success'));
+        session()->flash('success', 'Tạo đơn hàng thành công');
 
         return response()->json(
             [
