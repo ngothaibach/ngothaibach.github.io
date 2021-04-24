@@ -466,25 +466,7 @@ class OrderController extends Controller
 
     public function store_customer_in_orders(){
         // dd(request()->all());
-
-        request()->merge([
-            'address1' => implode(PHP_EOL, array_filter(request()->input('address1'))),
-        ]);
-
-        $this->validate(request(), [
-            'first_name'    => 'string|required',
-            'last_name'     => 'string|required',
-            'gender'        => 'required',
-            'email'         => 'required|unique:customers,email',
-            'date_of_birth' => 'date|before:today',
-            'company_name' => 'string',
-            'address1'     => 'string|required',
-            'state'        => 'string|required',
-            'city'         => 'string|required',
-        ]);
         
-        
-
         $dataCustomer = [
             'first_name'    => request()->first_name,
             'last_name'     => request()->last_name,
@@ -510,7 +492,7 @@ class OrderController extends Controller
             'last_name'     => request()->last_name,
             'gender'        => request()->gender,
             'email'         => request()->email,
-            'company_name' => request()->company_name,
+            'company_name' => '',
             'address1'     => request()->address1,
             'country'      => 'VN',
             'state'        => 'hoạt động',
@@ -528,6 +510,12 @@ class OrderController extends Controller
 
         session()->flash('success', trans('admin::app.response.create-success', ['name' => 'Customer']));
 
-        return redirect()->route('admin.sales.orders.create');
+        // return redirect()->route('admin.sales.orders.create');
+        return response()->json(
+            [
+                'success' => true,
+                'customer_id' => $customer->id
+            ]
+        );
     }
 }

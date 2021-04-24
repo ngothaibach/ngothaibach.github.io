@@ -192,25 +192,25 @@
                             <div class="modal-body">
                                 <div class="control-group" :class="[errors.has('first_name') ? 'has-error' : '']">
                                     <label for="first_name" class="required">{{ __('admin::app.customers.customers.first_name') }}</label>
-                                    <input type="text" class="control" name="first_name" v-validate="'required'" value="{{ old('first_name') }}" data-vv-as="&quot;{{ __('shop::app.customer.signup-form.firstname') }}&quot;">
+                                    <input type="text" class="control" name="first_name" v-model="form.first_name" v-validate="'required'" value="{{ old('first_name') }}" data-vv-as="&quot;{{ __('shop::app.customer.signup-form.firstname') }}&quot;">
                                     <span class="control-error" v-if="errors.has('first_name')">@{{ errors.first('first_name') }}</span>
                                 </div>
 
                                 <div class="control-group" :class="[errors.has('last_name') ? 'has-error' : '']">
                                     <label for="first_name" class="required">{{ __('admin::app.customers.customers.last_name') }}</label>
-                                    <input type="text" class="control" name="last_name" v-validate="'required'" value="{{ old('last_name') }}" data-vv-as="&quot;{{ __('shop::app.customer.signup-form.lastname') }}&quot;">
+                                    <input type="text" class="control" name="last_name" v-model="form.last_name" v-validate="'required'" value="{{ old('last_name') }}" data-vv-as="&quot;{{ __('shop::app.customer.signup-form.lastname') }}&quot;">
                                     <span class="control-error" v-if="errors.has('last_name')">@{{ errors.first('last_name') }}</span>
                                 </div>
 
                                 <div class="control-group" :class="[errors.has('email') ? 'has-error' : '']">
                                     <label for="email" class="required">{{ __('shop::app.customer.signup-form.email') }}</label>
-                                    <input type="email" class="control" name="email" v-validate="'required|email'" value="{{ old('email') }}" data-vv-as="&quot;{{ __('shop::app.customer.signup-form.email') }}&quot;">
+                                    <input type="email" class="control" name="email" v-model="form.email" v-validate="'required|email'" value="{{ old('email') }}" data-vv-as="&quot;{{ __('shop::app.customer.signup-form.email') }}&quot;">
                                     <span class="control-error" v-if="errors.has('email')">@{{ errors.first('email') }}</span>
                                 </div>
 
                                 <div class="control-group" :class="[errors.has('gender') ? 'has-error' : '']">
                                     <label for="gender" class="required">{{ __('admin::app.customers.customers.gender') }}</label>
-                                    <select name="gender" class="control" v-validate="'required'" data-vv-as="&quot;{{ __('admin::app.customers.customers.gender') }}&quot;">
+                                    <select name="gender" class="control" v-validate="'required'" v-model="form.gender" data-vv-as="&quot;{{ __('admin::app.customers.customers.gender') }}&quot;">
                                         <option value=""></option>
                                         <option value="{{ __('admin::app.customers.customers.male') }}">{{ __('admin::app.customers.customers.male') }}</option>
                                         <option value="{{ __('admin::app.customers.customers.female') }}">{{ __('admin::app.customers.customers.female') }}</option>
@@ -220,40 +220,32 @@
                                 </div>
 
                                 <div class="control-group" :class="[errors.has('date_of_birth') ? 'has-error' : '']">
-                                    <label for="dob">{{ __('admin::app.customers.customers.date_of_birth') }}</label>
-                                    <input type="date" class="control" name="date_of_birth" v-validate="" value="{{ old('date_of_birth') }}" placeholder="{{ __('admin::app.customers.customers.date_of_birth_placeholder') }}" data-vv-as="&quot;{{ __('admin::app.customers.customers.date_of_birth') }}&quot;">
+                                    <label for="dob" class="required">{{ __('admin::app.customers.customers.date_of_birth') }}</label>
+                                    <input type="date" class="control" name="date_of_birth" v-model="form.date_of_birth" v-validate="" value="{{ old('date_of_birth') }}" placeholder="{{ __('admin::app.customers.customers.date_of_birth_placeholder') }}" data-vv-as="&quot;{{ __('admin::app.customers.customers.date_of_birth') }}&quot;">
                                     <span class="control-error" v-if="errors.has('date_of_birth')">@{{ errors.first('date_of_birth') }}</span>
                                 </div>
 
                                 <div class="control-group" :class="[errors.has('phone') ? 'has-error' : '']">
                                     <label for="phone" class="required">{{ __('admin::app.customers.customers.phone') }}</label>
-                                    <input type="text" class="control" name="phone" v-validate="'required'" value="{{ old('phone') }}" data-vv-as="&quot;{{ __('admin::app.customers.customers.phone') }}&quot;">
+                                    <input type="text" class="control" name="phone" v-model="form.phone" v-validate="'required'" value="{{ old('phone') }}" data-vv-as="&quot;{{ __('admin::app.customers.customers.phone') }}&quot;">
                                     <span class="control-error" v-if="errors.has('phone')">@{{ errors.first('phone') }}</span>
                                 </div>
 
-                                <div class="control-group" :class="[errors.has('company_name') ? 'has-error' : '']">
-                                    <label for="company_name">{{ __('shop::app.customer.account.address.create.company_name') }}</label>
-                                    <input type="text" class="control" name="company_name" value="{{ old('company_name') }}" data-vv-as="&quot;{{ __('shop::app.customer.account.address.create.company_name') }}&quot;">
-                                    <span class="control-error" v-if="errors.has('company_name')">@{{ errors.first('company_name') }}</span>
-                                </div>
-
-                                <div class="control-group" :class="[errors.has('address1[]') ? 'has-error' : '']">
+                                <div class="control-group" :class="[errors.has('address1') ? 'has-error' : '']">
                                     <label for="address_0" class="required">{{ __('shop::app.customer.account.address.edit.street-address') }}</label>
-                                    <input type="text" class="control" name="address1[]" id="address_0" v-validate="'required'" value="{{ old('address1') }}" data-vv-as="&quot;{{ __('shop::app.customer.account.address.create.street-address') }}&quot;">
-                                    <span class="control-error" v-if="errors.has('address1[]')">@{{ errors.first('address1[]') }}</span>
+                                    <input type="text" class="control" name="address1" id="address_0" v-model="form.address1"v-validate="'required'" value="{{ old('address1') }}" data-vv-as="&quot;{{ __('shop::app.customer.account.address.create.street-address') }}&quot;">
+                                    <span class="control-error" v-if="errors.has('address1')">@{{ errors.first('address1[]') }}</span>
                                 </div>
             
                                 <div class="control-group" :class="[errors.has('city') ? 'has-error' : '']">
                                     <label for="city" class="required">{{ __('shop::app.customer.account.address.create.city') }}</label>
-                                    <input type="text" class="control" name="city" v-validate="'required'" value="{{ old('city') }}" data-vv-as="&quot;{{ __('shop::app.customer.account.address.create.city') }}&quot;">
+                                    <input type="text" class="control" name="city" v-model="form.city" v-validate="'required'" value="{{ old('city') }}" data-vv-as="&quot;{{ __('shop::app.customer.account.address.create.city') }}&quot;">
                                     <span class="control-error" v-if="errors.has('city')">@{{ errors.first('city') }}</span>
                                 </div>
 
-                                {{-- @include ('admin::customers.country-state', ['countryCode' => old('country') ?? config('app.default_country'), 'stateCode' => old('state') ?? '']) --}}
-
                                 <div class="page-action">
-                                    {{-- <button v-on:click="saveCustomer()" type="button" class="btn btn-primary" style="width: 100%; height: 60px">Thêm</button> --}}
-                                    <button  type="submit" form="addNewCustomer" class="btn btn-primary" style="width: 100%; height: 60px">Thêm</button>
+                                    <button v-on:click="saveCustomer()" type="button" class="btn btn-primary" style="width: 100%; height: 60px">Thêm</button>
+                                    {{-- <button  type="submit" v-on:click="saveCustomer()" form="addNewCustomer" class="btn btn-primary" style="width: 100%; height: 60px">Thêm</button> --}}
                                 </div>
                             </div>
                         </div>
@@ -308,6 +300,15 @@
                         discount: 0,
                         discount_type: 1,
                         list_customer: {!! ($customers) !!},
+                        //form thêm khách hàng
+                        first_name: '',
+                        last_name: '',
+                        email: '',
+                        gender: '',
+                        date_of_birth: '',
+                        phone: '',
+                        address1: '',
+                        city: '',
                     }),
                 };
             },
@@ -553,11 +554,27 @@
                 //         .catch(error => {});
                 // },
                 saveCustomer () {
-                    alert('vao day roi');
-                    this.$http.post("{{ route('admin.sales.orders.store_customer_in_orders') }}")
-                    .then(resp => {
-                        $("#add_new_customer").css("display","none");
-                    })
+                    if(this.form.first_name == '' || this.form.last_name == '' || this.form.email == '' || this.form.gender == '' 
+                        || this.form.date_of_birth == '' || this.form.phone == '' || this.form.address1 == '' || this.form.city == '') {
+                        alert('bạn chưa nhập đủ thông tin');
+                    } else {
+                        this.form.post("{{ route('admin.sales.orders.store_customer_in_orders') }}")
+                        .then(resp => {
+                            if (resp.data.success == true) {
+                                alert('Thêm mới thành công khách hàng');
+                                this.form.customer = resp.data.customer_id;
+                                this.keywords_customer = this.form.first_name + ' ' + this.form.last_name;
+                                $("#add_new_customer").css("display","none");
+
+                            } else {
+                                alert('Đã có lỗi xảy ra');
+                            }
+                        })
+                        .catch(err => {
+                            alert('Đã có lỗi xảy ra');
+                        })
+                    }
+                    
                     
                 }
             }
