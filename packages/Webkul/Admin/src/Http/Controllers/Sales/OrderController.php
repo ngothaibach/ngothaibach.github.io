@@ -1,7 +1,7 @@
 <?php
 
 namespace Webkul\Admin\Http\Controllers\Sales;
-
+use Session;
 use Illuminate\Support\Facades\Event;
 use Webkul\Admin\Http\Controllers\Controller;
 use Webkul\Sales\Repositories\OrderRepository;
@@ -21,6 +21,7 @@ use Webkul\Checkout\Repositories\CartAddressRepository;
 use Illuminate\Support\Facades\DB;
 use Webkul\Customer\Repositories\CustomerRepository;
 use Webkul\Customer\Repositories\CustomerAddressRepository;
+use Webkul\Sales\Repositories\InvoiceRepository;
 
 
 class OrderController extends Controller
@@ -96,6 +97,13 @@ class OrderController extends Controller
     protected $customerAddressRepository;
 
     /**
+     * InvoiceRepository object
+     *
+     * @var \Webkul\Sales\Repositories\InvoiceRepository
+     */
+    protected $invoiceRepository;
+
+    /**
      * Create a new controller instance.
      *
      * @param  \Webkul\Sales\Repositories\OrderRepository  $orderRepository
@@ -111,7 +119,8 @@ class OrderController extends Controller
         CartAddressRepository $cartAddressRepository, 
         OrderAddressRepository $orderAddressRepository,
         CustomerRepository $customerRepository,
-        CustomerAddressRepository $customerAddressRepository
+        CustomerAddressRepository $customerAddressRepository,
+        InvoiceRepository $invoiceRepository
     )
     {
         $this->middleware('admin');
@@ -135,6 +144,8 @@ class OrderController extends Controller
         $this->customerRepository = $customerRepository;
 
         $this->customerAddressRepository = $customerAddressRepository;
+
+        $this->invoiceRepository = $invoiceRepository;
     }
 
     /**
@@ -349,7 +360,8 @@ class OrderController extends Controller
             
         }
         //lấy kho được phân quyền
-        // $inventory_id = Session::get('inventory');
+        $inventory_id = Session::get('inventory');
+        $sales_id = request()->user;
 
         //lưu dữ liệu vào orders
         $order = new Order();
@@ -384,8 +396,8 @@ class OrderController extends Controller
         $order->collection_diff = request()->collection_diff;
         $order->customer_paid = request()->customer_paid;
         $order->customer_remain = request()->customer_remain;
-        $order->inventory_id = '';
-        $order->sales_id = '';
+        $order->inventory_id = ($inventory_id != null ? $inventory : 0);
+        $order->sales_id = $sales_id;
         $order->save();
 
         //luư dữ liệu vào order items
@@ -457,6 +469,14 @@ class OrderController extends Controller
             $orderComent->updated_at = request()->created_date;
             $orderComent->save();
         }
+
+        //tạo hóa đơn
+        $data_invoice = array();
+        foreach ($order->items as $item ) {
+            array_push($data_invoice,$data_invoice["invoice"]["items"][$item->id] = $item->qty_ordered);
+        }
+        $this->invoiceRepository->create(array_merge($data_invoice, ['order_id' => $order->id]));
+
 
         session()->flash('success', 'Tạo đơn hàng thành công');
 
