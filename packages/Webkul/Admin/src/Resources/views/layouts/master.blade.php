@@ -145,7 +145,11 @@
                             }
                     });
                 }
+                
             });
+            function onChangeInventory(value) {
+                    window.location.href = "{{route('admin.changeInventory')}}" + '?inventory=' + value;
+            }
         </script>
         @stack('scripts')
 

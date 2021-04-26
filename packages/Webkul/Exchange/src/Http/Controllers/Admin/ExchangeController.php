@@ -32,6 +32,7 @@ use Webkul\Exchange\Http\Models\ImportProduct;
 use Webkul\Exchange\Models\ExchangeNote;
 use Webkul\Exchange\Models\ProductExchangeNote;
 use Webkul\Admin\Helpers\filterCollection;
+use Session;
 
 
 class ExchangeController extends Controller
@@ -181,9 +182,8 @@ class ExchangeController extends Controller
         ->join('admins', 'admins.id', '=', 'exchange_notes.created_user_id')
         ->select('exchange_notes.id', 'exchange_notes.created_date', 'exchange_notes.note', 'exchange_notes.status','exchange_notes.type','exchange_notes.importer', 'exchange_notes.receipt_date', 'suppliers.name as supplier', 'inventory_sources.name as inventory','inventory_sources.id as inventoryID', 'admins.name as created_user','exchange_notes.total')
         ->where('type', '=', 'receipt');
-        if( $role_id != 1){
-            $invent_id = auth()->guard('admin')->user()->inventory_id;
-            $query = $query->where('to_inventory_source_id','=',$invent_id);
+        if( Session::get('inventory') != 0){
+            $query = $query->where('to_inventory_source_id','=',Session::get('inventory'));
         }
         if($_GET){
             $filter = new FilterCollection();
@@ -224,10 +224,9 @@ class ExchangeController extends Controller
         ->join('admins', 'admins.id', '=', 'exchange_notes.created_user_id')
         ->select('exchange_notes.id', 'exchange_notes.created_date', 'exchange_notes.note', 'exchange_notes.status', 'exchange_notes.receipt_date', 'exchange_notes.transfer_date', 'to_inventory_sources.name as to_inventory', 'from_inventory_sources.name as from_inventory','from_inventory_sources.id as from_inventory_id', 'admins.name as created_user')
         ->where('type', '=', 'transfer');
-        if($role_id != 1){
-            $invent_id = auth()->guard('admin')->user()->inventory_id;
-            $query = $query->where('from_inventory_source_id','=',$invent_id)
-            ->orwhere('to_inventory_source_id','=',$invent_id);
+        if(Session::get('inventory') != 0){
+            $query = $query->where('from_inventory_source_id','=',Session::get('inventory'))
+            ->orwhere('to_inventory_source_id','=',Session::get('inventory'));
         }
         if($_GET){
             $filter = new FilterCollection();
