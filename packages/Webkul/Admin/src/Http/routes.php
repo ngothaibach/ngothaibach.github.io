@@ -193,13 +193,12 @@ Route::group(['middleware' => ['web', 'admin_locale']], function () {
                 
                 //minhpd tạo đơn hàng
                 Route::get('/admin/orders/create', 'Webkul\Admin\Http\Controllers\Sales\OrderController@create_orders')->defaults('_config', [
-                    // 'view' => 'admin::sales.orders.create',
-                    'view' => 'admin::sales.orders.create_new',
+                    'view' => 'admin::sales.orders.create',
                 ])->name('admin.sales.orders.create');
                 Route::post('admin/orders/store', 'Webkul\Admin\Http\Controllers\Sales\OrderController@store_orders')->name('admin.sales.orders.store');
 
-                //minhpd live search customer
-                Route::get('customers/live-search-customers', 'Webkul\Admin\Http\Controllers\Sales\OrderController@liveSearchCustomer')->name('admin.sales.orders.live_search_customer');
+                //minhpd tạo khách hàng trong form bán hàng
+                Route::post('admin/orders/store_customer_in_orders', 'Webkul\Admin\Http\Controllers\Sales\OrderController@store_customer_in_orders')->name('admin.sales.orders.store_customer_in_orders');
                 //end minh
 
                 // Sales Invoices Routes
@@ -259,8 +258,7 @@ Route::group(['middleware' => ['web', 'admin_locale']], function () {
                 ])->name('admin.sales.refunds.index');
 
                 Route::get('/refunds/create/{order_id}', 'Webkul\Admin\Http\Controllers\Sales\RefundController@create')->defaults('_config', [
-                    // 'view' => 'admin::sales.refunds.create',
-                    'view' => 'admin::sales.refunds.create_new',
+                    'view' => 'admin::sales.refunds.create',
                 ])->name('admin.sales.refunds.create');
 
                 Route::post('/refunds/create/{order_id}', 'Webkul\Admin\Http\Controllers\Sales\RefundController@store')->defaults('_config', [
