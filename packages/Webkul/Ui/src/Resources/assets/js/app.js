@@ -28,6 +28,7 @@ import VTooltip from 'v-tooltip';
 import Datepicker from 'vuejs-datepicker';
 import SortPagination from './components/sort-pagination';
 import FilterAndSearch from './components/filter-and-search';
+import ProductLiveSearch from './components/product-live-search';
 //Import v-from
 import { Form, HasError, AlertError } from 'vform'
 window.Form = Form;
@@ -68,6 +69,7 @@ Vue.directive('debounce', Debounce);
 Vue.component('overlay-loader', OverlayLoader);
 Vue.component('sort-pagination', SortPagination);
 Vue.component('filter-and-search', FilterAndSearch);
+Vue.component('product-live-search', ProductLiveSearch);
 Vue.filter('truncate', function (value, limit, trail) {
 	if (! value)
         value = '';

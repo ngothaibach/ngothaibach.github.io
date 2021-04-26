@@ -137,7 +137,7 @@
 
                                 {!! view_render_event('bagisto.admin.catalog.category.edit_form_accordian.parent_category.controls.before', ['category' => $category]) !!}
 
-                                <tree-view value-field="id" name-field="parent_id" input-type="radio" items='@json($categories)' value='@json($category->parent_id)'></tree-view>
+                                <parent-category></parent-category>
 
                                 {!! view_render_event('bagisto.admin.catalog.category.edit_form_accordian.parent_category.controls.before', ['category' => $category]) !!}
 
@@ -226,6 +226,13 @@
 
     </script>
 
+    <script type="text/x-template" id="parent-category-template">
+        <div>
+            <input class="form-control" type="text" v-on:input="onChangeKeywords($event.target.value)"  ref="button">
+            <tree-view value-field="id" name-field="parent_id" input-type="radio" v-bind:items='listCategories' value='@json($category->parent_id)'></tree-view>
+        </div>
+    </script>
+
     <script>
         $(document).ready(function () {
             tinymce.init({
@@ -269,6 +276,49 @@
                     }
                 });
             }
+        })
+
+        Vue.component('parent-category', {
+
+        template: '#parent-category-template',
+
+        data: function() {
+            return {
+                fullList: @json($categories),
+                keywords: null,
+                listCategories: [],
+            }
+        },
+        methods:{
+            onChangeKeywords: _.debounce(function (input) {
+                    this.keywords = input;
+                    if(this.keywords != ""){        
+                        this.fetch();
+                    }else{
+                        this.listCategories = this.fullList;
+                    }
+                    }, 600),
+            fetch() {
+                axios.get("{{ route('admin.catalog.categories.live_search_category') }}", {
+                        params: {
+                            key: this.keywords
+                        }
+                    })
+                    .then(response => {
+                        this.listCategories = response.data;
+                        console.log('response.data', response.data);
+                    })
+                    .catch(error => {});
+                console.error(this.listCategories);
+            },
+            defaultList() {
+                this.listCategories = this.fullList;
+            }
+        },
+        beforeMount() {
+                this.defaultList();
+        },
+
         })
     </script>
 @endpush

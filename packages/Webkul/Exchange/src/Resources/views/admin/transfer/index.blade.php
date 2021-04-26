@@ -158,7 +158,7 @@
                                                 <td v-text="product.product_id"></td>
                                                 <td><img style="width: 60xp; height: 60px;" v-bind:src="'/cache/small/' + product.featured_image"/></td>
                                                 <td v-text="product.name"></td>
-                                                <td v-text="product.price"></td>
+                                                <td v-text="formatPrice(product.price)"></td>
                                                 <td>
                                                     <div class="col-sm-8">
                                                         <input type="text" :value="product.transfer_qty" @change.lazy="update_total_price(parseInt($event.target.value),product.transfer_qty,product.price,index1)" class="form-control" :disabled="!updatePermission ? true : form.oldListReceip[index].status == 'temporary' ? false : true " >
@@ -167,7 +167,7 @@
                                             </tr>
                                         </tbody>
                                     </table>
-                                    <span class="font-weight-bold">Tổng giá trị:</span> <span class="text-danger font-weight-bold" v-text="price_total"></span>
+                                    <span class="font-weight-bold">Tổng giá trị:</span> <span class="text-danger font-weight-bold" v-text="formatPrice(price_total)"></span>
                                     <div class="text-right">
                                         <button type="button" class="btn btn-success" v-on:click="save_inventory(item.id,item.note,item.status,item.importer,item.type,item.from_inventory_id,item.receipt_date,price_total)" :disabled="!updatePermission ? true : form.oldListReceip[index].status == 'temporary' ? false : form.oldListReceip[index].status == 'transfering' ? false : true" >Lưu</button>
                                     </div>
@@ -359,7 +359,13 @@
                 //pagination
                 closeModal() {
                     this.showModal = false;
-                }
+                },
+                formatPrice(value) {
+                    var formatter = new Intl.NumberFormat('en-US', {
+                        minimumFractionDigits: 0
+                    });
+                    return formatter.format(value);
+                },
             }
         });
 
