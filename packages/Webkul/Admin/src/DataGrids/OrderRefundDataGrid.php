@@ -5,6 +5,7 @@ namespace Webkul\Admin\DataGrids;
 use Illuminate\Support\Facades\DB;
 use Webkul\Sales\Models\OrderAddress;
 use Webkul\Ui\DataGrid\DataGrid;
+use Session;
 
 class OrderRefundDataGrid extends DataGrid
 {
@@ -22,7 +23,9 @@ class OrderRefundDataGrid extends DataGrid
                          ->where('order_address_billing.address_type', OrderAddress::ADDRESS_TYPE_BILLING);
             })
             ->addSelect(DB::raw('CONCAT(' . DB::getTablePrefix() . 'order_address_billing.first_name, " ", ' . DB::getTablePrefix() . 'order_address_billing.last_name) as billed_to'));
-
+            if( Session::get('inventory') != 0){
+                $queryBuilder = $queryBuilder->where('orders.inventory_id','=',Session::get('inventory'));
+            }
         $this->addFilter('billed_to', DB::raw('CONCAT(' . DB::getTablePrefix() . 'order_address_billing.first_name, " ", ' . DB::getTablePrefix() . 'order_address_billing.last_name)'));
         $this->addFilter('id', 'refunds.id');
         $this->addFilter('increment_id', 'orders.increment_id');
