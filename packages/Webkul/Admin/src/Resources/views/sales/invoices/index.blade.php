@@ -373,7 +373,6 @@
                     // console.log(str.concat("{{ ").concat(linkBefore).concat(" }}"));
                     let link = "{{route('admin.sales.invoices.print_invoices')}}";
                     window.location.href=(link +'/'+ get_order_id);
-
                 },
                 save_invoices(get_order_id) {
                     var get_comment = document.getElementById('commentNote').value;

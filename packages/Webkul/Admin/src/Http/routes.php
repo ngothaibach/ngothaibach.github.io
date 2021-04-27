@@ -184,10 +184,28 @@ Route::group(['middleware' => ['web', 'admin_locale']], function () {
                 Route::get('/orders/view/{id}', 'Webkul\Admin\Http\Controllers\Sales\OrderController@view')->defaults('_config', [
                     'view' => 'admin::sales.orders.view',
                 ])->name('admin.sales.orders.view');
+                Route::get('/orders/show_detail_order', 'Webkul\Admin\Http\Controllers\Sales\OrderController@show_detail_order')->defaults('_config', [
+                    'view' => 'admin::sales.orders.show_detail_order',
+                ])->name('admin.sales.orders.show_detail_order');
 
                 Route::get('/orders/cancel/{id}', 'Webkul\Admin\Http\Controllers\Sales\OrderController@cancel')->defaults('_config', [
                     'view' => 'admin::sales.orders.cancel',
                 ])->name('admin.sales.orders.cancel');
+
+                Route::get('/orders/cancel', 'Webkul\Admin\Http\Controllers\Sales\OrderController@cancel_order')->defaults('_config', [
+                    'view' => 'admin::sales.orders.cancel_order',
+                ])->name('admin.sales.orders.cancel_order');
+
+
+                Route::get('/orders/print', 'Webkul\Admin\Http\Controllers\Sales\OrderController@print_orders')->defaults('_config', [
+                    'view' => 'admin::sales.orders.print_orders',
+                ])->name('admin.sales.orders.print_orders');
+                
+                Route::get('/orders/print/{id}', 'Webkul\Admin\Http\Controllers\Sales\OrderController@print')->defaults('_config', [
+                    'view' => 'admin::sales.orders.print',
+                ])->name('admin.sales.orders.print');
+                
+             
 
                 Route::post('/orders/create/{order_id}', 'Webkul\Admin\Http\Controllers\Sales\OrderController@comment')->name('admin.sales.orders.comment');
                 
@@ -210,6 +228,10 @@ Route::group(['middleware' => ['web', 'admin_locale']], function () {
                     'view' => 'admin::sales.invoices.create',
                 ])->name('admin.sales.invoices.create');
 
+                Route::get('/invoices/create', 'Webkul\Admin\Http\Controllers\Sales\InvoiceController@create_invoice')->defaults('_config', [
+                    'view' => 'admin::sales.invoices.create_invoice',
+                ])->name('admin.sales.invoices.create_invoice');
+
                 Route::post('/invoices/create/{order_id}', 'Webkul\Admin\Http\Controllers\Sales\InvoiceController@store')->defaults('_config', [
                     'redirect' => 'admin.sales.orders.view',
                 ])->name('admin.sales.invoices.store');
@@ -221,17 +243,20 @@ Route::group(['middleware' => ['web', 'admin_locale']], function () {
                 Route::get('/invoices/show_detail_invoice', 'Webkul\Admin\Http\Controllers\Sales\InvoiceController@show_detail_invoice')->defaults('_config', [
                     'view' => 'admin::sales.invoices.show_detail_invoice',
                 ])->name('admin.sales.invoices.show_detail_invoice');
+
                 Route::get('/invoices/print', 'Webkul\Admin\Http\Controllers\Sales\InvoiceController@print_invoices')->defaults('_config', [
                     'view' => 'admin::sales.invoices.print_invoices',
                 ])->name('admin.sales.invoices.print_invoices');
+
+                Route::get('/invoices/print/{id}', 'Webkul\Admin\Http\Controllers\Sales\InvoiceController@print')->defaults('_config', [
+                    'view' => 'admin::sales.invoices.print',
+                ])->name('admin.sales.invoices.print');
 
                 Route::get('/invoices/update_notes', 'Webkul\Admin\Http\Controllers\Sales\InvoiceController@update_notes')->defaults('_config', [
                     'view' => 'admin::sales.invoices.update_notes',
                 ])->name('admin.sales.invoices.update_notes');
 
-                Route::get('/invoices/print/{id}', 'Webkul\Admin\Http\Controllers\Sales\InvoiceController@print')->defaults('_config', [
-                    'view' => 'admin::sales.invoices.print',
-                ])->name('admin.sales.invoices.print');
+  
 
 
                 // Sales Shipments Routes
@@ -260,6 +285,10 @@ Route::group(['middleware' => ['web', 'admin_locale']], function () {
                 Route::get('/refunds/create/{order_id}', 'Webkul\Admin\Http\Controllers\Sales\RefundController@create')->defaults('_config', [
                     'view' => 'admin::sales.refunds.create',
                 ])->name('admin.sales.refunds.create');
+
+                Route::get('/refunds/create', 'Webkul\Admin\Http\Controllers\Sales\RefundController@create_refunds')->defaults('_config', [
+                    'view' => 'admin::sales.refunds.create_refunds',
+                ])->name('admin.sales.refunds.create_refunds');
 
                 Route::post('/refunds/create/{order_id}', 'Webkul\Admin\Http\Controllers\Sales\RefundController@store')->defaults('_config', [
                     'redirect' => 'admin.sales.orders.view',
