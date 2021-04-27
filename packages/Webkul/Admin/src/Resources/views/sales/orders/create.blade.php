@@ -30,46 +30,11 @@
                 <div class="col-9" style="align-self: baseline;">
                     <h2>Đặt hàng</h2>
                     <div>
-                        <input class="form-control" type="text" v-model="keywords">
-                        <ul class="list-group" v-if="results.length > 0">
-                            <li v-if="result.name.length" class="list-group-item" v-for="result in results" :key="result.id"  v-on:click="add_product(result)">
-                                <div class="row">
-                                    <div class="col-4">
-                                        <img style="width: 60xp; height: 60px;" :src="'/cache/small/' + result.featured_image"/>
-                                    </div>
-                                    <div class="col-8">
-                                        <span v-text="result.name"></span><br/>
-                                        {{ __('admin::app.vpt.inventory.price') }}: <span v-text="result.price"></span><br/>
-                                    </div>
-                                </div>
-                            </li>
-                        </ul>
-                        <table class="table">
-                            <thead>
-                            <tr>
-                                <th v-for="table_header in table_headers" class="grid_head">
-                                    <p v-text="table_header"></p>
-                                </th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr v-if="form.added_products.length === 0">
-                                <td>{{ __('admin::app.vpt.inventory.no-data') }}</td>
-                            </tr>
-                            <tr v-else v-for="item in form.added_products">
-                                {{-- <td v-text="item.id"></td> --}}
-                                <td v-text="item.sku"></td>
-                                <td><img style="width: 60xp; height: 60px;" v-bind:src="'/cache/small/' + item.featured_image"/></td>
-                                <td v-text="item.name"></td>
-                                <td v-text="item.price_show"></td>
-                                <td>
-                                    <input type="text" class="form-control" v-model="item.qty" v-on:change="update_price">
-                                </td>
-                                {{-- <td v-text="item.in_stock"></td> --}}
-                                <td><button v-on:click="remove_product(item)" type="button" class="btn btn-danger">{{ __('admin::app.vpt.inventory.delete') }}</button></td>
-                            </tr>
-                            </tbody>
-                        </table>
+                    <product-live-search
+                        :url='"{{ route("admin.catalog.products.live-search-products") }}"'
+                        @added_product_changed="onAdd"
+                        @price_total_changed="onPrice"
+                        ></product-live-search>
                     </div>
                 </div>
                 <div class="col-3">
@@ -262,8 +227,6 @@
             template: '#vpt-receipt-note-form-template',
             data() {
                 return {
-                    keywords: null,
-                    results: [],
                     keywords_customer: null,
                     list_customer_result: [],
                     table_headers: [
@@ -312,20 +275,11 @@
                 };
             },
             watch: {
-                keywords(after, before) {
-                    this.fetch();
-                },
                 keywords_customer(after, before){
                     this.search_customer();
                 }
             },
             methods: {
-                fetch() {
-                    axios.get("{{ route('admin.catalog.products.live-search-products') }}", { params: { key: this.keywords } })
-                    .then(response => this.results = response.data)
-                    .catch(error => {});
-                    // console.error(this.results);
-                },
                 search_customer: function() {
                     // var keySearch = document.getElementById('input_customer').value;
                     var keySearch = this.keywords_customer;
@@ -392,11 +346,11 @@
                     for (k in o2) if (o1[k] != o2[k]) return false;
                     return true;
                 },
-                add_product: function (result) {
-                    added_item = {id:result.id, name:result.name, qty:1, price:result.price, in_stock: 0, featured_image:result.featured_image, sku:result.sku, price_show: this.numberFormatter(result.price)};
-                    this.form.added_products.push(added_item);
-                    this.results = [];
-                    this.form.price_total = parseInt(this.form.price_total) + parseInt(result.price);
+                onAdd(added_item){
+                    this.form.added_products = added_item;
+                },
+                onPrice(price_total){
+                    this.form.price_total = price_total;
                     if (this.form.discount != 0) {
                         if  (this.form.discount_type == 1) {
                             this.form.price_must_paid = this.form.price_total - this.form.discount ;
@@ -412,43 +366,6 @@
                         this.form.customer_remain = parseInt(this.form.customer_paid) - parseInt(this.form.price_must_paid);
                         this.form.customer_remain_show = this.numberFormatter(this.form.customer_remain);
                     }
-                },
-                remove_product: function (item) {
-                    this.form.added_products.splice(this.form.added_products.indexOf(item), 1);
-                    this.form.price_total = parseInt(this.form.price_total) - (parseInt(item.price) * item.qty);
-                    if (this.form.discount != 0) {
-                        if  (this.form.discount_type == 1) {
-                            this.form.price_must_paid = this.form.price_total - this.form.discount ;
-                        } else {
-                            this.form.price_must_paid = this.form.price_total - ((this.form.discount * this.form.price_total)/100) ;
-                        }
-                    } else {
-                        this.form.price_must_paid = this.form.price_total ;
-                    }
-                    this.form.price_must_paid_show = this.numberFormatter(this.form.price_must_paid);
-                    this.form.price_total_show = this.numberFormatter(this.form.price_total);
-                    if (this.form.customer_paid != 0) {
-                        this.form.customer_remain = parseInt(this.form.customer_paid) - parseInt(this.form.price_must_paid);
-                        this.form.customer_remain_show = this.numberFormatter(this.form.customer_remain);
-                    }
-                },
-                update_price: function() {
-                    this.form.price_total = 0;
-                    this.form.price_must_paid = 0;
-                    for(let i = 0;i < this.form.added_products.length; i++) {
-                        this.form.price_total += parseInt(this.form.added_products[i].qty) * parseInt(this.form.added_products[i].price);
-                    }
-                    if (this.form.discount != 0) {
-                        if  (this.form.discount_type == 1) {
-                            this.form.price_must_paid = this.form.price_total - this.form.discount ;
-                        } else {
-                            this.form.price_must_paid = this.form.price_total - ((this.form.discount * this.form.price_total)/100) ;
-                        }
-                    } else {
-                        this.form.price_must_paid = this.form.price_total ;
-                    }
-                    this.form.price_must_paid_show = this.numberFormatter(this.form.price_must_paid);
-                    this.form.price_total_show = this.numberFormatter(this.form.price_total);
                 },
                 update_discount_type: function() {
                     this.form.discount = 0;
