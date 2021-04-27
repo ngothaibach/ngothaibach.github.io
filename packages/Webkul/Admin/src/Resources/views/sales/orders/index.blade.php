@@ -145,10 +145,8 @@
                                                         <label class="col-sm-4 col-form-label">Người bán
                                                         </label>
                                                         <div class="col-sm-8">
-                                                            <select v-model="form.listReceiptNotes[index].status" class="form-control" >
-                                                                <option v-for="item in form.status" :value="item.key" v-text="item.value">
-                                                                </option>
-                                                            </select>                                          
+                                                            <input type="text" v-model="item.sale_name" class="form-control" disabled>
+                         
                                                                   </div>
                                                     </div>
                                                 </div>
@@ -208,11 +206,7 @@
                                                     <td>:</td>
                                                     <td class="txtRight" v-text="numberFormatter(parseFloat(form.order_money.discount_amount)) + ' ₫'"></td>
                                                 </tr>
-                                                <tr v-if="parseFloat(form.order_money.collection_diff) > 0">
-                                                    <td>Thu khác</td>
-                                                    <td>:</td>
-                                                    <td class="txtRight" v-text="numberFormatter(parseFloat(form.order_money.collection_diff)) + ' ₫'"></td>
-                                                </tr>
+                                                
                                             
                 
                                             <tr class="bold">
@@ -221,7 +215,7 @@
                                                 <td class="txtRight" v-text="numberFormatter(parseFloat(form.order_money.base_grand_total)) + ' ₫'"></td>
                                             </tr>
                                             <tr class="bold">
-                                                <td>Tổng hóa đơn</td>
+                                                <td>Tổng hóa đơn mua</td>
                                                 <td>:</td>
                                                 <td class="txtRight" v-text="numberFormatter(parseFloat(form.order_money.base_grand_total_invoiced)) + ' ₫'"></td>
                                             </tr>
@@ -230,7 +224,16 @@
                                                 <td>:</td>
                                                 <td class="txtRight" v-text="numberFormatter(parseFloat(form.order_money.base_grand_total_refunded)) + ' ₫'"></td>
                                                 {{-- <td class="txtRight" v-text="form.order_money.canRefund()"></td> --}}
-
+                                            </tr>
+                                            <tr v-if="parseFloat(form.order_money.collection_diff) > 0">
+                                                <td>Thu khác</td>
+                                                <td>:</td>
+                                                <td class="txtRight" v-text="numberFormatter(parseFloat(form.order_money.collection_diff)) + ' ₫'"></td>
+                                            </tr>
+                                            <tr v-if="parseFloat(item.money_refund) > 0">
+                                                <td>Tổng tiền hóa đơn trả (<button class="btn-link-style" v-on:click="open_refund_detail(item.refund_id)" v-text="item.refund_id"></button>)                                                </td>
+                                                <td>:</td>
+                                                <td class="txtRight" v-text="numberFormatter(parseFloat(item.money_refund)) + ' ₫'"></td>
                                             </tr>
                                         </tbody>
                                         </table>
@@ -239,9 +242,10 @@
                                     <span class="font-weight-bold">Phí Ship:</span> <span class="text-danger font-weight-bold" v-text="price_total"></span><br>
                                     <span class="font-weight-bold">Tổng tiền hóa đơn mua:</span> <span class="text-danger font-weight-bold" v-text="price_total"></span><br>
                                     <span class="font-weight-bold">Tổng tiền hóa đơn trả:</span> <span class="text-danger font-weight-bold" v-text="price_total"></span><br>
+                                    
                                     <span class="font-weight-bold">Khách cần trả:</span> <span class="text-danger font-weight-bold" v-text="price_total"></span> --}}
                                         <div class="btn-summit-right">
-                                            <button v-if="canCancel" type="button" class="btn btn-primary" style="marginRight : 20px;width: 120px;" v-on:click="create_cancel(item.order_id)" >Hủy</button>
+                                            <button v-if="canCancel" type="button" class="btn btn-danger" style="marginRight : 20px;width: 120px;" v-on:click="create_cancel(item.order_id)" >Hủy</button>
                                             <button v-if="canInvoice" type="button" class="btn btn-primary" style="marginRight : 20px;width: 120px;" v-on:click="create_invoice(item.order_id)" >Tạo hóa đơn</button>
                                             {{-- <a href="{{ route('admin.sales.invoices.create', item . id) }}" class="btn btn-lg btn-primary"> --}}
 
@@ -413,6 +417,10 @@
                     var link = "{{route('admin.sales.refunds.create_refunds')}}";
                     // console.log(order_id);
                     window.location.href = (link + '/' + order_id);
+                },
+                open_refund_detail(refund_id) {
+                    var link = "{{route('admin.sales.refunds.view_refund')}}";
+                    window.location.href = (link + '/' + refund_id);
                 },
                 create_cancel(order_id) {
                     var link = "{{route('admin.sales.orders.cancel_order')}}";

@@ -4,7 +4,7 @@ namespace Webkul\Admin\Http\Controllers\Sales;
 
 use Webkul\Admin\Http\Controllers\Controller;
 use Webkul\Sales\Repositories\OrderRepository;
-use Webkul\Sales\Repositories\InvoiceRepositpory;
+use Webkul\Sales\Repositories\InvoiceRepository;
 use PDF;
 use Illuminate\Support\Facades\DB;
 

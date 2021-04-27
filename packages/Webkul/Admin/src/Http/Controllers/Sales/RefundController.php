@@ -179,4 +179,11 @@ class RefundController extends Controller
 
         return view($this->_config['view'], compact('refund'));
     }
+    
+    public function view_refund()
+    {
+        $id = request()->input('refund_id');
+        $refund = $this->refundRepository->findOrFail($id);
+        return view($this->_config['view'], compact('refund'));
+    }
 }

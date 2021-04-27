@@ -298,6 +298,10 @@ Route::group(['middleware' => ['web', 'admin_locale']], function () {
                     'redirect' => 'admin.sales.orders.view',
                 ])->name('admin.sales.refunds.update_qty');
 
+                Route::get('/refunds/view', 'Webkul\Admin\Http\Controllers\Sales\RefundController@view_refund')->defaults('_config', [
+                    'view' => 'admin::sales.refunds.view_refund',
+                ])->name('admin.sales.refunds.view_refund');
+
                 Route::get('/refunds/view/{id}', 'Webkul\Admin\Http\Controllers\Sales\RefundController@view')->defaults('_config', [
                     'view' => 'admin::sales.refunds.view',
                 ])->name('admin.sales.refunds.view');

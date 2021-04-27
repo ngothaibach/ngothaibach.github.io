@@ -170,9 +170,10 @@ class OrderController extends Controller
         ->leftJoin('admins as ad' , 'orders.sales_id', '=','ad.id')
         ->leftJoin('inventory_sources as inventory' , 'orders.inventory_id', '=','inventory.id')
         ->leftJoin('order_comments as comments','orders.id','=','comments.order_id')
+        ->leftJoin('refunds as ref','orders.refund_exchange_id','=','ref.id')
         ->select('orders.id as order_id','orders.increment_id as increment_id', 'orders.base_sub_total', 'orders.base_grand_total',
          'orders.created_at as created_at', 'orders.channel_name', 'orders.status', 'orders.customer_first_name', 'orders.customer_last_name'
-         ,'comments.comment as comment','ad.name as sale_name','inventory.name as name_inven')
+         ,'comments.comment as comment','ad.name as sale_name','inventory.name as name_inven','ref.grand_total as money_refund', 'ref.id as refund_id')
          ->orderBy('order_id', 'desc')
          ->get()-> toArray();
 
