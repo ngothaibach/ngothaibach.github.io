@@ -325,7 +325,7 @@ Route::group(['middleware' => ['web', 'admin_locale']], function () {
                 ])->name('admin.catalog.products.store');
                 
                 Route::post('/products/create/addCategory', 'Webkul\Product\Http\Controllers\ProductController@addCategory')->name('admin.catalog.products.addCategory');
-
+                
                 Route::get('products/copy/{id}', 'Webkul\Product\Http\Controllers\ProductController@copy')->defaults('_config', [
                     'view' => 'admin::catalog.products.edit',
                 ])->name('admin.catalog.products.copy');
@@ -391,6 +391,8 @@ Route::group(['middleware' => ['web', 'admin_locale']], function () {
                 Route::put('/categories/edit/{id}', 'Webkul\Category\Http\Controllers\CategoryController@update')->defaults('_config', [
                     'redirect' => 'admin.catalog.categories.index',
                 ])->name('admin.catalog.categories.update');
+                
+                Route::get('/categories/live-search-category', 'Webkul\Category\Http\Controllers\CategoryController@liveSearchCategory')->name('admin.catalog.categories.live_search_category');
 
                 Route::post('/categories/delete/{id}', 'Webkul\Category\Http\Controllers\CategoryController@destroy')->name('admin.catalog.categories.delete');
 

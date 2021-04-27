@@ -1,7 +1,7 @@
-@import url(https://fonts.googleapis.com/css?family=Montserrat:400,500);body {
+@import url(https://fonts.googleapis.com/css2?family=Montserrat&display=swap);body {
   margin: 0;
   color: #3A3A3A;
-  font-family: "Montserrat", sans-serif;
+  font-family: 'Montserrat', sans-serif;
   font-size: 14px;
   font-weight: 500;
   position: static;
@@ -135,7 +135,7 @@
   height: 100%;
 }
 .content-container .aside-nav {
-  width: 280px;
+  width: 200px;
   position: fixed;
   top: 60px;
   bottom: 0;
@@ -196,6 +196,7 @@
   margin-top: 5px;
 }
 .content-container .content .page-header .page-title h1 {
+  font-weight: 700;
   margin-bottom: 0;
   vertical-align: middle;
   display: inline-block;
