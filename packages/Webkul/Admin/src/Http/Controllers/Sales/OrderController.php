@@ -396,7 +396,11 @@ class OrderController extends Controller
         $order->collection_diff = request()->collection_diff;
         $order->customer_paid = request()->customer_paid;
         $order->customer_remain = request()->customer_remain;
-        $order->inventory_id = ($inventory_id != null ? $inventory : 0);
+        if($inventory_id == 0){
+            $order->inventory_id = 1;
+        }else{
+            $order->inventory_id = $inventory_id;
+        }
         $order->sales_id = $sales_id;
         $order->save();
 

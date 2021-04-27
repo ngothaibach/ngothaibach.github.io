@@ -5,6 +5,7 @@ namespace Webkul\Admin\DataGrids;
 use Illuminate\Support\Facades\DB;
 use Webkul\Sales\Models\OrderAddress;
 use Webkul\Ui\DataGrid\DataGrid;
+use Session;
 
 class OrderDataGrid extends DataGrid
 {
@@ -26,7 +27,9 @@ class OrderDataGrid extends DataGrid
             ->addSelect('orders.id','orders.increment_id', 'orders.base_sub_total', 'orders.base_grand_total', 'orders.created_at', 'channel_name', 'status', 'orders.customer_first_name', 'orders.customer_last_name');
             // ->addSelect(DB::raw('CONCAT(' . DB::getTablePrefix() . 'order_address_billing.first_name, " ", ' . DB::getTablePrefix() . 'order_address_billing.last_name) as billed_to'))
             // ->addSelect(DB::raw('CONCAT(' . DB::getTablePrefix() . 'order_address_shipping.first_name, " ", ' . DB::getTablePrefix() . 'order_address_shipping.last_name) as shipped_to'));
-
+        if( Session::get('inventory') != 0){
+            $queryBuilder = $queryBuilder->where('orders.inventory_id','=',Session::get('inventory'));
+        }
         // $this->addFilter('billed_to', DB::raw('CONCAT(' . DB::getTablePrefix() . 'order_address_billing.first_name, " ", ' . DB::getTablePrefix() . 'order_address_billing.last_name)'));
         // $this->addFilter('shipped_to', DB::raw('CONCAT(' . DB::getTablePrefix() . 'order_address_shipping.first_name, " ", ' . DB::getTablePrefix() . 'order_address_shipping.last_name)'));
         $this->addFilter('increment_id', 'orders.increment_id');
