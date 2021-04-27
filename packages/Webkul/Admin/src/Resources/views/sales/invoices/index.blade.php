@@ -52,7 +52,7 @@
                         </th>
                     </tr>
                     </thead>
-                    <tbody v-for="(item,index) in form.invoice_note">
+                    <tbody v-for="(item,index) in pageOfItems">
                         <tr :class="[selected_transfer ===  item.id ? 'table-info' : '']" v-on:click="load_product(item.id)">
                             <td v-text="item.id"></td>
                             <td v-text="item.created_at"></td>
@@ -233,7 +233,7 @@
                 </table>
                 <div class="card-footer pb-0 pt-3">
                     <sort-pagination 
-                    v-bind:items="form.listReceiptNotes"
+                    v-bind:items="form.invoice_note"
                     v-bind:pageSize = "perPage"
                     v-bind:sortBy ="sortBy"
                     v-bind:currentSortDir ="currentSortDir"
@@ -253,10 +253,10 @@
                      //pagination
                      sort_list: [
                         "id",
-                        "transfer_date",
-                        "from_inventory",
-                        "to_inventory",
-                        "status"
+                        "created_at",
+                        "last_name",
+                        "base_sub_total",
+                        "base_grand_total"
                     ],
                     currentSortDir: "desc",
                     sortBy: "id",
@@ -265,20 +265,12 @@
                     arrow: "custom-arrow-icon-down",
                     currentArrow : 0,
                     //pagination
-                    //check permission
-                    updatePermission: Boolean(Number('{{checkPermission('exchange.list_transfer.update')}}')),
-                    //check permission
                     form: new Form({
-                        listReceiptNotes: {!! json_encode($receipt_notes) !!},
-                        oldListReceip : {!! json_encode($receipt_notes) !!},
                         invoice_note : {!! json_encode($invoice_note) !!},
                         price_total: 0,
                         type: 'receipt',
                         receipt_date: new Date(),
-                        created_date: new Date(),
                         user: "auth()->guard('admin')->user()->id",
-                        supplier: null,
-                        to_inventory_source: null,
                         note_code: null,
                         order_code: null,
                         importer: "",
@@ -416,6 +408,7 @@
                     // update page of items
                     this.pageOfItems = pageOfItems;
                 },    
+                // thêm nếu muốn sort
                 sort(name){
                     if(this.sortBy != name){
                         this.sortBy = name;
@@ -427,6 +420,7 @@
                         this.arrow = this.arrow=== 'custom-arrow-icon-down' ? 'custom-arrow-icon-up' : 'custom-arrow-icon-down';
                     }
                 },
+			    // thêm nếu muốn sort
                 showArrow(number) {
                     this.currentArrow = number;
                 },
