@@ -15,6 +15,7 @@ use Webkul\Sales\Repositories\OrderAddressRepository;
 use Webkul\Sales\Models\OrderComment;
 use Webkul\Sales\Models\Order;
 use Webkul\Sales\Models\OrderPayment;
+use Webkul\Sales\Repositories\InvoiceRepository;
 
 class RefundRepository extends Repository
 {
@@ -75,6 +76,13 @@ class RefundRepository extends Repository
     protected $orderAddressRepository;
 
     /**
+     * InvoiceRepository object
+     *
+     * @var \Webkul\Sales\Repositories\InvoiceRepository
+     */
+    protected $invoiceRepository;
+
+    /**
      * Create a new repository instance.
      *
      * @param  \Webkul\Sales\Repositories\OrderRepository  $orderRepository
@@ -92,7 +100,8 @@ class RefundRepository extends Repository
         CartRepository $cartRepository,
         CartItemRepository $cartItemRepository,
         CartAddressRepository $cartAddressRepository,
-        OrderAddressRepository $orderAddressRepository
+        OrderAddressRepository $orderAddressRepository,
+        InvoiceRepository $invoiceRepository
     )
     {
         $this->orderRepository = $orderRepository;
@@ -110,6 +119,8 @@ class RefundRepository extends Repository
         $this->cartAddressRepository = $cartAddressRepository;
 
         $this->orderAddressRepository = $orderAddressRepository;
+
+        $this->invoiceRepository = $invoiceRepository;
 
         parent::__construct($app);
     }
@@ -581,6 +592,13 @@ class RefundRepository extends Repository
                 $orderComent->customer_notified = 0;
                 $orderComent->save();
             }
+
+            //tạo hóa đơn
+            $data_invoice = array();
+            foreach ($order->items as $item ) {
+                array_push($data_invoice,$data_invoice["invoice"]["items"][$item->id] = $item->qty_ordered);
+            }
+            $this->invoiceRepository->create(array_merge($data_invoice, ['order_id' => $order->id]));
 
 
         } catch (\Exception $e) {
