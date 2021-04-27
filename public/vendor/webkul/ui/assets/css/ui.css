@@ -1661,7 +1661,7 @@ modal {
   margin-top: 20px;
   /* height: 130px; */
   float: right;
-  width: 30%  !important;
+  width: 35%  !important;
 }
 .sale-summary td{
   border: 0px solid #dee2e6  !important;
@@ -1676,3 +1676,15 @@ modal {
   margin-right: 5%;
   margin-top: 10px;
 }
+.btn-link-style {
+  background: none!important;
+  border: none;
+  padding: 0!important;
+  /*optional*/
+  font-family: arial, sans-serif;
+  /*input has OS specific font-family*/
+  color: #069;
+  text-decoration: underline;
+  cursor: pointer;
+}
+

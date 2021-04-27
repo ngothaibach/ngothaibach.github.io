@@ -93,6 +93,13 @@ class InvoiceController extends Controller
         return view($this->_config['view'], compact('order'));
     }
 
+    public function create_invoice()
+    {
+        $orderId = request()->input('id');
+        $order = $this->orderRepository->findOrFail($orderId);
+        return view($this->_config['view'], compact('order'));
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -115,6 +122,7 @@ class InvoiceController extends Controller
 
         $data = request()->all();
 
+        
         $haveProductToInvoice = false;
 
         foreach ($data['invoice']['items'] as $itemId => $qty) {
