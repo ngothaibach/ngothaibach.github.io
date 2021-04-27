@@ -64,18 +64,19 @@
                             </th>
                         </tr>
                         </thead>
-                        <tbody v-for="(item,index) in form.invoice_note">
+                        <tbody id='hover-row' v-for="(item,index) in form.invoice_note">
                             <tr :class="[selected_transfer ===  item.order_id ? 'table-info' : '']" v-on:click="load_product(item.order_id)">
                                 <td v-text="item.order_id"></td>
-                                <td v-text="item.created_at"></td>
+                                <td v-text="item.updated_at"></td>
                                 <td v-text="item.customer_first_name +' '+ item.customer_last_name"></td>
-                                <td v-text="parseFloat(item.base_sub_total).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')+ ' ₫'"></td>
-                                <td v-text="parseFloat(item.base_grand_total).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')+ ' ₫'"></td>
+                                <td v-text="parseFloat(item.base_sub_total).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')"></td>
+                                <td v-text="parseFloat(item.base_grand_total).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')"></td>
                                 <td v-if="item.status == 'temporary'" >Lưu tạm</td>
                                 <td v-if="item.status == 'processing'" >Đang xử lý</td>
                                 <td v-if="item.status == 'closed'" >Đã đóng</td>
                                 <td v-if="item.status == 'pending'" >Đang chờ</td>
                                 <td v-if="item.status == 'completed'" >Hoàn thành</td>
+                                <td v-if="item.status == 'canceled'" >Đã hủy</td>
                             </tr>
                             <tr v-if="selected_transfer == item.order_id">
                                 <td style="border: 1px solid #b3d7f5;" colspan="6">
@@ -110,7 +111,7 @@
                                                     <div class="form-group row">
                                                         <label class="col-sm-4 col-form-label">Ngày tạo</label>
                                                         <div class="col-sm-8">
-                                                            <input id="datePicker" type="date" :value="formatDate(item.created_at)"  class="form-control">
+                                                            <input id="datePicker" type="date" :value="formatDate(item.updated_at)"  class="form-control">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -142,12 +143,14 @@
                                                 </div>
                                                 <div class="mb-3">
                                                     <div class="form-group row">
-                                                        <label class="col-sm-4 col-form-label">Người bán
-                                                        </label>
+                                                        <label class="col-sm-4 col-form-label">Người bán</label>
                                                         <div class="col-sm-8">
-                                                            <input type="text" v-model="item.sale_name" class="form-control" disabled>
-                         
-                                                                  </div>
+                                                            <select v-model="item.sale_id" class="form-control" id ="user_selected">
+                                                                    <option 
+                                                                        v-for="item in form.list_user" :value="item.id" v-text="item.name">
+                                                                    </option>
+                                                                </select>
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 <div class="mb-3">
@@ -183,10 +186,8 @@
                                                 <tr v-for="(product,index1) in product_list">
                                                     <td v-text="product.sku" style="color : #056bd3;"></td>
                                                     <td v-text="product.name"></td>
-                                                    <td v-text="parseFloat(product.base_price).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')+ ' ₫'"></td>
-                                                    <td v-text="product.qty"></td>
-                                                    <td v-text="parseFloat(product.base_total).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')+ ' ₫'"></td>
-                                                    <td v-text="parseFloat(product.base_tax_amount).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')+ ' ₫'"></td>
+                                                    <td v-text="parseFloat(product.base_price).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')"></td>
+                                                    <td v-text="product.qty_ordered"></td>
                                                     <td v-text="getTotal(product.base_total,product.base_tax_amount)"></td>
                                                 </tr>
                                             </tbody>
@@ -196,7 +197,7 @@
                                             <tr>
                                                 <td>Thành tiền</td>
                                                 <td>:</td>
-                                                <td class="txtRight" v-text="numberFormatter(parseFloat(form.order_money.base_sub_total)) + ' ₫'"></td>
+                                                <td class="txtRight" v-text="numberFormatter(parseFloat(form.order_money.base_sub_total)) "></td>
                                             </tr>
                 
                 
@@ -204,36 +205,35 @@
                                                     <td v-if="form.order_money.coupon_code == null" >Khuyến mại</td>
                                                     <td v-if="form.order_money.coupon_code != null" v-text="'Khuyến mại\n('  + form.order_money.coupon_code + ')'"></td>
                                                     <td>:</td>
-                                                    <td class="txtRight" v-text="numberFormatter(parseFloat(form.order_money.discount_amount)) + ' ₫'"></td>
+                                                    <td class="txtRight" v-text="numberFormatter(parseFloat(form.order_money.discount_amount)) "></td>
                                                 </tr>
                                                 
-                                            
+                                                <tr v-if="parseFloat(form.order_money.collection_diff) > 0">
+                                                    <td>Thu khác</td>
+                                                    <td>:</td>
+                                                    <td class="txtRight" v-text="numberFormatter(parseFloat(form.order_money.collection_diff)) "></td>
+                                                </tr>
                 
                                             <tr class="bold">
                                                 <td>Tổng cộng</td>
                                                 <td>:</td>
-                                                <td class="txtRight" v-text="numberFormatter(parseFloat(form.order_money.base_grand_total)) + ' ₫'"></td>
+                                                <td class="txtRight" v-text="numberFormatter(parseFloat(form.order_money.base_grand_total)) "></td>
                                             </tr>
                                             <tr class="bold">
                                                 <td>Tổng hóa đơn mua</td>
                                                 <td>:</td>
-                                                <td class="txtRight" v-text="numberFormatter(parseFloat(form.order_money.base_grand_total_invoiced)) + ' ₫'"></td>
+                                                <td class="txtRight" v-text="numberFormatter(parseFloat(form.order_money.base_grand_total_invoiced)) "></td>
                                             </tr>
-                                            <tr class="bold">
-                                                <td>Tiền hoàn lại</td>
+                                            <tr class="bold" v-if="parseFloat(item.refund_id) > 0">
+                                                <td>Tiền hoàn lại (<button class="btn-link-style" v-on:click="open_refund_detail(item.refund_id)" v-text="item.refund_id"></button>)</td>
                                                 <td>:</td>
-                                                <td class="txtRight" v-text="numberFormatter(parseFloat(form.order_money.base_grand_total_refunded)) + ' ₫'"></td>
-                                                {{-- <td class="txtRight" v-text="form.order_money.canRefund()"></td> --}}
+                                                <td class="txtRight" v-text="numberFormatter(parseFloat(form.order_money.base_grand_total_refunded)) "></td>
                                             </tr>
-                                            <tr v-if="parseFloat(form.order_money.collection_diff) > 0">
-                                                <td>Thu khác</td>
+                                           
+                                            <tr v-if="parseFloat(item.money_exchange_refund) > 0">
+                                                <td>Tổng tiền hóa đơn trả (<button class="btn-link-style" v-on:click="open_refund_detail(item.exchange_refund_id)" v-text="item.exchange_refund_id"></button>)                                                </td>
                                                 <td>:</td>
-                                                <td class="txtRight" v-text="numberFormatter(parseFloat(form.order_money.collection_diff)) + ' ₫'"></td>
-                                            </tr>
-                                            <tr v-if="parseFloat(item.money_refund) > 0">
-                                                <td>Tổng tiền hóa đơn trả (<button class="btn-link-style" v-on:click="open_refund_detail(item.refund_id)" v-text="item.refund_id"></button>)                                                </td>
-                                                <td>:</td>
-                                                <td class="txtRight" v-text="numberFormatter(parseFloat(item.money_refund)) + ' ₫'"></td>
+                                                <td class="txtRight" v-text="numberFormatter(parseFloat(item.money_exchange_refund)) "></td>
                                             </tr>
                                         </tbody>
                                         </table>
@@ -251,7 +251,7 @@
 
                                             <button v-if="canRefund" type="button" class="btn btn-primary" style="marginRight : 20px;width: 120px;" v-on:click="create_refund(item.order_id)" >Hoàn lại</button>
                                             <button type="button" class="btn btn-primary" style="marginRight : 20px;width: 120px;" v-on:click="print_invoices(item.order_id)" >In hóa đơn</button>
-                                            <button type="button" class="btn btn-success" style="width: 70px;" v-on:click="save_invoices(item.order_id)" >Lưu</button>
+                                            <button type="button" class="btn btn-success" style="width: 120px;" v-on:click="update_orders(item.order_id)" >Cập nhật</button>
                                         </div>
                                         
                                     </div>
@@ -305,6 +305,7 @@
                         listReceiptNotes: {!! json_encode($receipt_notes) !!},
                         oldListReceip: {!! json_encode($receipt_notes) !!},
                         invoice_note: {!! json_encode($invoice_note) !!},
+                        list_user :{!! json_encode($user_sale) !!},
                         order_money: {},
                         price_total: 0,
                         type: 'receipt',
@@ -355,8 +356,6 @@
                         "Tên sản phẩm",
                         "Đơn giá",
                         "Số lượng",
-                        "Thành tiền",
-                        "Tiền thuế",
                         "Tổng cộng"
                     ],
                     product_list: null,
@@ -395,7 +394,7 @@
                     }
                 },
                 getTotal(val, val1) {
-                    return this.numberFormatter(parseFloat(val + val1) + ' ₫');
+                    return this.numberFormatter(parseFloat(val + val1) );
                 },
                 numberFormatter(num) {
                     return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -430,29 +429,37 @@
                     var link = "{{route('admin.sales.invoices.create_invoice')}}";
                     window.location.href = (link + '/' + order_id);
                 },
-                save_invoices(get_order_id) {
+                update_orders(get_order_id) {
+                    var user_selected = document.getElementById('user_selected').value;
                     var get_comment = document.getElementById('commentNote').value;
-                    axios.get("{{ route('admin.sales.invoices.update_notes') }}", {
+                    var get_date = document.getElementById('datePicker').value;
+                    var hours = new Date().getHours();
+                    var minute =new Date().getMinutes();
+                    var seconds =new Date().getSeconds();
+                    var get_date_time =get_date + " " +hours.toString() + ":" + minute.toString() + ":" + seconds.toString();
+                    // console.log('datetime: ',user_selected);
+                    axios.get("{{ route('admin.sales.orders.update_notes') }}", {
                             params: {
                                 order_id: get_order_id,
-                                comment_content: get_comment
+                                comment_content: get_comment,
+                                date_time : get_date_time,
+                                user_selected : user_selected
                             }
                         })
                         .then((response) => {
                             if (response.data.success == true) {
                                 // console.error("save exchange successfull");
                                 window.location.href =
-                                    "{{ route('admin.sales.invoices.index') }}";
+                                    "{{ route('admin.sales.orders.index') }}";
                             } else {
                                 console.debug("save exchange NOT successfull");
                             }
                         })
                 },
                 load_product(get_order_id) {
-                    console.log('hihi', this.form.invoice_note);
+                    // console.log('hihi', this.form.invoice_note);
                     this.product_list = []
                     this.selected_transfer = get_order_id;
-
                     axios.get("{{ route('admin.sales.orders.show_detail_order') }}", {
                             params: {
                                 order_id: get_order_id
@@ -465,8 +472,8 @@
                             this.canCancel = response.data.canCancel;
                             this.canRefund = response.data.canRefund;
                             this.canInvoice = response.data.canInvoice;
-                            // console.log('response',this.canCancel,this.canRefund,this.canInvoice);
-                            console.error(this.product_list);
+                            console.log('response',response.data.order_product);
+                            // console.error(this.product_list);
 
                             this.price_total = 0;
                         });

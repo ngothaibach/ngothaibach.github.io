@@ -1661,7 +1661,7 @@ modal {
   margin-top: 20px;
   /* height: 130px; */
   float: right;
-  width: 30%  !important;
+  width: 35%  !important;
 }
 .sale-summary td{
   border: 0px solid #dee2e6  !important;
@@ -1687,3 +1687,4 @@ modal {
   text-decoration: underline;
   cursor: pointer;
 }
+

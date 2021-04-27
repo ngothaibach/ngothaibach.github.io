@@ -204,6 +204,10 @@ Route::group(['middleware' => ['web', 'admin_locale']], function () {
                 Route::get('/orders/print/{id}', 'Webkul\Admin\Http\Controllers\Sales\OrderController@print')->defaults('_config', [
                     'view' => 'admin::sales.orders.print',
                 ])->name('admin.sales.orders.print');
+
+                Route::get('/orders/update_notes', 'Webkul\Admin\Http\Controllers\Sales\OrderController@update_notes')->defaults('_config', [
+                    'view' => 'admin::sales.orders.update_notes',
+                ])->name('admin.sales.orders.update_notes');
                 
              
 
@@ -275,6 +279,7 @@ Route::group(['middleware' => ['web', 'admin_locale']], function () {
                 Route::get('/shipments/view/{id}', 'Webkul\Admin\Http\Controllers\Sales\ShipmentController@view')->defaults('_config', [
                     'view' => 'admin::sales.shipments.view',
                 ])->name('admin.sales.shipments.view');
+                
 
 
                 // Sales Redunds Routes
@@ -305,6 +310,7 @@ Route::group(['middleware' => ['web', 'admin_locale']], function () {
                 Route::get('/refunds/view/{id}', 'Webkul\Admin\Http\Controllers\Sales\RefundController@view')->defaults('_config', [
                     'view' => 'admin::sales.refunds.view',
                 ])->name('admin.sales.refunds.view');
+                
             });
 
             // Catalog Routes

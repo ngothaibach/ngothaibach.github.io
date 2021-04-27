@@ -171,9 +171,10 @@ class OrderController extends Controller
         ->leftJoin('inventory_sources as inventory' , 'orders.inventory_id', '=','inventory.id')
         ->leftJoin('order_comments as comments','orders.id','=','comments.order_id')
         ->leftJoin('refunds as ref','orders.refund_exchange_id','=','ref.id')
+        ->leftJoin('refunds as ref1','orders.id','=','ref1.order_id')
         ->select('orders.id as order_id','orders.increment_id as increment_id', 'orders.base_sub_total', 'orders.base_grand_total',
-         'orders.created_at as created_at', 'orders.channel_name', 'orders.status', 'orders.customer_first_name', 'orders.customer_last_name'
-         ,'comments.comment as comment','ad.name as sale_name','inventory.name as name_inven','ref.grand_total as money_refund', 'ref.id as refund_id')
+         'orders.created_at as created_at','orders.updated_at as updated_at', 'orders.channel_name', 'orders.status', 'orders.customer_first_name', 'orders.customer_last_name'
+         ,'comments.comment as comment','ad.id as sale_id','inventory.name as name_inven','ref.grand_total as money_exchange_refund', 'ref.id as exchange_refund_id', 'ref1.id as refund_id')
          ->orderBy('order_id', 'desc')
          ->get()-> toArray();
 
@@ -204,7 +205,11 @@ class OrderController extends Controller
             ->get()->toArray();
         }
         
-        return view($this->_config['view'], compact('receipt_notes','role_id','invoice_note'));
+        $user_sale = DB::table('admins')
+        ->select('id','name')
+        ->get()->toArray();
+        
+        return view($this->_config['view'], compact('receipt_notes','role_id','invoice_note','user_sale'));
     // return response()->json(   [
     //     'success' => true,
     //     'message' => $invoice_note,
@@ -251,8 +256,10 @@ class OrderController extends Controller
 
     public function update_notes()
     {
+        $user_selected = request()->input('user_selected');
         $order_id = request()->input('order_id');
         $comment_content = request()->input('comment_content');
+        $date_time = request()->input('date_time');
         $invoice = DB::table('order_comments')
         ->where('order_id', '=', $order_id)->first();
         if(!$invoice){
@@ -263,13 +270,18 @@ class OrderController extends Controller
             ]);
         }else{
             DB::table('order_comments')
-              ->where('order_id', '=', $order_id)
+              ->where('id', '=', $order_id)
               ->update(['comment' => $comment_content]);
         }
+        DB::table('orders')
+        ->where('id', '=', $order_id)
+        ->update(['updated_at' => $date_time,
+                'sales_id' => $user_selected
+        ]);
+
         // ->get()-> toArray();
         // $invoice = $this->invoiceRepository->findOrFail($invoice_id);
         session()->flash('success','Cập nhật thành công');
-
         return response()->json(
             [
                 'success' => True,
@@ -626,6 +638,8 @@ class OrderController extends Controller
         $pdf = PDF::loadView('admin::sales.orders.pdf', compact('order'))->setPaper('a4');
         return $pdf->download('order-' . $order->created_at->format('d-m-Y') . '.pdf');
     }
+
+   
 
     public function store_customer_in_orders(){
         // dd(request()->all());
