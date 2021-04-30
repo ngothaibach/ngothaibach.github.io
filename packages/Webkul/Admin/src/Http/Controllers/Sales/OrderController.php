@@ -270,7 +270,7 @@ class OrderController extends Controller
             ]);
         }else{
             DB::table('order_comments')
-              ->where('id', '=', $order_id)
+              ->where('order_id', '=', $order_id)
               ->update(['comment' => $comment_content]);
         }
         DB::table('orders')
