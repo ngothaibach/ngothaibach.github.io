@@ -208,8 +208,7 @@ Route::group(['middleware' => ['web', 'admin_locale']], function () {
                 Route::get('/orders/update_notes', 'Webkul\Admin\Http\Controllers\Sales\OrderController@update_notes')->defaults('_config', [
                     'view' => 'admin::sales.orders.update_notes',
                 ])->name('admin.sales.orders.update_notes');
-                
-             
+
 
                 Route::post('/orders/create/{order_id}', 'Webkul\Admin\Http\Controllers\Sales\OrderController@comment')->name('admin.sales.orders.comment');
                 

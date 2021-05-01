@@ -29,9 +29,7 @@
                     </span>
                 </div>
             </div>
-
         </div>
-
         <div class="page-content">
             <div class="page-content">
                 <vpt-list-receipt-notes></vpt-list-receipt-notes>
@@ -103,7 +101,11 @@
                                                     <div class="form-group row">
                                                         <label class="col-sm-4 col-form-label">Trạng thái</label>
                                                         <div class="col-sm-8">
-                                                            <input type="text" :value="getValue(item.status)" class="form-control" disabled>
+                                                            <select v-model="item.status_id" class="form-control" id ="user_selected">
+                                                                    <option 
+                                                                        v-for="item in form.list_status" :value="item.id" v-text="item.name">
+                                                                    </option>
+                                                                </select>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -246,12 +248,12 @@
                                     <span class="font-weight-bold">Khách cần trả:</span> <span class="text-danger font-weight-bold" v-text="price_total"></span> --}}
                                         <div class="btn-summit-right">
                                             <button v-if="canCancel" type="button" class="btn btn-danger" style="marginRight : 20px;width: 120px;" v-on:click="create_cancel(item.order_id)" >Hủy</button>
-                                            <button v-if="canInvoice" type="button" class="btn btn-primary" style="marginRight : 20px;width: 130px;" v-on:click="create_invoice(item.order_id)" >Tạo hóa đơn</button>
+                                            {{-- <button v-if="canInvoice" type="button" class="btn btn-primary" style="marginRight : 20px;width: 130px;" v-on:click="create_invoice(item.order_id)" >Tạo hóa đơn</button> --}}
                                             {{-- <a href="{{ route('admin.sales.invoices.create', item . id) }}" class="btn btn-lg btn-primary"> --}}
 
                                             <button v-if="canRefund" type="button" class="btn btn-primary" style="marginRight : 20px;width: 120px;" v-on:click="create_refund(item.order_id)" >Hoàn lại</button>
                                             <button type="button" class="btn btn-primary" style="marginRight : 20px;width: 120px;" v-on:click="print_invoices(item.order_id)" >In hóa đơn</button>
-                                            <button type="button" class="btn btn-success" style="width: 120px;" v-on:click="update_orders(item.order_id)" >Cập nhật</button>
+                                            <button type="button" class="btn btn-success" style="width: 120px;" v-on:click="update_orders(item.order_id,item.status_id)" >Cập nhật</button>
                                         </div>
                                     </div>
                                 </div>
@@ -305,6 +307,7 @@
                         oldListReceip: {!! json_encode($receipt_notes) !!},
                         invoice_note: {!! json_encode($invoice_note) !!},
                         list_user :{!! json_encode($user_sale) !!},
+                        list_status :{!! json_encode($status_name) !!},
                         order_money: {},
                         price_total: 0,
                         type: 'receipt',
@@ -406,14 +409,12 @@
                     }
                 },
                 print_invoices(id) {
-                    // console.log(str.concat("{{ ').concat(linkBefore).concat(' }}"));
                     let link = "{{ route('admin.sales.orders.print_orders') }}";
-                    window.location.href = (link + '/' + id);
+                    window.open(link + '/' + id);
                 },
 
                 create_refund(order_id) {
                     var link = "{{route('admin.sales.refunds.create_refunds')}}";
-                    // console.log(order_id);
                     window.location.href = (link + '/' + order_id);
                 },
                 open_refund_detail(refund_id) {
@@ -424,11 +425,11 @@
                     var link = "{{route('admin.sales.orders.cancel_order')}}";
                     window.location.href = (link + '/' + order_id);
                 },
-                create_invoice(order_id) {
-                    var link = "{{route('admin.sales.invoices.create_invoice')}}";
-                    window.location.href = (link + '/' + order_id);
-                },
-                update_orders(get_order_id) {
+                // create_invoice(order_id) {
+                //     var link = "{{route('admin.sales.invoices.create_invoice')}}";
+                //     window.location.href = (link + '/' + order_id);
+                // },
+                update_orders(get_order_id,get_status_id) {
                     var user_selected = document.getElementById('user_selected').value;
                     var get_comment = document.getElementById('commentNote').value;
                     var get_date = document.getElementById('datePicker').value;
@@ -442,7 +443,8 @@
                                 order_id: get_order_id,
                                 comment_content: get_comment,
                                 date_time : get_date_time,
-                                user_selected : user_selected
+                                user_selected : user_selected,
+                                status_id : get_status_id
                             }
                         })
                         .then((response) => {

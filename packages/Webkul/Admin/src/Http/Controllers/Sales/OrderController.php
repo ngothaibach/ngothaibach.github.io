@@ -150,6 +150,7 @@ class OrderController extends Controller
         $this->invoiceRepository = $invoiceRepository;
     }
 
+   
     /**
      * Display a listing of the resource.
      *
@@ -158,7 +159,6 @@ class OrderController extends Controller
     public function index()
     {
         $invoice_note = DB::table('orders')
-        
         ->leftJoin('addresses as order_address_shipping', function($leftJoin) {
             $leftJoin->on('order_address_shipping.order_id', '=', 'orders.id')
                     ->where('order_address_shipping.address_type', OrderAddress::ADDRESS_TYPE_SHIPPING);
@@ -173,7 +173,7 @@ class OrderController extends Controller
         ->leftJoin('refunds as ref','orders.refund_exchange_id','=','ref.id')
         ->leftJoin('refunds as ref1','orders.id','=','ref1.order_id')
         ->select('orders.id as order_id','orders.increment_id as increment_id', 'orders.base_sub_total', 'orders.base_grand_total',
-         'orders.created_at as created_at','orders.updated_at as updated_at', 'orders.channel_name', 'orders.status', 'orders.customer_first_name', 'orders.customer_last_name'
+        'orders.status_id as status_id','orders.created_at as created_at','orders.updated_at as updated_at', 'orders.channel_name', 'orders.status', 'orders.customer_first_name', 'orders.customer_last_name'
          ,'comments.comment as comment','ad.id as sale_id','inventory.name as name_inven','ref.grand_total as money_exchange_refund', 'ref.id as exchange_refund_id', 'ref1.id as refund_id')
          ->orderBy('order_id', 'desc')
          ->get()-> toArray();
@@ -208,8 +208,12 @@ class OrderController extends Controller
         $user_sale = DB::table('admins')
         ->select('id','name')
         ->get()->toArray();
+
+        $status_name = DB::table('cat_status')
+        ->select('id','name')
+        ->get()->toArray();
         
-        return view($this->_config['view'], compact('receipt_notes','role_id','invoice_note','user_sale'));
+        return view($this->_config['view'], compact('receipt_notes','role_id','invoice_note','user_sale','status_name'));
     // return response()->json(   [
     //     'success' => true,
     //     'message' => $invoice_note,
@@ -257,6 +261,7 @@ class OrderController extends Controller
     public function update_notes()
     {
         $user_selected = request()->input('user_selected');
+        $select_status_id = request()->input('status_id');
         $order_id = request()->input('order_id');
         $comment_content = request()->input('comment_content');
         $date_time = request()->input('date_time');
@@ -276,7 +281,8 @@ class OrderController extends Controller
         DB::table('orders')
         ->where('id', '=', $order_id)
         ->update(['updated_at' => $date_time,
-                'sales_id' => $user_selected
+                'sales_id' => $user_selected,
+                'status_id' => $select_status_id
         ]);
 
         // ->get()-> toArray();
@@ -611,7 +617,6 @@ class OrderController extends Controller
         }
         $this->invoiceRepository->create(array_merge($data_invoice, ['order_id' => $order->id]));
 
-
         session()->flash('success', 'Tạo đơn hàng thành công');
 
         return response()->json(
@@ -624,23 +629,31 @@ class OrderController extends Controller
 
     public function print($id)
     {
+        $comment = DB::table('order_comments')
+        ->where('order_id','=',$id)
+        ->select('order_comments.comment as cmd_detail')
+        ->first();
         $order = $this->orderRepository->findOrFail($id);
-        $pdf = PDF::loadView('admin::sales.orders.pdf', compact('order'))->setPaper('a4');
-        return $pdf->download('order-' . $order->created_at->format('d-m-Y') . '.pdf');
+        $pdf = PDF::loadView('admin::sales.orders.pdf', compact('order','comment'))->setPaper('a4');
+        return $pdf->stream('result.pdf', array('Attachment'=>0));  
+        // return response()->json(
+        //     [
+        //         'success' => true,
+        //         'message' => $order,
+        //     ]
+        // );            
     }
 
     public function print_orders()
     {
-        $id = request()->input('id');
-        // return response()->json(
-        //     [
-        //         'success' => true,
-        //         'message' => $id,
-        //     ]
-        // );
+        $comment = DB::table('order_comments')
+        ->where('order_id','=',$id)
+        ->select('order_comments.comment as cmd_detail')
+        ->get()->toArray();
         $order = $this->orderRepository->findOrFail($id);
-        $pdf = PDF::loadView('admin::sales.orders.pdf', compact('order'))->setPaper('a4');
-        return $pdf->download('order-' . $order->created_at->format('d-m-Y') . '.pdf');
+        $pdf = PDF::loadView('admin::sales.orders.pdf', compact('order','comment'))->setPaper('a4');
+        // return $pdf->download('order-' . $order->created_at->format('d-m-Y') . '.pdf');
+        return $pdf->stream('result.pdf', array('Attachment'=>0));         
     }
 
    
