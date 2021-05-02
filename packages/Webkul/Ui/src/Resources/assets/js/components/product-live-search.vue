@@ -55,7 +55,7 @@
                 <td>Không có dữ liệu</td>
             </tr>
             <tr v-else v-for="item in added_products">
-                <td v-text="item.id"></td>
+                <td v-text="item.sku"></td>
                 <td><img style="width: 60xp; height: 60px;" v-bind:src="'/cache/small/' + item.featured_image"/></td>
                 <td v-text="item.name"></td>
                 <td v-text="formatPrice(item.price)"></td>
@@ -165,6 +165,7 @@
                     name: result.name,
                     qty: 1,
                     price: result.price,
+                    sku: result.sku,
                     in_stock: 0,
                     featured_image: result.featured_image
                 };

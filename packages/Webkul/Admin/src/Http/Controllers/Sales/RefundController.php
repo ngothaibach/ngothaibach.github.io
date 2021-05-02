@@ -84,6 +84,12 @@ class RefundController extends Controller
 
         return view($this->_config['view'], compact('order'));
     }
+    public function create_refunds()
+    {
+        $orderId = request()->input('id');
+        $order = $this->orderRepository->findOrFail($orderId);
+        return view($this->_config['view'], compact('order'));
+    }
 
     /**
      * Store a newly created resource in storage.
@@ -171,6 +177,13 @@ class RefundController extends Controller
     {
         $refund = $this->refundRepository->findOrFail($id);
 
+        return view($this->_config['view'], compact('refund'));
+    }
+    
+    public function view_refund()
+    {
+        $id = request()->input('refund_id');
+        $refund = $this->refundRepository->findOrFail($id);
         return view($this->_config['view'], compact('refund'));
     }
 }

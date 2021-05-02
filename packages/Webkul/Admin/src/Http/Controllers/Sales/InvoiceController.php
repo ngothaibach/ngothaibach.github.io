@@ -7,6 +7,7 @@ use Webkul\Sales\Repositories\OrderRepository;
 use Webkul\Sales\Repositories\InvoiceRepository;
 use PDF;
 use Illuminate\Support\Facades\DB;
+use Session;
 
 
 class InvoiceController extends Controller
@@ -60,7 +61,7 @@ class InvoiceController extends Controller
      */
     public function index()
     {
-        $invoice_note = DB::table('invoices')
+        $query = DB::table('invoices')
             ->leftJoin('orders as ors', 'invoices.order_id', '=', 'ors.id')
             ->leftJoin('order_comments as comments','invoices.order_id','=','comments.order_id')
             ->leftJoin('order_payment as payments','invoices.order_id','=','payments.order_id')
@@ -68,36 +69,13 @@ class InvoiceController extends Controller
             'ors.status as status','ors.channel_name as channel_name','ors.collection_diff as collection_diff',
             'payments.method as method_payment','comments.comment as comment','ors.base_tax_amount as base_tax_amount',
             'invoices.base_grand_total as base_grand_total','ors.base_sub_total as base_sub_total', 'ors.increment_id as order_id', 
-            'invoices.state as state', 'invoices.base_discount_amount as base_discount_amount', 'invoices.created_at as created_at')
-            ->get()-> toArray();
-
-        $role_id = auth()->guard('admin')->user()->role['id'];
-        if($role_id != 1){
-            $invent_id = auth()->guard('admin')->user()->inventory_id;
-            $receipt_notes = DB::table('exchange_notes')
-            // ->join('suppliers', 'suppliers.id', '=', 'exchange_notes.supplier_id')
-            ->leftJoin('inventory_sources as to_inventory_sources', 'to_inventory_sources.id', '=', 'exchange_notes.to_inventory_source_id')
-            ->leftJoin('inventory_sources as from_inventory_sources', 'from_inventory_sources.id', '=', 'exchange_notes.from_inventory_source_id')
-            ->join('admins', 'admins.id', '=', 'exchange_notes.created_user_id')
-            ->select('exchange_notes.id', 'exchange_notes.created_date', 'exchange_notes.note', 'exchange_notes.status', 'exchange_notes.receipt_date', 'exchange_notes.transfer_date', 'to_inventory_sources.name as to_inventory', 'from_inventory_sources.name as from_inventory','from_inventory_sources.id as from_inventory_id', 'admins.name as created_user')
-            ->where('type', '=', 'transfer')
-            ->where('from_inventory_source_id','=',$invent_id)
-            ->orwhere('to_inventory_source_id','=',$invent_id)
-            ->orderBy('id', 'desc')
-            ->get()->toArray();  
-        }else{
-            $receipt_notes = DB::table('exchange_notes')
-            // ->join('suppliers', 'suppliers.id', '=', 'exchange_notes.supplier_id')
-            ->leftJoin('inventory_sources as to_inventory_sources', 'to_inventory_sources.id', '=', 'exchange_notes.to_inventory_source_id')
-            ->leftJoin('inventory_sources as from_inventory_sources', 'from_inventory_sources.id', '=', 'exchange_notes.from_inventory_source_id')
-            ->join('admins', 'admins.id', '=', 'exchange_notes.created_user_id')
-            ->select('exchange_notes.id', 'exchange_notes.created_date', 'exchange_notes.note', 'exchange_notes.status', 'exchange_notes.receipt_date', 'exchange_notes.transfer_date', 'to_inventory_sources.name as to_inventory', 'from_inventory_sources.name as from_inventory','from_inventory_sources.id as from_inventory_id', 'admins.name as created_user')
-            ->where('type', '=', 'transfer')
-            ->orderBy('id', 'desc')
-            ->get()->toArray();
+            'invoices.state as state', 'invoices.base_discount_amount as base_discount_amount', 'invoices.created_at as created_at');
+        if( Session::get('inventory') != 0){
+            $query = $query->where('ors.inventory_id','=',Session::get('inventory'));
         }
-        
-        return view($this->_config['view'], compact('receipt_notes','role_id','invoice_note'));
+        $invoice_note = $query->get()-> toArray();
+        $role_id = auth()->guard('admin')->user()->role['id'];      
+        return view($this->_config['view'], compact('role_id','invoice_note'));
 
         // return view($this->_config['view']);
     }
@@ -112,6 +90,13 @@ class InvoiceController extends Controller
     {
         $order = $this->orderRepository->findOrFail($orderId);
 
+        return view($this->_config['view'], compact('order'));
+    }
+
+    public function create_invoice()
+    {
+        $orderId = request()->input('id');
+        $order = $this->orderRepository->findOrFail($orderId);
         return view($this->_config['view'], compact('order'));
     }
 
@@ -137,6 +122,7 @@ class InvoiceController extends Controller
 
         $data = request()->all();
 
+        
         $haveProductToInvoice = false;
 
         foreach ($data['invoice']['items'] as $itemId => $qty) {

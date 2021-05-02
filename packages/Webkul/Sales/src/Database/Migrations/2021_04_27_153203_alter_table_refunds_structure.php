@@ -1,0 +1,54 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class AlterTableRefundsStructure extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::table('refunds', function (Blueprint $table) {
+            //
+            $table->decimal('adjustment_refund', 16, 4)->default(0)->nullable()->change();
+            $table->decimal('base_adjustment_refund', 16, 4)->default(0)->nullable()->change();
+
+            $table->decimal('adjustment_fee', 16, 4)->default(0)->nullable()->change();
+            $table->decimal('base_adjustment_fee', 16, 4)->default(0)->nullable()->change();
+
+            $table->decimal('sub_total', 16, 4)->default(0)->nullable()->change();
+            $table->decimal('base_sub_total', 16, 4)->default(0)->nullable()->change();
+
+            $table->decimal('grand_total', 16, 4)->default(0)->nullable()->change();
+            $table->decimal('base_grand_total', 16, 4)->default(0)->nullable()->change();
+
+            $table->decimal('shipping_amount', 16, 4)->default(0)->nullable()->change();
+            $table->decimal('base_shipping_amount', 16, 4)->default(0)->nullable()->change();
+
+            $table->decimal('tax_amount', 16, 4)->default(0)->nullable()->change();
+            $table->decimal('base_tax_amount', 16, 4)->default(0)->nullable()->change();
+
+            $table->decimal('discount_percent', 16, 4)->default(0)->nullable()->change();
+            $table->decimal('discount_amount', 16, 4)->default(0)->nullable()->change();
+            $table->decimal('base_discount_amount', 16, 4)->default(0)->nullable()->change();
+
+            $table->decimal('refund_fee',16,4)->change();
+            $table->decimal('collection_diff',16,4)->change();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        //
+    }
+}
