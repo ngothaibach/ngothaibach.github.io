@@ -74,11 +74,14 @@
                 </div>
                 <div class="col-3">
                     <h2>Thông tin đặt hàng</h2>
+                    
                     <div class="mb-3">
-                        <div class="row">
-                            <div class="col-6">
-                                <vuejs-datepicker v-model="form.created_date"></vuejs-datepicker>
-                            </div>
+                        <vuejs-datepicker v-model="form.created_date"></vuejs-datepicker>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="row_new">
+                            Người bán
                             <div class="col-right">
                                 <select v-model="form.user" name="user" class="w3-input" aria-label="User" style="width: 150px">
                                     @foreach ($users as $user)
@@ -89,8 +92,7 @@
                                         @endif
                                     @endforeach
                                 </select>
-                            </div>
-                            
+                            </div> 
                         </div>
                     </div>
                     <div class="mb-3">

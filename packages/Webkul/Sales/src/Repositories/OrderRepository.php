@@ -272,6 +272,7 @@ class OrderRepository extends Repository
     public function updateOrderStatus($order)
     {
         $status = 'processing';
+        $status_id = 1;
 
         if ($this->isInCompletedState($order)) {
             $status = 'completed';
@@ -279,11 +280,14 @@ class OrderRepository extends Repository
 
         if ($this->isInCanceledState($order)) {
             $status = 'canceled';
+            $status_id= 4;
         } elseif ($this->isInClosedState($order)) {
             $status = 'closed';
+            $status_id = 5;
         }
 
         $order->status = $status;
+        $order->status_id = $status_id;
         $order->save();
     }
 

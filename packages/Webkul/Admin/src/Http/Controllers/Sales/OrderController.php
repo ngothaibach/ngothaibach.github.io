@@ -398,6 +398,7 @@ class OrderController extends Controller
         $order->customer_remain = request()->customer_remain;
         $order->inventory_id = ($inventory_id != null ? $inventory : 0);
         $order->sales_id = $sales_id;
+        $order->status_id = 1;
         $order->save();
 
         //luư dữ liệu vào order items

@@ -513,6 +513,7 @@ class RefundRepository extends Repository
             $order->collection_diff = $data['collection_diff_orders'];
             $order->sales_id = $order_old->sales_id;
             $order->inventory_id = $order_old->inventory_id;
+            $order->status_id = 1;
 
             $money_must_back = str_replace(",","",$data['money_must_back']);
             if ($data['price_sum_total'] > (int)($money_must_back))
