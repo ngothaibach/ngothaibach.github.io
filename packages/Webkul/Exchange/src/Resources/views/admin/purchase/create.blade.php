@@ -23,7 +23,7 @@
         <form action="#" class="form newtopic" @submit.prevent="save">
             <div class="row" style="margin-top: 20px;">
                 <div class="col-8" style="align-self: baseline;">
-                    <h2>{{ __('admin::app.vpt.inventory.add-receipt-note') }}</h2>
+                    <h2>Tạo phiếu nhập hàng</h2>
                     <div>
                         <product-live-search
                         :url='"{{ route("admin.catalog.products.live-search-products") }}"'
@@ -48,16 +48,15 @@
                                 </select>
                             </div>
                             <div class="col-7">
-                                <vuejs-datepicker v-model="form.created_date"></vuejs-datepicker>
+                                <input type="date" class="control" name="created_date" v-model="form.created_date" v-validate="">   
+                                <span class="control-error" v-if="errors.has('created_date')">@{{ errors.first('created_date') }}</span>
                             </div>
                         </div>
                     </div>
                     <div class="mb-3">
                         <label for="inventory-source" class="form-label">{{ __('admin::app.vpt.inventory.inventory-source') }}</label>
-                        <select v-model="form.to_inventory_source" class="form-control" aria-label="{{ __('admin::app.vpt.inventory.inventory-source') }}" name="inventory-source">
-                        @foreach ($inventory_sources as $source)
-                            <option value="{{ $source->id }}">{{ $source->name }}</option>
-                        @endforeach
+                        <select v-model="form.to_inventory_source" class="form-control" aria-label="{{ __('admin::app.vpt.inventory.inventory-source') }}" name="inventory-source" disabled>
+                            <option value="1">Kho Tổng - Công ty</option>
                         </select>
                     </div>
                     <div class="mb-3">
@@ -70,11 +69,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="exampleFormControlInput1" class="form-label">{{ __('admin::app.vpt.inventory.receipt-note-code') }}</label>
-                        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="{{ __('admin::app.vpt.inventory.receipt-note-code') }}">
-                    </div>
-                    <div class="mb-3">
-                        <label for="exampleFormControlInput1" class="form-label">{{ __('admin::app.vpt.inventory.order-code') }}</label>
-                        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="{{ __('admin::app.vpt.inventory.order-code') }}">
+                        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder='{{"MNH".$maxId+=1}}' disabled>
                     </div>
                     <div class="mb-3">
                         <label for="exampleFormControlInput1" class="form-label">{{ __('admin::app.vpt.inventory.status') }}</label>
@@ -82,23 +77,6 @@
                     </div>
                     <div class="mb-3">
                     {{ __('admin::app.vpt.inventory.total-of-price') }}: <span v-text="formatPrice(form.price_total)"></span> {{ __('admin::app.vpt.inventory.vnd') }}
-                    </div>
-                    <div class="mb-3">
-                        <label for="exampleFormControlInput1" class="form-label">{{ __('admin::app.vpt.inventory.discount') }}</label>
-                        <div class="row">
-                            <div class="col-3">
-                                <input type="text" disable=true class="form-control" id="exampleFormControlInput1">
-                            </div>
-                            <div class="col-3">
-                                <select class="form-control" aria-label="User">
-                                    <option value="1">{{ __('admin::app.vpt.inventory.vnd') }}</option>
-                                    <option value="2">%</option>
-                                </select>
-                            </div>
-                            <div class="col-3">
-                                <span v-text="formatPrice(form.price_total)"></span> {{ __('admin::app.vpt.inventory.vnd') }}
-                            </div>
-                        </div>
                     </div>
                     <div class="mb-3">
                         <label for="exampleFormControlTextarea1" class="form-label">{{ __('admin::app.vpt.inventory.note') }}</label>
@@ -166,7 +144,7 @@ let handleOutsideClick
                         created_date: new Date(),
                         user: "auth()->guard('admin')->user()->id",
                         supplier: null,
-                        to_inventory_source: null,
+                        to_inventory_source: 1,
                         note_code: null,
                         order_code: null,
                         status: "{{ __('admin::app.vpt.inventory.temp-save') }}",
