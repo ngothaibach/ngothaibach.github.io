@@ -62,7 +62,7 @@
                             </th>
                         </tr>
                         </thead>
-                        <tbody id='hover-row' v-for="(item,index) in form.invoice_note">
+                        <tbody id='hover-row' v-for="(item,index) in pageOfItems">
                             <tr :class="[selected_transfer ===  item.order_id ? 'table-info' : '']" v-on:click="load_product(item.order_id)">
                                 <td v-text="item.order_id"></td>
                                 <td v-text="item.updated_at"></td>
@@ -263,7 +263,7 @@
                     </table>
                     <div class="card-footer pb-0 pt-3">
                         <sort-pagination 
-                        v-bind:items="form.listReceiptNotes"
+                        v-bind:items="form.invoice_note"
                         v-bind:pageSize = "perPage"
                         v-bind:sortBy ="sortBy"
                         v-bind:currentSortDir ="currentSortDir"
@@ -283,10 +283,11 @@
                     commission: 123456,
                     //pagination
                     sort_list: [
-                        "id",
-                        "transfer_date",
-                        "from_inventory",
-                        "to_inventory",
+                        "order_id",
+                        "updated_at",
+                        "customer_last_name",
+                        "base_sub_total",
+                        "base_grand_total",
                         "status"
                     ],
                     currentSortDir: "desc",
@@ -296,34 +297,22 @@
                     arrow: "custom-arrow-icon-down",
                     currentArrow: 0,
                     //pagination
-                    //check permission
-                    updatePermission: Boolean(Number('{{ checkPermission('exchange.list_transfer.update') }}')),
-                    //check permission
                     form: new Form({
                         canInvoice: false,
                         canCancel: false,
                         canRefund: false,
-                        listReceiptNotes: {!! json_encode($receipt_notes) !!},
-                        oldListReceip: {!! json_encode($receipt_notes) !!},
                         invoice_note: {!! json_encode($invoice_note) !!},
                         list_user :{!! json_encode($user_sale) !!},
                         list_status :{!! json_encode($status_name) !!},
                         order_money: {},
-                        price_total: 0,
-                        type: 'receipt',
                         receipt_date: new Date(),
                         created_date: new Date(),
                         user: "auth()->guard('admin')->user()->id",
-                        supplier: null,
-                        to_inventory_source: null,
-                        note_code: null,
-                        order_code: null,
                         importer: "",
                         note: "",
                         idExchange: 1,
                         product_list: null,
                         type: null,
-                        from_inventory_id: null,
                         selected: "{{ __('admin::app.vpt.inventory.received') }}",
                         status: [{
                                 key: 'temporary',
