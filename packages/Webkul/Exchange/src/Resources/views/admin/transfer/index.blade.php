@@ -23,7 +23,7 @@
         <filter-and-search 
                 :url='"{{ route("admin.exchange.transfer.list") }}"'
                 :searchfields = "[
-                {name: 'Mã đơn hàng', key: 'id', columnType: 'number' },
+                {name: 'Mã chuyển hàng', key: 'id', columnType: 'number' },
                 {name: 'Thời gian', key: 'transfer_date', columnType: 'datetime'}, 
                 {name: 'Từ chi nhánh', key: 'from_inventory', columnType: 'string'},
                 {name: 'Tới Chi Nhánh', key:'to_inventory', columnType: 'string'},
@@ -49,7 +49,7 @@
                     </thead>
                     <tbody v-for="(item,index) in form.listReceiptNotes">
                         <tr :class="[selected_transfer ===  item.id ? 'table-info' : '']" v-on:click="load_product(item.id)">
-                            <td v-text="'MDH' + item.id"></td>
+                            <td v-text="'MCH' + item.id"></td>
                             <td v-text="item.transfer_date"></td>
                             <td v-text="item.from_inventory"></td>
                             <td v-text="item.to_inventory"></td>
@@ -95,14 +95,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="mb-3">
-                                                <div class="form-group row">
-                                                    <label class="col-sm-4 col-form-label">Người tạo</label>
-                                                    <div class="col-sm-8">
-                                                        <input type="text" v-model="item.created_user" class="form-control" disabled>
-                                                    </div>
-                                                </div>
-                                            </div>
                                         </div>
                                         <div class="col-4" style="align-self: baseline;">
                                             <div class="mb-3">
@@ -128,21 +120,30 @@
                                                 <div class="form-group row">
                                                     <label class="col-sm-4 col-form-label">Ngày nhận</label>
                                                     <div class="col-sm-8">
-                                                        <vuejs-datepicker v-model="item.receipt_date" :disabled="role_id != 1 ? true : !updatePermission ? true : form.oldListReceip[index].status == 'temporary' ? false : form.oldListReceip[index].status == 'transfering' ? false : true"></vuejs-datepicker>
+                                                        <input type="date" class="control" name="receipt_date" v-model="item.receipt_date" v-validate="" :disabled="role_id != 1 ? true : !updatePermission ? true : form.oldListReceip[index].status == 'temporary' ? false : form.oldListReceip[index].status == 'transfering' ? false : true">
+                                                        <span class="control-error" v-if="errors.has('receipt_date')">@{{ errors.first('receipt_date') }}</span>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="col-4" style="align-self: baseline;">
                                             <div class="mb-3">
-                                                <div class="form-group row">
-                                                    <label class="col-sm-4 col-form-label">Ghi chú</label>
-                                                    <div class="col-sm-8">
-                                                        <textarea class="form-control" id="exampleFormControlTextarea1" v-model="item.note" :disabled="role_id != 1 ? true : !updatePermission ? true : form.oldListReceip[index].status == 'temporary' ? false : form.oldListReceip[index].status == 'transfering' ? false : true"></textarea>
+                                                    <div class="form-group row">
+                                                        <label class="col-sm-4 col-form-label">Người tạo</label>
+                                                        <div class="col-sm-8">
+                                                            <input type="text" v-model="item.created_user" class="form-control" disabled>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
                                         </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <div class="form-group row">
+                                            <label class="col-sm-4 col-form-label">Ghi chú</label>
+                                            <div class="col-sm-12">
+                                                <textarea style="height: 100px" class="form-control" id="exampleFormControlTextarea1" v-model="item.note" ></textarea>
+                                            </div>
+                                        </div>    
                                     </div>
                                     <h4>Danh sách sản phẩm chuyển</h4>
                                     <table class="table table-bordered">
@@ -254,7 +255,7 @@
                     }),
                     showModal: false,
                     table_headers: [
-                        "{{ __('admin::app.vpt.inventory.order-code') }}",
+                        "Mã Chuyển Hàng",
                         "{{ __('admin::app.vpt.inventory.date') }}",
                         "{{ __('admin::app.vpt.inventory.from-inventory-source') }}",
                         "{{ __('admin::app.vpt.inventory.to-inventory-source') }}",

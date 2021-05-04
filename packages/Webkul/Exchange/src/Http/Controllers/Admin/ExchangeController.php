@@ -246,14 +246,13 @@ class ExchangeController extends Controller
     {
         // Get user list
         $users = DB::table('admins')->select('id', 'name')->get();
-
-        // Get inventory sources
-        $inventory_sources = DB::table('inventory_sources')->select('id', 'name')->get();
-
-        // Get inventory sources
+        //max id
+        $notes = DB::table('exchange_notes')->find(DB::table('exchange_notes')->max('id'));
+        $maxId= $notes->id;
+        // Get suppliers
         $suppliers = DB::table('suppliers')->select('id', 'name')->get();
 
-        return view($this->_config['view'], compact('users', 'inventory_sources', 'suppliers'));
+        return view($this->_config['view'], compact('users', 'suppliers','maxId'));
     }
 
     /**
@@ -268,11 +267,15 @@ class ExchangeController extends Controller
 
         // Get inventory sources
         $inventory_sources = DB::table('inventory_sources')->select('id', 'name')->get();
+        
+        //max id
+        $notes = DB::table('exchange_notes')->find(DB::table('exchange_notes')->max('id'));
+        $maxId= $notes->id;
 
-        // Get inventory sources
+        // Get suppliers
         $suppliers = DB::table('suppliers')->select('id', 'name')->get();
 
-        return view($this->_config['view'], compact('users', 'inventory_sources', 'suppliers'));
+        return view($this->_config['view'], compact('users', 'inventory_sources', 'suppliers','maxId'));
     }
 
     /**

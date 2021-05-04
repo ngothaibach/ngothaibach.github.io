@@ -14,7 +14,7 @@
         <form action="#" class="form newtopic" @submit.prevent="save">
                             <div class="row" style="margin-top: 20px;">
                                 <div class="col-8" style="align-self: baseline;">
-                                    <h2>{{ __('admin::app.vpt.inventory.transfer') }}</h2>
+                                    <h2>Tạo phiếu chuyển hàng</h2>
                                     <div>
                                     <product-live-search
                                         :url='"{{ route("admin.catalog.products.live-search-products") }}"'
@@ -40,7 +40,8 @@
                                                 </select>
                                             </div>
                                             <div class="col-7">
-                                                <vuejs-datepicker v-model="form.transfer_date"></vuejs-datepicker>
+                                                <input type="date" class="control" name="transfer_date" v-model="form.transfer_date" v-validate="">
+                                                <span class="control-error" v-if="errors.has('transfer_date')">@{{ errors.first('transfer_date') }}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -62,7 +63,7 @@
                                     </div>                    
                                     <div class="mb-3">
                                         <label for="exampleFormControlInput1" class="form-label">{{ __('admin::app.vpt.inventory.transfer-code') }}</label>
-                                        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="{{ __('admin::app.vpt.inventory.transfer-code') }}">
+                                        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder='{{"MCH".$maxId++}}' disabled>
                                     </div>                    
                                     <div class="mb-3">
                                         <label for="exampleFormControlInput1" class="form-label">{{ __('admin::app.vpt.inventory.status') }}</label>

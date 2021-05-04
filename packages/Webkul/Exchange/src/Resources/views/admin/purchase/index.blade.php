@@ -23,7 +23,7 @@
                 <filter-and-search 
                 :url='"{{ route("admin.exchange.purchase-order.list") }}"'
                 :searchfields = "[
-                {name: 'Mã đơn hàng', key: 'id', columnType: 'number' },
+                {name: 'Mã nhập hàng', key: 'id', columnType: 'number' },
                 {name: 'Thời gian', key: 'created_date', columnType: 'datetime'}, 
                 {name: 'Nhà cung cấp', key: 'supplier', columnType: 'string'},
                 {name: 'Tổng tiền', key:'total', columnType: 'number'},
@@ -51,7 +51,7 @@
                                                                                             <tbody v-for="(item,index) in pageOfItems" :key="item.id">
                                                                                             
                                                                                                 <tr :class="[selected_transfer ===  item.id ? 'table-info' : '']" v-on:click="load_product(item.id)">
-                                                                                                    <td v-text="'MDH00' + item.id"></td>
+                                                                                                    <td v-text="'MNH' + item.id"></td>
                                                                                                     <td v-text="item.created_date"></td>
                                                                                                     <td v-text="item.supplier"></td>
                                                                                                     <td v-text="formatPrice(item.total)"></td>
@@ -96,14 +96,6 @@
                                                                                                                             </div>
                                                                                                                         </div>
                                                                                                                     </div>
-                                                                                                                    <div class="mb-3">
-                                                                                                                        <div class="form-group row">
-                                                                                                                            <label class="col-sm-4 col-form-label">Người tạo</label>
-                                                                                                                            <div class="col-sm-8">
-                                                                                                                                <input type="text" v-model="item.created_user" class="form-control" disabled>
-                                                                                                                            </div>
-                                                                                                                        </div>
-                                                                                                                    </div>
                                                                                                                 </div>
                                                                                                                 <div class="col-4" style="align-self: baseline;">
                                                                                                                     <div class="mb-3">
@@ -124,16 +116,16 @@
                                                                                                                                 <input type="text" v-model="item.inventory" class="form-control" disabled>
                                                                                                                             </div>
                                                                                                                         </div>
-                                                                                                                    </div>
+                                                                                                                    </div>                                                                                                                  
+                                                                                                                </div>                                                                                                     
+                                                                                                                <div class="col-4" style="align-self: baseline;">
                                                                                                                     <div class="mb-3">
                                                                                                                         <div class="form-group row">
                                                                                                                             <label class="col-sm-4 col-form-label" >Người nhập</label>
                                                                                                                             <div class="col-sm-8">
                                                                                                                                 <select v-model="item.importer" name="user" class="form-control" aria-label="User" :disabled="role_id != 1 ? true : !updatePermission ? true : form.oldListReceip[index].status == 'temporary' ? false : true ">
                                                                                                                                     @foreach ($users as $user)
-                                                                                                                                        @if (auth()
-            ->guard('admin')
-            ->user()->id == $user->id)
+                                                                                                                                        @if (auth()->guard('admin')->user()->id == $user->id)
                                                                                                                                             <option value="{{ $user->id }}" selected>{{ $user->name }}</option>
                                                                                                                                         @else
                                                                                                                                             <option value="{{ $user->id }}">{{ $user->name }}</option>
@@ -143,17 +135,23 @@
                                                                                                                             </div>
                                                                                                                         </div>
                                                                                                                     </div>
-                                                                                                                </div>
-                                                                                                                <div class="col-4" style="align-self: baseline;">
                                                                                                                     <div class="mb-3">
                                                                                                                         <div class="form-group row">
-                                                                                                                            <label class="col-sm-4 col-form-label">Ghi chú</label>
+                                                                                                                            <label class="col-sm-4 col-form-label">Người tạo</label>
                                                                                                                             <div class="col-sm-8">
-                                                                                                                                <textarea class="form-control" id="exampleFormControlTextarea1" v-model="item.note" :disabled="role_id != 1 ? true : !updatePermission ? true : form.oldListReceip[index].status == 'temporary' ? false : true "></textarea>
+                                                                                                                                <input type="text" v-model="item.created_user" class="form-control" disabled>
                                                                                                                             </div>
                                                                                                                         </div>
                                                                                                                     </div>
                                                                                                                 </div>
+                                                                                                            </div>
+                                                                                                            <div class="mb-3">
+                                                                                                                <div class="form-group row">
+                                                                                                                    <label class="col-sm-4 col-form-label">Ghi chú</label>
+                                                                                                                    <div class="col-sm-12">
+                                                                                                                        <textarea style="height: 100px" class="form-control" id="exampleFormControlTextarea1" v-model="item.note" ></textarea>
+                                                                                                                    </div>
+                                                                                                                </div>    
                                                                                                             </div>
                                                                                                             <h4>Danh sách sản phẩm nhập</h4>
                                                                                                             <table class="table table-bordered">
@@ -261,7 +259,7 @@
                     }),
                     showModal: false,
                     table_headers: [
-                        "{{ __('admin::app.vpt.inventory.order-code') }}",
+                        "Mã Nhập hàng",
                         "{{ __('admin::app.vpt.inventory.date') }}",
                         "{{ __('admin::app.vpt.inventory.supplier') }}",
                         "{{ __('admin::app.vpt.inventory.total-of-price') }}",
