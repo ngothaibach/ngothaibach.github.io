@@ -41,7 +41,10 @@
                     <h2>Thông tin đặt hàng</h2>
                     
                     <div class="mb-3">
-                        <vuejs-datepicker v-model="form.created_date"></vuejs-datepicker>
+                        <div class="control-group" :class="[errors.has('created_date') ? 'has-error' : '']">
+                            <input type="date" class="control" name="created_date" v-model="form.created_date" v-validate="" value="{{ old('created_date') }}">
+                            <span class="control-error" v-if="errors.has('created_date')">@{{ errors.first('created_date') }}</span>
+                        </div>
                     </div>
 
                     <div class="mb-3">
