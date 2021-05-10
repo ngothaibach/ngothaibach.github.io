@@ -567,12 +567,51 @@
     <!-- parent category-->
     <script type="text/x-template" id="parent-category-template">
         <div>
-            <input class="form-control" type="text" v-on:input="onChangeKeywords($event.target.value)"  ref="button">
-            <tree-view value-field="id" name-field="parent_id" input-type="radio-category" v-bind:items='listCategories'></tree-view>
+            <input class="form-control" type="text" v-on:input="onChangeKeywords($event.target.value)">
+            <tree-view value-field="id" name-field="parent_id" input-type="radio-category" v-bind:items='listCategories' :value='selectedValue' @valueChanged="onValueChanged" ></tree-view>
         </div>
     </script>
+
     <script>
-    Vue.component('parent-category', {
+        $(document).ready(function () {
+            tinymce.init({
+                selector: 'textarea#description',
+                height: 200,
+                width: "100%",
+                plugins: 'image imagetools media wordcount save fullscreen code table lists link hr',
+                toolbar1: 'formatselect | bold italic strikethrough forecolor backcolor link hr | alignleft aligncenter alignright alignjustify | numlist bullist outdent indent  | removeformat | code | table',
+                image_advtab: true
+            });
+        });
+
+        Vue.component('description', {
+
+            template: '#description-template',
+
+            inject: ['$validator'],
+
+            data: function() {
+                return {
+                    isRequired: true,
+                }
+            },
+
+            created: function () {
+                var this_this = this;
+
+                $(document).ready(function () {
+                    $('#display_mode').on('change', function (e) {
+                        if ($('#display_mode').val() != 'products_only') {
+                            this_this.isRequired = true;
+                        } else {
+                            this_this.isRequired = false;
+                        }
+                    })
+                });
+            }
+        })
+
+        Vue.component('parent-category', {
 
         template: '#parent-category-template',
 
@@ -581,6 +620,7 @@
                 fullList: @json($categories),
                 keywords: null,
                 listCategories: [],
+                selectedValue:null,
             }
         },
         methods:{
@@ -607,6 +647,9 @@
             },
             defaultList() {
                 this.listCategories = this.fullList;
+            },
+            onValueChanged(value){
+                this.selectedValue = value;
             }
         },
         beforeMount() {

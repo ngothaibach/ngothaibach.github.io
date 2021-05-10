@@ -121,7 +121,7 @@
 
                                         {!! view_render_event('bagisto.admin.catalog.category.create_form_accordian.parent_category.controls.before') !!}
 
-                                        <tree-view value-field="id" name-field="parent_id" input-type="radio-category" items='@json($categories)'></tree-view>
+                                        <parent-category></parent-category>
 
                                         {!! view_render_event('bagisto.admin.catalog.category.create_form_accordian.parent_category.controls.after') !!}
 
@@ -514,6 +514,100 @@
                 });
                 
             }
+        })
+    </script>
+<!-- parent category-->
+<script type="text/x-template" id="parent-category-template">
+        <div>
+            <input class="form-control" type="text" v-on:input="onChangeKeywords($event.target.value)">
+            <tree-view value-field="id" name-field="parent_id" input-type="radio-category" v-bind:items='listCategories' :value='selectedValue' @valueChanged="onValueChanged" ></tree-view>
+        </div>
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            tinymce.init({
+                selector: 'textarea#description',
+                height: 200,
+                width: "100%",
+                plugins: 'image imagetools media wordcount save fullscreen code table lists link hr',
+                toolbar1: 'formatselect | bold italic strikethrough forecolor backcolor link hr | alignleft aligncenter alignright alignjustify | numlist bullist outdent indent  | removeformat | code | table',
+                image_advtab: true
+            });
+        });
+
+        Vue.component('description', {
+
+            template: '#description-template',
+
+            inject: ['$validator'],
+
+            data: function() {
+                return {
+                    isRequired: true,
+                }
+            },
+
+            created: function () {
+                var this_this = this;
+
+                $(document).ready(function () {
+                    $('#display_mode').on('change', function (e) {
+                        if ($('#display_mode').val() != 'products_only') {
+                            this_this.isRequired = true;
+                        } else {
+                            this_this.isRequired = false;
+                        }
+                    })
+                });
+            }
+        })
+
+        Vue.component('parent-category', {
+
+        template: '#parent-category-template',
+
+        data: function() {
+            return {
+                fullList: @json($categories),
+                keywords: null,
+                listCategories: [],
+                selectedValue:null,
+            }
+        },
+        methods:{
+            onChangeKeywords: _.debounce(function (input) {
+                    this.keywords = input;
+                    if(this.keywords != ""){        
+                        this.fetch();
+                    }else{
+                        this.listCategories = this.fullList;
+                    }
+                    }, 600),
+            fetch() {
+                axios.get("{{ route('admin.catalog.categories.live_search_category') }}", {
+                        params: {
+                            key: this.keywords
+                        }
+                    })
+                    .then(response => {
+                        this.listCategories = response.data;
+                        console.log('response.data', response.data);
+                    })
+                    .catch(error => {});
+                console.error(this.listCategories);
+            },
+            defaultList() {
+                this.listCategories = this.fullList;
+            },
+            onValueChanged(value){
+                this.selectedValue = value;
+            }
+        },
+        beforeMount() {
+                this.defaultList();
+        },
+
         })
     </script>
 @endpush
