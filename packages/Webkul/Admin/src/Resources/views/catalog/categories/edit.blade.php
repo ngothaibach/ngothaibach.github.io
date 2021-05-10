@@ -229,7 +229,7 @@
     <script type="text/x-template" id="parent-category-template">
         <div>
             <input class="form-control" type="text" v-on:input="onChangeKeywords($event.target.value)"  ref="button">
-            <tree-view value-field="id" name-field="parent_id" input-type="radio" v-bind:items='listCategories' value='@json($category->parent_id)'></tree-view>
+            <tree-view value-field="id" name-field="parent_id" input-type="radio" v-bind:items='listCategories' :value='selectedValue' @valueChanged="onValueChanged"></tree-view>
         </div>
     </script>
 
@@ -287,6 +287,7 @@
                 fullList: @json($categories),
                 keywords: null,
                 listCategories: [],
+                selectedValue: @json($category->parent_id)
             }
         },
         methods:{
@@ -313,6 +314,9 @@
             },
             defaultList() {
                 this.listCategories = this.fullList;
+            },
+            onValueChanged(value){
+                this.selectedValue = value;
             }
         },
         beforeMount() {
