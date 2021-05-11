@@ -312,26 +312,28 @@
                 },
                 load_product(exchange_note_id) {
                     this.product_list = []
-                    this.selected_transfer = exchange_note_id;
+                    if(this.selected_transfer == exchange_note_id){
+                        this.selected_transfer = 0
+                    }else{
+                        this.selected_transfer = exchange_note_id;
+                        axios.get("{{ route('exchange.admin.get_transfered_products') }}", {
+                                params: {
+                                    transfer_id: exchange_note_id
+                                }
+                            })
+                            .then(response => {
+                                this.product_list = response.data.transfered_products;
+                                this.form.product_list = response.data.transfered_products;
+                        // console.log('dataSource', this.form.product_list)
 
-                    axios.get("{{ route('exchange.admin.get_transfered_products') }}", {
-                            params: {
-                                transfer_id: exchange_note_id
-                            }
-                        })
-                        .then(response => {
-                            this.product_list = response.data.transfered_products;
-                            this.form.product_list = response.data.transfered_products;
-                    // console.log('dataSource', this.form.product_list)
+                                console.error(this.product_list);
 
-                            console.error(this.product_list);
-
-                            this.price_total = 0;
-                            for (product of this.product_list) {
-                                this.price_total += product.price * product.transfer_qty;
-                            }
-                        });
-
+                                this.price_total = 0;
+                                for (product of this.product_list) {
+                                    this.price_total += product.price * product.transfer_qty;
+                                }
+                            });
+                    }
                     // this.update_total_price();
                     // this.price_total = 0;
 

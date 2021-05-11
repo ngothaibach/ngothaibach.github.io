@@ -387,21 +387,24 @@
                 load_product(get_invoice_id) {
                     console.log('hihi',this.form.invoice_note);
                     this.product_list = []
-                    this.selected_transfer = get_invoice_id;
+                    if(this.selected_transfer == get_invoice_id){
+                        this.selected_transfer = null
+                    }else{
+                        this.selected_transfer = get_invoice_id
+                        axios.get("{{ route('admin.sales.invoices.show_detail_invoice') }}", {
+                                params: {
+                                    invoice_id: get_invoice_id
+                                }
+                            })
+                            .then(response => {
+                                this.product_list = response.data.invoice_product;
+                                this.form.product_list = response.data.invoice_product;
+                                console.log('response',response);
+                                console.error(this.product_list);
 
-                    axios.get("{{ route('admin.sales.invoices.show_detail_invoice') }}", {
-                            params: {
-                                invoice_id: get_invoice_id
-                            }
-                        })
-                        .then(response => {
-                            this.product_list = response.data.invoice_product;
-                            this.form.product_list = response.data.invoice_product;
-                            console.log('response',response);
-                            console.error(this.product_list);
-
-                            this.price_total = 0;
-                        });
+                                this.price_total = 0;
+                            });
+                    }
                 },
                 //pagination
                 onChangePage(pageOfItems) {

@@ -449,24 +449,28 @@
                 load_product(get_order_id) {
                     // console.log('hihi', this.form.invoice_note);
                     this.product_list = []
-                    this.selected_transfer = get_order_id;
-                    axios.get("{{ route('admin.sales.orders.show_detail_order') }}", {
-                            params: {
-                                order_id: get_order_id
-                            }
-                        })
-                        .then(response => {
-                            this.product_list = response.data.order_product;
-                            this.form.product_list = response.data.order_product;
-                            this.form.order_money = response.data.order_money;
-                            this.canCancel = response.data.canCancel;
-                            this.canRefund = response.data.canRefund;
-                            this.canInvoice = response.data.canInvoice;
-                            console.log('response',response.data.order_product);
-                            // console.error(this.product_list);
+                    if(this.selected_transfer == get_order_id){
+                        this.selected_transfer = null
+                    }else{
+                        this.selected_transfer = get_order_id;
+                        axios.get("{{ route('admin.sales.orders.show_detail_order') }}", {
+                                params: {
+                                    order_id: get_order_id
+                                }
+                            })
+                            .then(response => {
+                                this.product_list = response.data.order_product;
+                                this.form.product_list = response.data.order_product;
+                                this.form.order_money = response.data.order_money;
+                                this.canCancel = response.data.canCancel;
+                                this.canRefund = response.data.canRefund;
+                                this.canInvoice = response.data.canInvoice;
+                                console.log('response',response.data.order_product);
+                                // console.error(this.product_list);
 
-                            this.price_total = 0;
-                        });
+                                this.price_total = 0;
+                            });
+                    }
                 },
                 //pagination
                 onChangePage(pageOfItems) {
