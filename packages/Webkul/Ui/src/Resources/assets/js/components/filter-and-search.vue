@@ -86,6 +86,27 @@
                         </div>
                     </li>
                 </div>
+                <!-- suitable for boolean columns  -->
+                <div v-else-if="selectedType == 'custom' ">
+                    <li>
+                        <div class="control-group">
+                            <select class="control" v-model="customCondition">
+                                <option selected
+                                        disabled>Chọn điều kiện</option>
+                                <option value="eq">Bằng</option>
+                                <option value="neqs">Khác</option>
+                            </select>
+                        </div>
+                    </li>
+                    <li v-if="customCondition != null">
+                        <div class="control-group">
+                            <select class="control" v-model="customValue">
+                                <option selected disabled>Giá trị</option>
+                                <option  v-for="custom in customfields" :value="custom.key">{{custom.name}}</option>
+                            </select>
+                        </div>
+                    </li>
+                </div>
                 <!-- datetime column -->
                 <div v-else>
                     <li >
@@ -134,11 +155,11 @@
 <script>
     export default {
         props: {
-                url: {
-                    type: String,
-                    required: false
-                },
                 searchfields: {
+                    type:Array,
+                    required: true
+                },
+                customfields:{
                     type:Array,
                     required: false
                 }
@@ -152,7 +173,9 @@
                     booleanCondition: null,
                     numberCondition: null,
                     datetimeCondition: null,
+                    customCondition:null,
                     stringValue: null,
+                    customValue: null,
                     booleanValue: null,
                     datetimeValue: '2000-01-01',
                     numberValue: 0,
@@ -249,6 +272,8 @@
                         this.formURL(this.selectedValue, this.datetimeCondition, this.datetimeValue, label);
                     } else if (this.selectedType === 'price') {
                         this.formURL(this.selectedValue, this.numberCondition, this.numberValue, label);
+                    } else if (this.selectedType === 'custom') {
+                        this.formURL(this.selectedValue, this.customCondition, this.customValue, label);
                     }
                 },
                 formURL: function (column, condition, response, label) {

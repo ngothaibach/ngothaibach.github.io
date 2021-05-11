@@ -32,6 +32,25 @@
         </div>
         <div class="page-content">
             <div class="page-content">
+            <filter-and-search 
+                :searchfields = "[
+                {name: 'Id hoá đơn', key: 'order_id', columnType: 'number' },
+                {name: 'Thời gian', key: 'updated_at', columnType: 'datetime'}, 
+                {name: 'Họ Khách hàng', key: 'customer_first_name', columnType: 'string'},
+                {name: 'Tên Khách hàng', key: 'customer_last_name', columnType: 'string'},
+                {name: 'Tổng tiền hàng', key:'base_sub_total', columnType: 'number'},
+                {name: 'Tổng sau giảm giá', key:'base_grand_total', columnType: 'number'},
+                {name: 'Trạng thái', key:'status', columnType: 'custom'},
+                ]"
+                :customfields = "[
+                {name: 'Lưu tạm', key: 'temporary' },
+                {name: 'Đang xử lý', key: 'processing'}, 
+                {name: 'Đã đóng', key: 'closed'},
+                {name: 'Đang chờ', key: 'pending'},
+                {name: 'Hoàn thành', key: 'completed'},
+                {name: 'Đã hủy', key: 'canceled'},
+                ]"
+            ></filter-and-search>
                 <vpt-list-receipt-notes></vpt-list-receipt-notes>
             </div>
         </div>
@@ -43,7 +62,7 @@
             <export-form></export-form>
         </div>
     </modal>
-
+    
 @stop
 
 {{-- @push('scripts')

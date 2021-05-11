@@ -21,13 +21,17 @@
         </div>
         <div class="page-content">
         <filter-and-search 
-                :url='"{{ route("admin.exchange.transfer.list") }}"'
                 :searchfields = "[
                 {name: 'Mã chuyển hàng', key: 'id', columnType: 'number' },
                 {name: 'Thời gian', key: 'transfer_date', columnType: 'datetime'}, 
                 {name: 'Từ chi nhánh', key: 'from_inventory', columnType: 'string'},
                 {name: 'Tới Chi Nhánh', key:'to_inventory', columnType: 'string'},
                 {name: 'Trạng thái', key:'status', columnType: 'string'}
+                ]"
+                :customfields = "[
+                {name: 'Lưu tạm', key: 'temporary' },
+                {name: 'Đã nhận', key: 'received'}, 
+                {name: 'Hủy', key: 'cancel'},
                 ]"
                 ></filter-and-search>
             <vpt-list-receipt-notes></vpt-list-receipt-notes>
