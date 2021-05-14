@@ -1,8 +1,7 @@
 <script>
-
+    import { EventBus } from './event-bus';
     export default {
         name: 'tree-view',
-
         inheritAttrs: false,
 
         props: {
@@ -60,13 +59,15 @@
                 default: () => ([])
             }
         },
-
+        
         data() {
             return {
                 finalValues: []
             }
         },
-
+        created(){
+            EventBus.$on('valueChanged',this.onChangeValue)
+        },
         computed: {
             savedValues () {
                 if(! this.value)
@@ -116,7 +117,11 @@
                             }
                         },
                     })
+            },
+            onChangeValue(value){
+                this.$emit('valueChanged',value);
             }
+            
         },
 
         render (createElement) {

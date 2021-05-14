@@ -24,6 +24,7 @@ use Webkul\Sales\Models\OrderAddress;
 use Webkul\Customer\Repositories\CustomerRepository;
 use Webkul\Customer\Repositories\CustomerAddressRepository;
 use Webkul\Sales\Repositories\InvoiceRepository;
+use Webkul\Admin\Helpers\FilterCollection;
 
 
 class OrderController extends Controller
@@ -158,6 +159,15 @@ class OrderController extends Controller
      */
     public function index()
     {
+        $searchfields = [
+            ['key'=> 'order_id', 'columnType'=> 'number', 'value' => 'orders.id'],
+            ['key'=> 'updated_at', 'columnType'=> 'datetime', 'value'=>'orders.updated_at'], 
+            ['key'=> 'customer_first_name', 'columnType'=> 'string','value' => 'orders.customer_first_name'],
+            ['key'=> 'customer_last_name', 'columnType'=> 'string','value' => 'orders.customer_last_name'],
+            ['key'=>'base_sub_total', 'columnType'=> 'number','value' =>'orders.base_sub_total'],
+            ['key'=>'base_grand_total', 'columnType'=> 'number','value' =>'orders.base_grand_total'],
+            ['key'=>'status', 'columnType'=> 'string','value'=>'orders.status']
+        ];
         $query = DB::table('orders')
         ->leftJoin('addresses as order_address_shipping', function($leftJoin) {
             $leftJoin->on('order_address_shipping.order_id', '=', 'orders.id')
@@ -177,6 +187,10 @@ class OrderController extends Controller
          ,'comments.comment as comment','ad.id as sale_id','inventory.name as name_inven','ref.grand_total as money_exchange_refund', 'ref.id as exchange_refund_id', 'ref1.id as refund_id');
         if( Session::get('inventory') != 0){
             $query = $query->where('orders.inventory_id','=',Session::get('inventory'));
+        }
+        if($_GET){
+            $filter = new FilterCollection();
+            $query = $filter->filterCollection($query,$searchfields);
         }
         $invoice_note = $query->orderBy('order_id', 'desc')->get()-> toArray();
         $user_sale = DB::table('admins')

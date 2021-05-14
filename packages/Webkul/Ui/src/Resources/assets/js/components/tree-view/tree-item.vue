@@ -259,7 +259,7 @@
                         this.hasChildren ? 'has-children' : ''
                     ]
                 }, [
-                    this.generateIcon(), this.generateFolderIcon(), this.generateRoot(), ... this.generateChildren()
+                    this.generateIcon(), this.generateRoot(), ... this.generateChildren()
                 ]
             )
         }

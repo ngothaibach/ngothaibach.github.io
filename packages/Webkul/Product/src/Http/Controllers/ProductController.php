@@ -170,6 +170,7 @@ class ProductController extends Controller
 
         return view($this->_config['view'], compact('families','attributeGroups', 'configurableFamily','categories','attributes', 'inventorySources'));
     }
+
     public function addCategory(){
         
         $this->validate(request(), [
@@ -184,6 +185,36 @@ class ProductController extends Controller
         $data['description'] = $data['categoryDescription'];
         $category = $this->categoryRepository->create($data);
         session()->flash('success', trans('admin::app.response.create-success', ['name' => 'Category']));
+        return redirect()->route('admin.catalog.products.create');
+    }
+
+    public function addInventory()
+    {
+        $this->validate(request(), [
+            'code'           => ['required', 'unique:inventory_sources,code', new \Webkul\Core\Contracts\Validations\Code],
+            'inventory-name'           => 'required',
+            'contact_name'   => 'required',
+            'contact_email'  => 'required|email',
+            'contact_number' => 'required',
+            'street'         => 'required',
+            'country'        => 'required',
+            'state'          => 'required',
+            'city'           => 'required',
+            'postcode'       => 'required',
+        ]);
+
+        $data = request()->all();
+        $data['name'] = $data['inventory-name'];
+        $data['status'] = !isset($data['inventory-status']) ? 0 : 1;
+        $data['description'] = $data['inventory-description'];
+        Event::dispatch('inventory.inventory_source.create.before');
+
+        $inventorySource = $this->inventorySourceRepository->create($data);
+
+        Event::dispatch('inventory.inventory_source.create.after', $inventorySource);
+
+        session()->flash('success', trans('admin::app.settings.inventory_sources.create-success'));
+
         return redirect()->route('admin.catalog.products.create');
     }
     /**

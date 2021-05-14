@@ -27,6 +27,25 @@
             {!! $orderInvoicesGrid->render() !!}
         </div> --}}
         <div class="page-content">
+        <filter-and-search 
+                :searchfields = "[
+                {name: 'Id hoá đơn', key: 'id', columnType: 'number' },
+                {name: 'Thời gian', key: 'created_at', columnType: 'datetime'}, 
+                {name: 'Họ Khách hàng', key: 'first_name', columnType: 'string'},
+                {name: 'Tên Khách hàng', key: 'last_name', columnType: 'string'},
+                {name: 'Tổng tiền hàng', key:'base_sub_total', columnType: 'number'},
+                {name: 'Tổng sau giảm giá', key:'base_grand_total', columnType: 'number'},
+                {name: 'Trạng thái', key:'status', columnType: 'custom'},
+                ]"
+                :customfields = "[
+                {name: 'Lưu tạm', key: 'temporary' },
+                {name: 'Đang xử lý', key: 'processing'}, 
+                {name: 'Đã đóng', key: 'closed'},
+                {name: 'Đang chờ', key: 'pending'},
+                {name: 'Hoàn thành', key: 'completed'},
+                {name: 'Đã hủy', key: 'canceled'},
+                ]"
+            ></filter-and-search>
             <vpt-list-receipt-notes></vpt-list-receipt-notes>
         </div>
     </div>
@@ -59,10 +78,6 @@
                             <td v-text="item.first_name +' '+ item.last_name"></td>
                             <td v-text="parseFloat(item.base_sub_total).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')+ ' ₫'"></td>
                             <td v-text="parseFloat(item.base_grand_total).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')+ ' ₫'"></td>
-                            <td v-if="item.status == 'temporary'" >Lưu tạm</td>
-                            <td v-if="item.status == 'received'" >Đã nhận</td>
-                            <td v-if="item.status == 'cancel'" >Hủy</td>
-                            <td v-if="item.status == 'transfering'" >Đang vận chuyển</td>
                         </tr>
                         <tr v-if="selected_transfer == item.id">
                             <td style="border: 1px solid #b3d7f5;" colspan="5">
@@ -387,21 +402,24 @@
                 load_product(get_invoice_id) {
                     console.log('hihi',this.form.invoice_note);
                     this.product_list = []
-                    this.selected_transfer = get_invoice_id;
+                    if(this.selected_transfer == get_invoice_id){
+                        this.selected_transfer = null
+                    }else{
+                        this.selected_transfer = get_invoice_id
+                        axios.get("{{ route('admin.sales.invoices.show_detail_invoice') }}", {
+                                params: {
+                                    invoice_id: get_invoice_id
+                                }
+                            })
+                            .then(response => {
+                                this.product_list = response.data.invoice_product;
+                                this.form.product_list = response.data.invoice_product;
+                                console.log('response',response);
+                                console.error(this.product_list);
 
-                    axios.get("{{ route('admin.sales.invoices.show_detail_invoice') }}", {
-                            params: {
-                                invoice_id: get_invoice_id
-                            }
-                        })
-                        .then(response => {
-                            this.product_list = response.data.invoice_product;
-                            this.form.product_list = response.data.invoice_product;
-                            console.log('response',response);
-                            console.error(this.product_list);
-
-                            this.price_total = 0;
-                        });
+                                this.price_total = 0;
+                            });
+                    }
                 },
                 //pagination
                 onChangePage(pageOfItems) {
