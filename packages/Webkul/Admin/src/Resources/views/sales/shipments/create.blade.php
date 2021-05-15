@@ -1,10 +1,10 @@
-@extends('admin::layouts.master')
+@extends('admin::layouts.content')
 
 @section('page_title')
     {{ __('admin::app.sales.shipments.add-title') }}
 @stop
 
-@section('content-wrapper')
+@section('content')
     <div class="content full-page">
         <form method="POST" action="{{ route('admin.sales.shipments.store', $order->id) }}" @submit.prevent="onSubmit">
             @csrf()
