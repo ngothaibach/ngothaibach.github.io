@@ -30,12 +30,8 @@
                                         <div class="row">
                                             <div class="col-5">
                                                 <select v-model="form.user" name="user" class="form-control" aria-label="User">
-                                                @foreach ($users as $user)
-                                                    @if (auth()->guard('admin')->user()->id == $user->id)
-                                                        <option value="{{ $user->id }}" selected>{{ $user->name }}</option>
-                                                    @else
-                                                        <option value="{{ $user->id }}">{{ $user->name }}</option>
-                                                    @endif
+                                                @foreach ($users as $user)       
+                                                        <option value="{{ $user->id }}">{{ $user->name }}</option>     
                                                 @endforeach
                                                 </select>
                                             </div>
@@ -106,7 +102,7 @@
                         total_of_qty: 0,
                         type: 'transfer',
                         transfer_date: new Date(),
-                        user: "auth()->guard('admin')->user()->id",
+                        user: {!! json_encode(auth()->guard('admin')->user()->id) !!},
                         supplier: null,
                         from_inventory_source: null,
                         to_inventory_source: null,
