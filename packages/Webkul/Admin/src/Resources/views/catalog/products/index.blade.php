@@ -112,7 +112,8 @@
                                                         <label class="col-sm-4 col-form-label">Hình ảnh</label>
 
                                                         <div class="col-sm-12">
-                                                            <img src="http://erp.mmoutfit.com/storage/product/11875/9eaf1dd3924f4f06921c52790013aa89.jpg" style="position: relative;height: 250px;width: 200px;">                                                        </div>
+                                                            <img :src="'{{Config::get('app.url')}}/storage/' + item.product_image" style="position: relative;height: 250px;width: 200px;">    
+                                                                                                            </div>
                                                     </div>
                                                 </div>
                                             </div>
