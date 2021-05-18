@@ -1,4 +1,4 @@
-{{-- @extends('admin::layouts.content')
+@extends('admin::layouts.content')
 
 @section('page_title')
     Staff Reports
@@ -20,4 +20,4 @@
         </div>
     </div>
 
-@stop --}}
+@stop

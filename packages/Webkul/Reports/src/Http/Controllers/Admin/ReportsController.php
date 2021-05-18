@@ -130,8 +130,13 @@ class ReportsController extends Controller
         }
         return Excel::download(new DataGridExport($records), $gridName.'.xlsx');
 
-        // session()->flash('warning', trans('admin::app.export.illegal-format'));
+    }
 
-        // return redirect()->back();
+    public function index_customer() {
+        return view($this->_config['view']);
+    }
+
+    public function index_staff() {
+        return view($this->_config['view']);
     }
 }
