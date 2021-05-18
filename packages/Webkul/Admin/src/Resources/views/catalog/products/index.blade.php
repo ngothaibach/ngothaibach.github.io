@@ -117,7 +117,7 @@
                                                         <label class="col-sm-4 col-form-label">Hình ảnh</label>
 
                                                         <div class="col-sm-12">
-                                                            <img :src="item.product_image != null ? '{{Config::get('app.url')}}/storage/' + item.product_image : '{{Config::get('app.url')}}/storage/' + '739px-Noimage.svg.png'" style="position: relative;height: 250px;width: 200px;">    
+                                                            <img :src="item.product_image != null ? '{{Config::get('app.url')}}/storage/' + item.product_image : '{{Config::get('app.url')}}/storage/' + 'noimage.png'" style="position: relative;height: 250px;width: 200px;">    
                                                                                                             </div>
                                                     </div>
                                                 </div>
