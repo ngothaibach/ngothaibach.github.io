@@ -353,6 +353,38 @@ class ProductController extends Controller
         return view($this->_config['view'], compact('product', 'categories', 'inventorySources','attributes'));
     }
 
+    public function edit_product()
+    {
+        $id = request()->input('id');
+        $product = $this->productRepository->with(['variants', 'variants.inventories'])->findOrFail($id);
+        $categories = $this->categoryRepository->getCategoryTree();
+        $attributes = $this->attributeRepository->findWhere(['is_filterable' =>  1]);
+        if(auth()->guard('admin')->user()->role['id'] == 1){
+            $inventorySources = $this->inventorySourceRepository->findWhere(['status' => 1]);
+        }else{
+            $inventorySources = $this->inventorySourceRepository->findWhere(['status' => 1])->find(['id'=>auth()->guard('admin')->user()->inventory_id]);
+        }
+
+        return view($this->_config['view'], compact('product', 'categories', 'inventorySources','attributes'));
+    }
+
+    public function show_detail_product()
+    {
+        $id = request()->input('product_id');
+        $product = DB::table('product_flat')
+        ->where('product_id', '=', $id)
+        ->orderBy('id', 'desc')
+        ->get()-> toArray();
+
+        // $order_money = $this->orderRepository->findOrFail($id);
+        return response()->json(
+            [
+                'success' => True,
+                'order_product' => $product,
+            ]
+        );
+    }
+
     /**
      * Update the specified resource in storage.
      *

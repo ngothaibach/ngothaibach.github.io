@@ -91,19 +91,24 @@
                                 <div>
                                     <div class="tabs">
                                         <ul>
-                                            <li class="active">
+                                            <li v-bind:class="{active: isActiveInfo}"
+                                                v-on:click="showTabs(0)" >
                                                 <h4><a>Thông tin</a></h4>
+                                            </li>
+                                            <li  v-bind:class="{active: isActiveInven}"
+                                            v-on:click="showTabs(1)" >
+                                                <h4><a>Thẻ kho</a></h4>
                                             </li>
                                         </ul>
                                     </div>
-                                    <div class="tabs-content" style="margin-top:20px;">
-                            <h3 style="    font-size: 18px;
-                            font-weight: 700;
-                            color: #006fa9;
-                            margin-bottom: 12px;
-                            font-weight : bold">
-                                <p v-text="item.product_name"></p>
-                        </h3>
+                                    <div v-if="currentTab == 0" class="tabs-content" style="margin-top:20px;">
+                                            <h3 style="    font-size: 18px;
+                                                        font-weight: 700;
+                                                         color: #006fa9;
+                                                         margin-bottom: 12px;
+                                                         font-weight : bold">
+                                                 <p v-text="item.product_name"></p>
+                                             </h3>
 
                                         <div class="row">
                                             <div class="col-4" style="align-self: baseline;">
@@ -112,7 +117,7 @@
                                                         <label class="col-sm-4 col-form-label">Hình ảnh</label>
 
                                                         <div class="col-sm-12">
-                                                            <img :src="'{{Config::get('app.url')}}/storage/' + item.product_image" style="position: relative;height: 250px;width: 200px;">    
+                                                            <img :src="item.product_image != null ? '{{Config::get('app.url')}}/storage/' + item.product_image : '{{Config::get('app.url')}}/storage/' + '739px-Noimage.svg.png'" style="position: relative;height: 250px;width: 200px;">    
                                                                                                             </div>
                                                     </div>
                                                 </div>
@@ -187,9 +192,38 @@
                                             </div>
                                           
                                         </div>
-                                            <button type="button" class="btn btn-danger" style="marginRight : 20px;width: 120px;" v-on:click="print_invoices(item.order_id)" >Xóa</button>
-                                            <button type="button" class="btn btn-primary" style="width: 120px;" v-on:click="update_orders(item.order_id,item.status_id)" >Cập nhật</button>
+                                            {{-- <button type="button" class="btn btn-danger" style="marginRight : 20px;width: 120px;" v-on:click="print_invoices(item.order_id)" >Xóa</button> --}}
+                                            <button type="button" class="btn btn-primary" style="width: 120px;" v-on:click="update_orders(item.product_id)" >Chỉnh sửa</button>
                                         </div>
+                                    </div>
+                                    <div v-if="currentTab == 1" class="tabs-content" style="margin-top:20px;">
+                                        <h3 style="    font-size: 18px;
+                                        font-weight: 700;
+                                         color: #006fa9;
+                                         margin-bottom: 12px;
+                                         font-weight : bold">
+                                 <p>Danh sách thẻ kho</p>
+                             </h3>
+                                        <table class="table table-bordered">
+                                            <thead>
+                                            <tr>
+                                                <th v-for="product_table_header in product_table_headers" class="grid_head">
+                                                    <p v-text="product_table_header"></p>
+                                                </th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="(product,index1) in product_list">
+                                                    <td v-text="product.sku" style="color : #056bd3;"></td>
+                                                    <td>Cập nhật giá vốn</td>
+                                                    <td v-text="product.created_at"></td>
+                                                    <td v-text="product.brand_label"></td>
+                                                    <td v-text="parseFloat(product.cost).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')"></td>
+                                                    <td v-text="item.quantity"></td>
+                                                    <td>0</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
                                 </td>
@@ -231,6 +265,9 @@
                     perPage: 10,
                     arrow: "custom-arrow-icon-down",
                     currentArrow: 0,
+                    currentTab : 0,
+                    isActiveInfo : true,
+                    isActiveInven : false,
                     //pagination
                     //check permission
                     updatePermission: Boolean(Number('{{ checkPermission('exchange.list_transfer.update') }}')),
@@ -290,11 +327,13 @@
                         'Trạng thái'
                     ],
                     product_table_headers: [
-                        "Mã sản phẩm",
-                        "Tên sản phẩm",
-                        "Đơn giá",
+                        "Chứng từ",
+                        "Phương thức",
+                        "Thời gian",
+                        "Nhãn hiệu",
+                        "Giá vốn",
                         "Số lượng",
-                        "Tổng cộng"
+                        "Tồn cuối",
                     ],
                     product_list: null,
                     selected_transfer: null,
@@ -365,41 +404,17 @@
                 //     var link = "{{route('admin.sales.invoices.create_invoice')}}";
                 //     window.location.href = (link + '/' + order_id);
                 // },
-                update_orders(get_order_id,get_status_id) {
-                    var user_selected = document.getElementById('user_selected').value;
-                    var get_comment = document.getElementById('commentNote').value;
-                    var get_date = document.getElementById('datePicker').value;
-                    var hours = new Date().getHours();
-                    var minute =new Date().getMinutes();
-                    var seconds =new Date().getSeconds();
-                    var get_date_time =get_date + " " +hours.toString() + ":" + minute.toString() + ":" + seconds.toString();
-                    // console.log('datetime: ',user_selected);
-                    axios.get("{{ route('admin.sales.orders.update_notes') }}", {
-                            params: {
-                                order_id: get_order_id,
-                                comment_content: get_comment,
-                                date_time : get_date_time,
-                                user_selected : user_selected,
-                                status_id : get_status_id
-                            }
-                        })
-                        .then((response) => {
-                            if (response.data.success == true) {
-                                // console.error("save exchange successfull");
-                                window.location.href =
-                                    "{{ route('admin.sales.orders.index') }}";
-                            } else {
-                                console.debug("save exchange NOT successfull");
-                            }
-                        })
+                update_orders(get_order_id) {
+                    let link = "{{ route('admin.catalog.products.edit_product') }}";
+                    window.open(link + '/' + get_order_id);
                 },
                 load_product(get_order_id) {
                     // console.log('hihi', this.form.invoice_note);
                     this.product_list = []
                     this.selected_transfer = get_order_id;
-                    axios.get("{{ route('admin.sales.orders.show_detail_order') }}", {
+                    axios.get("{{ route('admin.catalog.products.show_detail_product') }}", {
                             params: {
-                                order_id: get_order_id
+                                product_id: get_order_id
                             }
                         })
                         .then(response => {
@@ -413,6 +428,9 @@
                             // console.error(this.product_list);
 
                             this.price_total = 0;
+                        })
+                        .catch(err => {
+                            console.error('err',err)
                         });
                 },
                 //pagination
@@ -434,6 +452,16 @@
                 },
                 showArrow(number) {
                     this.currentArrow = number;
+                },
+                showTabs(number){
+                    this.currentTab = number;
+                    if(number == 0){
+                        this.isActiveInfo = true;
+                        this.isActiveInven = false;
+                    }else{
+                        this.isActiveInfo = false;
+                        this.isActiveInven = true;
+                    }
                 },
                 //pagination
                 closeModal() {
