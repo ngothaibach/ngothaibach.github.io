@@ -237,16 +237,42 @@ return [
         'name'  => 'admin::app.acl.delete',
         'route' => 'admin.customer.review.delete',
         'sort'  => 2,
-    ], [
+    ], 
+    [
+        'key' => 'reports',
+        'name' => 'Báo cáo',
+        'route' => 'reports.admin.index',
+        'sort' => 5,
+        // 'icon-class' => 'temp-icon',
+    ],
+    [
+        'key'   => 'reports.sales',
+        'name'  => 'Báo cáo bán hàng',
+        'route' => 'reports.admin.index',
+        'sort'  => 1,
+    ],
+    // [
+    //     'key'   => 'reports.customers',
+    //     'name'  => 'Báo cáo khách hàng',
+    //     'route' => 'reports.admin.customers',
+    //     'sort'  => 2,
+    // ],
+    // [
+    //     'key'   => 'reports.sales',
+    //     'name'  => 'Báo cáo theo nhân viên bán hàng',
+    //     'route' => 'reports.admin.staff',
+    //     'sort'  => 3,
+    // ],
+    [
         'key'   => 'configuration',
         'name'  => 'admin::app.acl.configure',
         'route' => 'admin.configuration.index',
-        'sort'  => 5,
+        'sort'  => 6,
     ], [
         'key'   => 'settings',
         'name'  => 'admin::app.acl.settings',
         'route' => 'admin.users.index',
-        'sort'  => 6,
+        'sort'  => 7,
     ], [
         'key'   => 'settings.locales',
         'name'  => 'admin::app.acl.locales',
