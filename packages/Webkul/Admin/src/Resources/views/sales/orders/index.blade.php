@@ -69,12 +69,15 @@
                                 <td v-text="item.customer_first_name +' '+ item.customer_last_name"></td>
                                 <td v-text="parseFloat(item.base_sub_total).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')"></td>
                                 <td v-text="parseFloat(item.base_grand_total).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')"></td>
-                                <td v-if="item.status == 'temporary'" >Lưu tạm</td>
-                                <td v-if="item.status == 'processing'" >Đang xử lý</td>
-                                <td v-if="item.status == 'closed'" >Đã đóng</td>
-                                <td v-if="item.status == 'pending'" >Đang chờ</td>
-                                <td v-if="item.status == 'completed'" >Hoàn thành</td>
-                                <td v-if="item.status == 'canceled'" >Đã hủy</td>
+                                <td v-if="item.status_id == '0'" ></td>
+                                <td v-if="item.status_id == '1'" >Đang xử lý</td>
+                                <td v-if="item.status_id == '2'" >Đã vận chuyển</td>
+                                <td v-if="item.status_id == '3'" >Đã giao hàng</td>
+                                <td v-if="item.status_id == '4'" >Đã hủy</td>
+                                <td v-if="item.status_id == '5'" >Hoàn trả lại</td>
+                                <td v-if="item.status_id == '6'" >Hết hàng</td>
+                                <td v-if="item.status_id == '7'" >Đóng</td>
+
                             </tr>
                             <tr v-if="selected_transfer == item.order_id">
                                 <td style="border: 1px solid #b3d7f5;" colspan="6">
@@ -252,7 +255,7 @@
                                             {{-- <a href="{{ route('admin.sales.invoices.create', item . id) }}" class="btn btn-lg btn-primary"> --}}
 
                                             <button v-if="canRefund" type="button" class="btn btn-primary" style="marginRight : 20px;width: 120px;" v-on:click="create_refund(item.order_id)" >Hoàn lại</button>
-                                            <button type="button" class="btn btn-primary" style="marginRight : 20px;width: 120px;" v-on:click="print_invoices(item.order_id)" >In hóa đơn</button>
+                                            <button type="button" class="btn btn-primary" style="marginRight : 20px;width: 120px;" v-on:click="print_invoices(item.order_id)" >In vận đơn</button>
                                             <button type="button" class="btn btn-success" style="width: 120px;" v-on:click="update_orders(item.order_id,item.status_id)" >Cập nhật</button>
                                         </div>
                                     </div>
