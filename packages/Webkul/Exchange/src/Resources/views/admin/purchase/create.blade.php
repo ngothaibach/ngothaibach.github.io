@@ -140,8 +140,7 @@ let handleOutsideClick
                         added_products: [],
                         price_total: 0,
                         type: 'receipt',
-                        receipt_date: new Date(),
-                        created_date: new Date(),
+                        created_date: null,
                         user: "auth()->guard('admin')->user()->id",
                         supplier: null,
                         to_inventory_source: 1,
@@ -210,6 +209,14 @@ let handleOutsideClick
                     return formatter.format(value);
                 },
             },
+            mounted(){
+                    month = new Date().getMonth()+1;
+                    if(month <10){
+                        this.form.created_date =  new Date().getFullYear()+'-'+'0'+(new Date().getMonth()+1)+'-'+new Date().getDate()
+                    }else{
+                        this.form.created_date =  new Date().getFullYear()+'-'+(new Date().getMonth()+1)+'-'+new Date().getDate()
+                    }
+            }
         });
 
     </script>

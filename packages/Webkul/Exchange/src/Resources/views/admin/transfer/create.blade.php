@@ -105,7 +105,7 @@
                         price_total: 0,
                         total_of_qty: 0,
                         type: 'transfer',
-                        transfer_date: new Date(),
+                        transfer_date: null,
                         user: "auth()->guard('admin')->user()->id",
                         supplier: null,
                         from_inventory_source: null,
@@ -166,6 +166,14 @@
                     this.form.total_of_qty = total_of_qty;
                 },
             },
+            mounted(){
+                    month = new Date().getMonth()+1;
+                    if(month <10){
+                        this.form.transfer_date =  new Date().getFullYear()+'-'+'0'+(new Date().getMonth()+1)+'-'+new Date().getDate()
+                    }else{
+                        this.form.transfer_date =  new Date().getFullYear()+'-'+(new Date().getMonth()+1)+'-'+new Date().getDate()
+                    }
+            }
         });
 
     </script>
