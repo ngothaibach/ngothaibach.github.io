@@ -31,6 +31,19 @@
         </div>
         <div class="page-content">
             <div class="page-content">
+                <filter-and-search 
+                :searchfields = "[
+                {name: 'ID', key: 'product_id', columnType: 'number' },
+                {name: 'Mã hàng hóa', key: 'product_sku', columnType: 'string' },
+                {name: 'Tên', key: 'product_name', columnType: 'string'}, 
+                {name: 'Giá', key: 'price', columnType: 'number'},
+                {name: 'Trạng thái', key:'status', columnType: 'custom'}
+                ]"
+                :customfields = "[
+                {name: 'chưa kích hoạt', key: '0' },
+                {name: 'Đã kích hoạt', key: '1'}, 
+                ]"
+                ></filter-and-search>
                 <vpt-list-receipt-notes></vpt-list-receipt-notes>
             </div>
         </div>
@@ -76,7 +89,7 @@
                             </th>
                         </tr>
                         </thead>
-                        <tbody id='hover-row' v-for="(item,index) in form.query_builder">
+                        <tbody id='hover-row' v-for="(item,index) in pageOfItems">
                             <tr :class="[selected_transfer ===  item.product_id ? 'table-info' : '']" v-on:click="load_product(item.product_id)">
                                 <td v-text="item.product_id"></td>
                                 <td v-text="item.product_sku"></td>
@@ -117,7 +130,7 @@
                                                         <label class="col-sm-4 col-form-label">Hình ảnh</label>
 
                                                         <div class="col-sm-12">
-                                                            <img :src="item.product_image != null ? '{{Config::get('app.url')}}/storage/' + item.product_image : '{{Config::get('app.url')}}/' + 'noimage.jpg'" style="position: relative;height: 250px;width: 200px;">    
+                                                            <img :src="item.product_image != null ? '{{Config::get('app.url')}}/storage/' + item.product_image : '{{Config::get('app.url')}}/' + 'noimage.png'" style="position: relative;height: 250px;width: 200px;">    
                                                                                                             </div>
                                                     </div>
                                                 </div>
@@ -192,7 +205,6 @@
                                             </div>
                                           
                                         </div>
-                                            {{-- <button type="button" class="btn btn-danger" style="marginRight : 20px;width: 120px;" v-on:click="print_invoices(item.order_id)" >Xóa</button> --}}
                                             <button type="button" class="btn btn-primary" style="width: 120px;" v-on:click="update_orders(item.product_id)" >Chỉnh sửa</button>
                                         </div>
                                     </div>
@@ -233,7 +245,7 @@
                     </table>
                     <div class="card-footer pb-0 pt-3">
                         <sort-pagination 
-                        v-bind:items="form.listReceiptNotes"
+                        v-bind:items="form.product"
                         v-bind:pageSize = "perPage"
                         v-bind:sortBy ="sortBy"
                         v-bind:currentSortDir ="currentSortDir"
@@ -249,14 +261,13 @@
             template: '#vpt-list-receipt-notes-template',
             data() {
                 return {
-                    date2: '2017-07-04',
-                    commission: 123456,
                     //pagination
                     sort_list: [
-                        "id",
-                        "transfer_date",
-                        "from_inventory",
-                        "to_inventory",
+                        "product_id",
+                        "product_sku",
+                        "product_name",
+                        "price",
+                        "quantity",
                         "status"
                     ],
                     currentSortDir: "desc",
@@ -269,53 +280,8 @@
                     isActiveInfo : true,
                     isActiveInven : false,
                     //pagination
-                    //check permission
-                    updatePermission: Boolean(Number('{{ checkPermission('exchange.list_transfer.update') }}')),
-                    //check permission
                     form: new Form({
-                        canInvoice: false,
-                        canCancel: false,
-                        canRefund: false,
-                        listReceiptNotes: {!! json_encode($receipt_notes) !!},
-                        oldListReceip: {!! json_encode($receipt_notes) !!},
-                        invoice_note: {!! json_encode($invoice_note) !!},
-                        query_builder: {!! json_encode($queryBuilder) !!},
-                        list_user :{!! json_encode($user_sale) !!},
-                        list_status :{!! json_encode($status_name) !!},
-                        order_money: {},
-                        price_total: 0,
-                        type: 'receipt',
-                        receipt_date: new Date(),
-                        created_date: new Date(),
-                        user: "auth()->guard('admin')->user()->id",
-                        supplier: null,
-                        to_inventory_source: null,
-                        note_code: null,
-                        order_code: null,
-                        importer: "",
-                        note: "",
-                        idExchange: 1,
-                        product_list: null,
-                        type: null,
-                        from_inventory_id: null,
-                        selected: "{{ __('admin::app.vpt.inventory.received') }}",
-                        status: [{
-                                key: 'temporary',
-                                value: 'lưu tạm'
-                            },
-                            {
-                                key: 'transfering',
-                                value: 'Đang vận chuyển'
-                            },
-                            {
-                                key: 'received',
-                                value: 'Đã nhận'
-                            },
-                            {
-                                key: 'cancel',
-                                value: 'Hủy'
-                            }
-                        ]
+                        product: {!! json_encode($product) !!},
                     }),
                     showModal: false,
                     table_headers: [
@@ -337,7 +303,6 @@
                     ],
                     product_list: null,
                     selected_transfer: null,
-                    price_total: null
                 };
             },
             watch: {},
@@ -346,92 +311,26 @@
                     var date = val.substring(0, 10);
                     return date;
                 },
-                getValue(val) {
-                    if (val == 'processing') {
-                        return 'Đang xử lý';
-                    } else if (val == 'completed') {
-                        return 'Đã hoàn thành';
-                    } else if (val == "canceled") {
-                        return 'Đã hủy';
-                    } else if (val == "closed") {
-                        return 'Đã đóng';
-                    } else if (val == "pending") {
-                        return 'Đang chờ';
-                    } else if (val == "pending_payment") {
-                        return 'Chờ thanh toán';
-                    } else if (val == "fraud") {
-                        return 'Gian lận';
-                    }
-                },
-                getMethod(val) {
-                    if (val == 'cashondelivery') {
-                        return 'COD';
-                    } else {
-                        return 'Visa';
-                    }
-                },
-                getTotal(val, val1) {
-                    return this.numberFormatter(parseFloat(val + val1) );
-                },
-                numberFormatter(num) {
-                    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                },
-
-                update_total_price() {
-                    this.price_total = 0;
-                    for (product in this.product_list) {
-                        this.price_total += product.price * product.qty
-                    }
-                },
-                print_invoices(id) {
-                    let link = "{{ route('admin.sales.orders.print_orders') }}";
-                    window.open(link + '/' + id);
-                },
-
-                create_refund(order_id) {
-                    var link = "{{route('admin.sales.refunds.create_refunds')}}";
-                    window.location.href = (link + '/' + order_id);
-                },
-                open_refund_detail(refund_id) {
-                    var link = "{{route('admin.sales.refunds.view_refund')}}";
-                    window.location.href = (link + '/' + refund_id);
-                },
-                create_cancel(order_id) {
-                    var link = "{{route('admin.sales.orders.cancel_order')}}";
-                    window.location.href = (link + '/' + order_id);
-                },
-                // create_invoice(order_id) {
-                //     var link = "{{route('admin.sales.invoices.create_invoice')}}";
-                //     window.location.href = (link + '/' + order_id);
-                // },
                 update_orders(get_order_id) {
                     let link = "{{ route('admin.catalog.products.edit_product') }}";
                     window.open(link + '/' + get_order_id);
                 },
                 load_product(get_order_id) {
-                    // console.log('hihi', this.form.invoice_note);
-                    this.product_list = []
-                    this.selected_transfer = get_order_id;
-                    axios.get("{{ route('admin.catalog.products.show_detail_product') }}", {
-                            params: {
-                                product_id: get_order_id
-                            }
-                        })
-                        .then(response => {
-                            this.product_list = response.data.order_product;
-                            this.form.product_list = response.data.order_product;
-                            this.form.order_money = response.data.order_money;
-                            this.canCancel = response.data.canCancel;
-                            this.canRefund = response.data.canRefund;
-                            this.canInvoice = response.data.canInvoice;
-                            console.log('response',response.data.order_product);
-                            // console.error(this.product_list);
-
-                            this.price_total = 0;
-                        })
-                        .catch(err => {
-                            console.error('err',err)
-                        });
+                    this.product_list = [];
+                    
+                    if(this.selected_transfer == get_order_id){
+                        this.selected_transfer = null
+                    }else{
+                        this.selected_transfer = get_order_id;
+                        axios.get("{{ route('admin.catalog.products.show_detail_product') }}", {
+                                params: {
+                                    product_id: get_order_id
+                                }
+                            })
+                            .then(response => {
+                                this.product_list = response.data.transfered_products;
+                            });
+                    }
                 },
                 //pagination
                 onChangePage(pageOfItems) {
@@ -446,8 +345,7 @@
 
                     } else {
                         this.currentSortDir = this.currentSortDir === 'asc' ? 'desc' : 'asc';
-                        this.arrow = this.arrow === 'custom-arrow-icon-down' ? 'custom-arrow-icon-up' :
-                            'custom-arrow-icon-down';
+                        this.arrow = this.arrow === 'custom-arrow-icon-down' ? 'custom-arrow-icon-up' : 'custom-arrow-icon-down';
                     }
                 },
                 showArrow(number) {
