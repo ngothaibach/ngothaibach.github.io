@@ -25,6 +25,7 @@
         methods:{
             onSelect(value){
                 EventBus.$emit('valueChanged',value);
+                console.log('emitted')
             }
         }
     }
