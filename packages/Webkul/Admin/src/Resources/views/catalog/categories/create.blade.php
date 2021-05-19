@@ -56,9 +56,9 @@
                                 <span class="control-error" v-if="errors.has('status')">@{{ errors.first('status') }}</span>
                             </div>
 
-                            <div class="control-group" :class="[errors.has('position') ? 'has-error' : '']">
+                            <div class="control-group" :class="[errors.has('position') ? 'has-error' : '']"  style="display:none;">
                                 <label for="position" class="required">{{ __('admin::app.catalog.categories.position') }}</label>
-                                <input type="text" v-validate="'required|numeric'" class="control" id="position" name="position" value="{{ old('position') }}" data-vv-as="&quot;{{ __('admin::app.catalog.categories.position') }}&quot;"/>
+                                <input type="text" v-validate="'required|numeric'" class="control" id="position" name="position" value="1" data-vv-as="&quot;{{ __('admin::app.catalog.categories.position') }}&quot;"/>
                                 <span class="control-error" v-if="errors.has('position')">@{{ errors.first('position') }}</span>
                             </div>
 
@@ -136,7 +136,7 @@
 
                     @endif
 
-                    <accordian :title="'{{ __('admin::app.catalog.categories.filterable-attributes') }}'" :active="true">
+                    <accordian :title="'{{ __('admin::app.catalog.categories.filterable-attributes') }}'" :active="true" style="display:none;">
                         <div slot="body">
 
                             <?php $selectedaAtributes = old('attributes') ? old('attributes') : ['11']  ?>
@@ -161,8 +161,8 @@
 
                     {!! view_render_event('bagisto.admin.catalog.category.create_form_accordian.seo.before') !!}
 
-                    <accordian :title="'{{ __('admin::app.catalog.categories.seo') }}'" :active="true">
-                        <div slot="body">
+                    <accordian :title="'{{ __('admin::app.catalog.categories.seo') }}'" :active="true" style="display:none;">
+                        <div slot="body" >
 
                             {!! view_render_event('bagisto.admin.catalog.category.create_form_accordian.seo.controls.before') !!}
 
