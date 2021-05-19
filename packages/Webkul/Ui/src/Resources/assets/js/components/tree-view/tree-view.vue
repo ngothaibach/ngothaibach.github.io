@@ -120,6 +120,7 @@
             },
             onChangeValue(value){
                 this.$emit('valueChanged',value);
+                console.log(value);
             }
             
         },
