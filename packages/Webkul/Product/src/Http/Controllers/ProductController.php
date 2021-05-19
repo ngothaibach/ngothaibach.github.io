@@ -21,6 +21,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Webkul\Sales\Models\OrderAddress;
 use Webkul\Sales\Repositories\OrderAddressRepository;
+use Webkul\Admin\Helpers\FilterCollection;
 use Session;
 class ProductController extends Controller
 {
@@ -135,88 +136,73 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $invoice_note = DB::table('orders')
-        ->leftJoin('addresses as order_address_shipping', function($leftJoin) {
-            $leftJoin->on('order_address_shipping.order_id', '=', 'orders.id')
-                    ->where('order_address_shipping.address_type', OrderAddress::ADDRESS_TYPE_SHIPPING);
-        })
-        ->leftJoin('addresses as order_address_billing', function($leftJoin) {
-            $leftJoin->on('order_address_billing.order_id', '=', 'orders.id')
-                    ->where('order_address_billing.address_type', OrderAddress::ADDRESS_TYPE_BILLING);
-        })
-        ->leftJoin('admins as ad' , 'orders.sales_id', '=','ad.id')
-        ->leftJoin('inventory_sources as inventory' , 'orders.inventory_id', '=','inventory.id')
-        ->leftJoin('order_comments as comments','orders.id','=','comments.order_id')
-        ->leftJoin('refunds as ref','orders.refund_exchange_id','=','ref.id')
-        ->leftJoin('refunds as ref1','orders.id','=','ref1.order_id')
-        ->select('orders.id as order_id','orders.increment_id as increment_id', 'orders.base_sub_total', 'orders.base_grand_total',
-        'orders.status_id as status_id','orders.created_at as created_at','orders.updated_at as updated_at', 'orders.channel_name', 'orders.status', 'orders.customer_first_name', 'orders.customer_last_name'
-         ,'comments.comment as comment','ad.id as sale_id','inventory.name as name_inven','ref.grand_total as money_exchange_refund', 'ref.id as exchange_refund_id', 'ref1.id as refund_id')
-         ->orderBy('order_id', 'desc')
-         ->get()-> toArray();
-
-
-        $role_id = auth()->guard('admin')->user()->role['id'];
-        if($role_id != 1){
-            $invent_id = auth()->guard('admin')->user()->inventory_id;
-            $receipt_notes = DB::table('exchange_notes')
-            // ->join('suppliers', 'suppliers.id', '=', 'exchange_notes.supplier_id')
-            ->leftJoin('inventory_sources as to_inventory_sources', 'to_inventory_sources.id', '=', 'exchange_notes.to_inventory_source_id')
-            ->leftJoin('inventory_sources as from_inventory_sources', 'from_inventory_sources.id', '=', 'exchange_notes.from_inventory_source_id')
-            ->join('admins', 'admins.id', '=', 'exchange_notes.created_user_id')
-            ->select('exchange_notes.id', 'exchange_notes.created_date', 'exchange_notes.note', 'exchange_notes.status', 'exchange_notes.receipt_date', 'exchange_notes.transfer_date', 'to_inventory_sources.name as to_inventory', 'from_inventory_sources.name as from_inventory','from_inventory_sources.id as from_inventory_id', 'admins.name as created_user')
-            ->where('type', '=', 'transfer')
-            ->where('from_inventory_source_id','=',$invent_id)
-            ->orwhere('to_inventory_source_id','=',$invent_id)
-            ->orderBy('id', 'desc')
-            ->get()->toArray();  
+        $searchfields = [
+            ['key'=> 'product_id', 'columnType'=> 'number', 'value' => 'product_flat.product_id'],
+            ['key'=> 'product_sku', 'columnType'=> 'string', 'value' => 'products.sku'],
+            ['key'=> 'product_name', 'columnType'=> 'string', 'value'=>'product_flat.name'], 
+            ['key'=> 'price', 'columnType'=> 'number','value' =>'product_flat.price'],
+            ['key'=>'status', 'columnType'=> 'string','value'=>'product_flat.status']
+        ];
+        if(Session::get('inventory') == 0){
+            $query = DB::table('product_flat')
+                    ->leftJoin('products', 'product_flat.product_id', '=', 'products.id')
+                    ->leftJoin('attribute_families', 'products.attribute_family_id', '=', 'attribute_families.id')
+                    ->leftJoin('product_inventories', 'product_flat.product_id', '=', 'product_inventories.product_id')
+                    ->leftJoin('product_images', 'product_flat.product_id', '=', 'product_images.product_id')
+                    ->select(
+                        'product_flat.locale',
+                        'product_flat.channel',
+                        'product_flat.product_id',
+                        'products.sku as product_sku',
+                        'product_flat.product_number',
+                        'product_flat.name as product_name',
+                        'products.type as product_type',
+                        'product_flat.status',
+                        'product_flat.price',
+                        'product_flat.created_at',
+                        'product_flat.short_description',
+                        'product_flat.brand_label',
+                        'product_flat.weight',
+                        'attribute_families.name as attribute_family',
+                        'product_images.path as product_image',
+                        DB::raw('SUM( product_inventories.qty) as quantity')
+                    )->groupBy('product_flat.product_id');
         }else{
-            $receipt_notes = DB::table('exchange_notes')
-            // ->join('suppliers', 'suppliers.id', '=', 'exchange_notes.supplier_id')
-            ->leftJoin('inventory_sources as to_inventory_sources', 'to_inventory_sources.id', '=', 'exchange_notes.to_inventory_source_id')
-            ->leftJoin('inventory_sources as from_inventory_sources', 'from_inventory_sources.id', '=', 'exchange_notes.from_inventory_source_id')
-            ->join('admins', 'admins.id', '=', 'exchange_notes.created_user_id')
-            ->select('exchange_notes.id', 'exchange_notes.created_date', 'exchange_notes.note', 'exchange_notes.status', 'exchange_notes.receipt_date', 'exchange_notes.transfer_date', 'to_inventory_sources.name as to_inventory', 'from_inventory_sources.name as from_inventory','from_inventory_sources.id as from_inventory_id', 'admins.name as created_user')
-            ->where('type', '=', 'transfer')
-            ->orderBy('id', 'desc')
-            ->get()->toArray();
+            $query = DB::table('product_flat')
+            ->leftJoin('products', 'product_flat.product_id', '=', 'products.id')
+            ->leftJoin('attribute_families', 'products.attribute_family_id', '=', 'attribute_families.id')
+            ->leftJoin('product_inventories', 'product_flat.product_id', '=', 'product_inventories.product_id')
+            ->leftJoin('product_images', 'product_flat.product_id', '=', 'product_images.product_id')
+            ->Join('product_inventories', function($join)use($inventory_id){
+                $join->on('product_flat.product_id', '=', 'product_inventories.product_id')
+                    ->where('product_inventories.inventory_source_id', '=', $inventory_id )
+                    ->where('product_inventories.qty','!=',0);
+            })  
+            ->select(
+                'product_flat.locale',
+                'product_flat.channel',
+                'product_flat.product_id',
+                'products.sku as product_sku',
+                'product_flat.product_number',
+                'product_flat.name as product_name',
+                'products.type as product_type',
+                'product_flat.status',
+                'product_flat.price',
+                'product_flat.created_at',
+                'product_flat.short_description',
+                'product_flat.brand_label',
+                'product_flat.weight',
+                'attribute_families.name as attribute_family',
+                'product_images.path as product_image',
+                DB::raw('SUM( product_inventories.qty) as quantity')
+            )->groupBy('product_flat.product_id');
+        };
+        if($_GET){
+            $filter = new FilterCollection();
+            $query = $filter->filterCollection($query,$searchfields);
         }
-        
-        $user_sale = DB::table('admins')
-        ->select('id','name')
-        ->get()->toArray();
-
-        $status_name = DB::table('cat_status')
-        ->select('id','name')
-        ->get()->toArray();
-      
-        $queryBuilder = DB::table('product_flat')
-                ->leftJoin('products', 'product_flat.product_id', '=', 'products.id')
-                ->leftJoin('attribute_families', 'products.attribute_family_id', '=', 'attribute_families.id')
-                ->leftJoin('product_inventories', 'product_flat.product_id', '=', 'product_inventories.product_id')
-                ->leftJoin('product_images', 'product_flat.product_id', '=', 'product_images.product_id')
-                ->select(
-                    'product_flat.locale',
-                    'product_flat.channel',
-                    'product_flat.product_id',
-                    'products.sku as product_sku',
-                    'product_flat.product_number',
-                    'product_flat.name as product_name',
-                    'products.type as product_type',
-                    'product_flat.status',
-                    'product_flat.price',
-                    'product_flat.created_at',
-                    'product_flat.short_description',
-                    'product_flat.brand_label',
-                    'product_flat.weight',
-                    'attribute_families.name as attribute_family',
-                    'product_images.path as product_image',
-                    DB::raw('SUM( product_inventories.qty) as quantity')
-                )->groupBy('product_flat.product_id')
-                ->get()->toArray(); 
-                
-
-        return view($this->_config['view'], compact('receipt_notes','role_id','invoice_note','user_sale','status_name','queryBuilder'));
+        $product = $query->get()->toArray();
+        return view($this->_config['view'], compact('product'));
         /* query builder */
              
 
