@@ -31,7 +31,7 @@ use Excel;
 use Webkul\Exchange\Http\Models\ImportProduct;
 use Webkul\Exchange\Models\ExchangeNote;
 use Webkul\Exchange\Models\ProductExchangeNote;
-use Webkul\Admin\Helpers\filterCollection;
+use Webkul\Admin\Helpers\FilterCollection;
 use Session;
 
 
@@ -170,11 +170,11 @@ class ExchangeController extends Controller
         $users = DB::table('admins')->select('id', 'name','inventory_id')->get();
         $role_id = auth()->guard('admin')->user()->role['id'];
         $searchfields = [
-                ['name'=> 'Mã đơn hàng', 'key'=> 'id', 'columnType'=> 'number', 'value' => 'exchange_notes.id'],
-                ['name'=> 'Thời gian', 'key'=> 'created_date', 'columnType'=> 'datetime', 'value'=>'exchange_notes.created_date'], 
-                ['name'=> 'Nhà cung cấp', 'key'=> 'supplier', 'columnType'=> 'string','value' => 'suppliers.name'],
-                ['name'=> 'Tổng tiền', 'key'=>'total', 'columnType'=> 'number','value' =>'exchange_notes.total'],
-                ['name'=> 'Trạng thái', 'key'=>'status', 'columnType'=> 'string','value'=>'exchange_notes.status']
+                ['key'=> 'id', 'columnType'=> 'number', 'value' => 'exchange_notes.id'],
+                ['key'=> 'created_date', 'columnType'=> 'datetime', 'value'=>'exchange_notes.created_date'], 
+                ['key'=> 'supplier', 'columnType'=> 'string','value' => 'suppliers.name'],
+                ['key'=>'total', 'columnType'=> 'number','value' =>'exchange_notes.total'],
+                ['key'=>'status', 'columnType'=> 'string','value'=>'exchange_notes.status']
         ];
         $query = DB::table('exchange_notes')
         ->join('suppliers', 'suppliers.id', '=', 'exchange_notes.supplier_id')

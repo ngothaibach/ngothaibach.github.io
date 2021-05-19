@@ -1,12 +1,13 @@
 <template>
     <span class="radio">
-        <input type="radio" :id="id" :name="nameField" :value="modelValue" :checked="isActive">
+        <input type="radio" :id="id" :name="nameField" :value="modelValue" :checked="isActive" v-on:input="onSelect($event.target.value)">
         <label class="radio-view" :for="id"></label>
         <span class="" :for="id">{{ label }}</span>
     </span>
 </template>
 
 <script>
+    import { EventBus } from './event-bus';
     export default {
         name: 'tree-radio',
 
@@ -19,6 +20,12 @@
                 }
 
                 return false
+            }
+        },
+        methods:{
+            onSelect(value){
+                EventBus.$emit('valueChanged',value);
+                console.log('emitted')
             }
         }
     }

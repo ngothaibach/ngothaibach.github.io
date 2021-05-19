@@ -24,6 +24,7 @@ use Webkul\Sales\Models\OrderAddress;
 use Webkul\Customer\Repositories\CustomerRepository;
 use Webkul\Customer\Repositories\CustomerAddressRepository;
 use Webkul\Sales\Repositories\InvoiceRepository;
+use Webkul\Admin\Helpers\FilterCollection;
 
 
 class OrderController extends Controller
@@ -158,7 +159,16 @@ class OrderController extends Controller
      */
     public function index()
     {
-        $invoice_note = DB::table('orders')
+        $searchfields = [
+            ['key'=> 'order_id', 'columnType'=> 'number', 'value' => 'orders.id'],
+            ['key'=> 'updated_at', 'columnType'=> 'datetime', 'value'=>'orders.updated_at'], 
+            ['key'=> 'customer_first_name', 'columnType'=> 'string','value' => 'orders.customer_first_name'],
+            ['key'=> 'customer_last_name', 'columnType'=> 'string','value' => 'orders.customer_last_name'],
+            ['key'=>'base_sub_total', 'columnType'=> 'number','value' =>'orders.base_sub_total'],
+            ['key'=>'base_grand_total', 'columnType'=> 'number','value' =>'orders.base_grand_total'],
+            ['key'=>'status', 'columnType'=> 'string','value'=>'orders.status']
+        ];
+        $query = DB::table('orders')
         ->leftJoin('addresses as order_address_shipping', function($leftJoin) {
             $leftJoin->on('order_address_shipping.order_id', '=', 'orders.id')
                     ->where('order_address_shipping.address_type', OrderAddress::ADDRESS_TYPE_SHIPPING);
@@ -174,37 +184,15 @@ class OrderController extends Controller
         ->leftJoin('refunds as ref1','orders.id','=','ref1.order_id')
         ->select('orders.id as order_id','orders.increment_id as increment_id', 'orders.base_sub_total', 'orders.base_grand_total',
         'orders.status_id as status_id','orders.created_at as created_at','orders.updated_at as updated_at', 'orders.channel_name', 'orders.status', 'orders.customer_first_name', 'orders.customer_last_name'
-         ,'comments.comment as comment','ad.id as sale_id','inventory.name as name_inven','ref.grand_total as money_exchange_refund', 'ref.id as exchange_refund_id', 'ref1.id as refund_id')
-         ->orderBy('order_id', 'desc')
-         ->get()-> toArray();
-
-
-        $role_id = auth()->guard('admin')->user()->role['id'];
-        if($role_id != 1){
-            $invent_id = auth()->guard('admin')->user()->inventory_id;
-            $receipt_notes = DB::table('exchange_notes')
-            // ->join('suppliers', 'suppliers.id', '=', 'exchange_notes.supplier_id')
-            ->leftJoin('inventory_sources as to_inventory_sources', 'to_inventory_sources.id', '=', 'exchange_notes.to_inventory_source_id')
-            ->leftJoin('inventory_sources as from_inventory_sources', 'from_inventory_sources.id', '=', 'exchange_notes.from_inventory_source_id')
-            ->join('admins', 'admins.id', '=', 'exchange_notes.created_user_id')
-            ->select('exchange_notes.id', 'exchange_notes.created_date', 'exchange_notes.note', 'exchange_notes.status', 'exchange_notes.receipt_date', 'exchange_notes.transfer_date', 'to_inventory_sources.name as to_inventory', 'from_inventory_sources.name as from_inventory','from_inventory_sources.id as from_inventory_id', 'admins.name as created_user')
-            ->where('type', '=', 'transfer')
-            ->where('from_inventory_source_id','=',$invent_id)
-            ->orwhere('to_inventory_source_id','=',$invent_id)
-            ->orderBy('id', 'desc')
-            ->get()->toArray();  
-        }else{
-            $receipt_notes = DB::table('exchange_notes')
-            // ->join('suppliers', 'suppliers.id', '=', 'exchange_notes.supplier_id')
-            ->leftJoin('inventory_sources as to_inventory_sources', 'to_inventory_sources.id', '=', 'exchange_notes.to_inventory_source_id')
-            ->leftJoin('inventory_sources as from_inventory_sources', 'from_inventory_sources.id', '=', 'exchange_notes.from_inventory_source_id')
-            ->join('admins', 'admins.id', '=', 'exchange_notes.created_user_id')
-            ->select('exchange_notes.id', 'exchange_notes.created_date', 'exchange_notes.note', 'exchange_notes.status', 'exchange_notes.receipt_date', 'exchange_notes.transfer_date', 'to_inventory_sources.name as to_inventory', 'from_inventory_sources.name as from_inventory','from_inventory_sources.id as from_inventory_id', 'admins.name as created_user')
-            ->where('type', '=', 'transfer')
-            ->orderBy('id', 'desc')
-            ->get()->toArray();
+         ,'comments.comment as comment','ad.id as sale_id','inventory.name as name_inven','ref.grand_total as money_exchange_refund', 'ref.id as exchange_refund_id', 'ref1.id as refund_id');
+        if( Session::get('inventory') != 0){
+            $query = $query->where('orders.inventory_id','=',Session::get('inventory'));
         }
-        
+        if($_GET){
+            $filter = new FilterCollection();
+            $query = $filter->filterCollection($query,$searchfields);
+        }
+        $invoice_note = $query->orderBy('order_id', 'desc')->get()-> toArray();
         $user_sale = DB::table('admins')
         ->select('id','name')
         ->get()->toArray();
@@ -213,7 +201,7 @@ class OrderController extends Controller
         ->select('id','name')
         ->get()->toArray();
         
-        return view($this->_config['view'], compact('receipt_notes','role_id','invoice_note','user_sale','status_name'));
+        return view($this->_config['view'], compact('invoice_note','user_sale','status_name'));
     // return response()->json(   [
     //     'success' => true,
     //     'message' => $invoice_note,

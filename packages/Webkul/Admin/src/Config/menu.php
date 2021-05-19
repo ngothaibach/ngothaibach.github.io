@@ -86,7 +86,35 @@ return [
         'sort'       => 3,
         'icon-class' => '',
     
+    ],
+    [
+        'key'        => 'reports',
+        'name'       => 'Báo cáo',
+        'route'      => 'reports.admin.index',
+        'sort'       => 5,
+        'icon-class' => 'temp-icon',
     ], 
+    [
+        'key'   => 'reports.sales',
+        'name'  => 'Báo cáo bán hàng',
+        'route' => 'reports.admin.index',
+        'sort'  => 1,
+        'icon-class' => '',
+    ],
+    [
+        'key'   => 'reports.customers',
+        'name'  => 'Báo cáo khách hàng',
+        'route' => 'reports.admin.customers',
+        'sort'  => 2,
+        'icon-class' => '',
+    ],
+    [
+        'key'   => 'reports.staff',
+        'name'  => 'Báo cáo theo nhân viên bán hàng',
+        'route' => 'reports.admin.staff',
+        'sort'  => 3,
+        'icon-class' => '',
+    ],
     // [
     //     'key'        => 'configuration',
     //     'name'       => 'admin::app.layouts.configure',

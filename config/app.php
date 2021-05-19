@@ -283,6 +283,7 @@ return [
         Webkul\DebugBar\Providers\DebugBarServiceProvider::class,
         Webkul\Marketing\Providers\MarketingServiceProvider::class,
         Webkul\Exchange\Providers\ExchangeServiceProvider::class,
+        Webkul\Reports\Providers\ReportsServiceProvider::class,
     ],
 
     /*

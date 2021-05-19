@@ -41,7 +41,10 @@
                     <h2>Thông tin đặt hàng</h2>
                     
                     <div class="mb-3">
-                        <vuejs-datepicker v-model="form.created_date"></vuejs-datepicker>
+                        <div class="control-group" :class="[errors.has('created_date') ? 'has-error' : '']">
+                            <input type="date" class="control" name="created_date" v-model="form.created_date" v-validate="" value="{{ old('created_date') }}">
+                            <span class="control-error" v-if="errors.has('created_date')">@{{ errors.first('created_date') }}</span>
+                        </div>
                     </div>
 
                     <div class="mb-3">
@@ -245,8 +248,7 @@
                         price_total: 0,
                         price_total_show: '0',
                         type: 'receipt',
-                        receipt_date: new Date(),
-                        created_date: new Date(),
+                        created_date: null,
                         user: 0,
                         customer: "",
                         supplier: null,
@@ -502,6 +504,14 @@
                     
                     
                 }
+            },
+            mounted(){
+                    month = new Date().getMonth()+1;
+                    if(month <10){
+                        this.form.created_date =  new Date().getFullYear()+'-'+'0'+(new Date().getMonth()+1)+'-'+new Date().getDate()
+                    }else{
+                        this.form.created_date =  new Date().getFullYear()+'-'+(new Date().getMonth()+1)+'-'+new Date().getDate()
+                    }
             }
         });
     </script>
