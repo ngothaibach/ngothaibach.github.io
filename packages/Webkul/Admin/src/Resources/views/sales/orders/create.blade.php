@@ -27,7 +27,7 @@
     <script type="text/x-template" id="vpt-receipt-note-form-template">
         <form action="#" class="form newtopic" @submit.prevent="save">
             <div class="row" style="margin-top: 20px;">
-                <div class="col-9" style="align-self: baseline;">
+                <div class="col-lg-8 col-md-8 col-sm-12" style="align-self: baseline;">
                     <h2>Đặt hàng</h2>
                     <div>
                     <product-live-search
@@ -37,7 +37,7 @@
                         ></product-live-search>
                     </div>
                 </div>
-                <div class="col-3">
+                <div class="col-lg-4 col-md-4 col-sm-12">
                     <h2>Thông tin đặt hàng</h2>
                     
                     <div class="mb-3">

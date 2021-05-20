@@ -13,7 +13,7 @@
     <script type="text/x-template" id="vpt-receipt-note-form-template">
         <form action="#" class="form newtopic" @submit.prevent="save">
                             <div class="row" style="margin-top: 20px;">
-                                <div class="col-8" style="align-self: baseline;">
+                                <div class="col-lg-8 col-md-8 col-sm-12" style="align-self: baseline;">
                                     <h2>Tạo phiếu chuyển hàng</h2>
                                     <div>
                                     <product-live-search
@@ -24,7 +24,7 @@
                                         ></product-live-search>  
                                     </div>
                                 </div>
-                                <div class="col-4">
+                                <div class="col-lg-4 col-md-4 col-sm-12">
                                     <h2>{{ __('admin::app.vpt.inventory.transfer-info') }}</h2>
                                     <div class="mb-3">
                                         <div class="row">
@@ -102,7 +102,7 @@
                         total_of_qty: 0,
                         type: 'transfer',
                         transfer_date: null,
-                        user: "auth()->guard('admin')->user()->id",
+                        user: {!! json_encode(auth()->guard('admin')->user()->id) !!},
                         supplier: null,
                         from_inventory_source: null,
                         to_inventory_source: null,
