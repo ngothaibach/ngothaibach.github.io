@@ -1,10 +1,10 @@
-@extends('admin::layouts.master')
+@extends('admin::layouts.content')
 
 @section('page_title')
     {{ __('admin::app.sales.refunds.view-title', ['refund_id' => $refund->id]) }}
 @stop
 
-@section('content-wrapper')
+@section('content')
 
     <?php $order = $refund->order; ?>
 

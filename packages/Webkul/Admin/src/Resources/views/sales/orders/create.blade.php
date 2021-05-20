@@ -1,4 +1,4 @@
-@extends('admin::layouts.master_full')
+@extends('admin::layouts.content')
 
 @section('page_title')
 Đặt hàng
@@ -19,7 +19,7 @@
         -moz-appearance: textfield;
     }
 </style>
-@section('content-wrapper')
+@section('content')
     <vpt-receipt-note-form></vpt-receipt-note-form>
 @stop
 

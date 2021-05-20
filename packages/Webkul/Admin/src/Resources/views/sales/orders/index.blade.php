@@ -269,11 +269,11 @@
                                     
                                     <span class="font-weight-bold">Khách cần trả:</span> <span class="text-danger font-weight-bold" v-text="price_total"></span> --}}
                                         <div class="btn-summit-right">
-                                            <button v-if="canCancel" type="button" class="btn btn-danger" style="marginRight : 20px;width: 120px;" v-on:click="create_cancel(item.order_id)" >Hủy</button>
-                                            {{-- <button v-if="canInvoice" type="button" class="btn btn-primary" style="marginRight : 20px;width: 130px;" v-on:click="create_invoice(item.order_id)" >Tạo hóa đơn</button> --}}
+                                            <button v-if="form.canCancel" type="button" class="btn btn-danger" style="marginRight : 20px;width: 120px;" v-on:click="create_cancel(item.order_id)" >Hủy</button>
+                                            {{-- <button v-if="form.canInvoice" type="button" class="btn btn-primary" style="marginRight : 20px;width: 130px;" v-on:click="create_invoice(item.order_id)" >Tạo hóa đơn</button> --}}
                                             {{-- <a href="{{ route('admin.sales.invoices.create', item . id) }}" class="btn btn-lg btn-primary"> --}}
 
-                                            <button v-if="canRefund" type="button" class="btn btn-primary" style="marginRight : 20px;width: 120px;" v-on:click="create_refund(item.order_id)" >Hoàn lại</button>
+                                            <button v-if="form.canRefund" type="button" class="btn btn-primary" style="marginRight : 20px;width: 120px;" v-on:click="create_refund(item.order_id)" >Hoàn lại</button>
                                             <button type="button" class="btn btn-primary" style="marginRight : 20px;width: 120px;" v-on:click="print_invoices(item.order_id)" >In vận đơn</button>
                                             <button type="button" class="btn btn-success" style="width: 120px;" v-on:click="update_orders(item.order_id,item.status_id)" >Cập nhật</button>
                                         </div>
@@ -484,9 +484,9 @@
                                 this.product_list = response.data.order_product;
                                 this.form.product_list = response.data.order_product;
                                 this.form.order_money = response.data.order_money;
-                                this.canCancel = response.data.canCancel;
-                                this.canRefund = response.data.canRefund;
-                                this.canInvoice = response.data.canInvoice;
+                                this.form.canCancel = response.data.canCancel;
+                                this.form.canRefund = response.data.canRefund;
+                                this.form.canInvoice = response.data.canInvoice;
                                 console.log('response',response.data.order_product);
                                 // console.error(this.product_list);
 

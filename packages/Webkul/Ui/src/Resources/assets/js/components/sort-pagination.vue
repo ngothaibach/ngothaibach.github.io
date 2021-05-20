@@ -163,4 +163,40 @@
         vertical-align: middle;
         text-decoration: none;
     }
+    /* Extra small devices (phones, 600px and down) */
+@media only screen and (max-width: 600px) {
+    .pagination{
+        max-width: 400px;
+        overflow-x: auto;
+    }
+}
+
+/* Small devices (portrait tablets and large phones, 600px and up) */
+@media only screen and (min-width: 600px) {
+    .pagination {
+        max-width: 500px;
+        overflow-x: auto;
+    }
+}
+
+/* Medium devices (landscape tablets, 768px and up) */
+@media only screen and (min-width: 768px) {
+    .pagination {
+        max-width: 100%;
+    }
+}
+
+/* Large devices (laptops/desktops, 992px and up) */
+@media only screen and (min-width: 992px) {
+    .pagination {
+        max-width: 100%;
+    }
+}
+
+/* Extra large devices (large laptops and desktops, 1200px and up) */
+@media only screen and (min-width: 1200px) {
+    .pagination {
+        max-width: 100%;
+    }
+}
 </style>

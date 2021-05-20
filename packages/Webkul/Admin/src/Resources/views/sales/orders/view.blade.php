@@ -1,10 +1,10 @@
-@extends('admin::layouts.master')
+@extends('admin::layouts.content')
 
 @section('page_title')
     {{ __('admin::app.sales.orders.view-title', ['order_id' => $order->increment_id]) }}
 @stop
 
-@section('content-wrapper')
+@section('content')
 
     <div class="content full-page">
 

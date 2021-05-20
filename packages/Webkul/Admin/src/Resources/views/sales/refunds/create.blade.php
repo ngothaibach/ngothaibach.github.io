@@ -1,4 +1,4 @@
-@extends('admin::layouts.master_full')
+@extends('admin::layouts.content')
 
 @section('page_title')
 Trả hàng
@@ -17,7 +17,7 @@ Trả hàng
         -moz-appearance: textfield;
     }
 </style>
-@section('content-wrapper')
+@section('content')
     <refund-items></refund-items>
 @stop
 

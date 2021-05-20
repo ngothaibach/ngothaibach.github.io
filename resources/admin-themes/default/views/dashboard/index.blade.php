@@ -1,10 +1,10 @@
-@extends('admin::layouts.master')
+@extends('admin::layouts.content')
 
 @section('page_title')
     {{ __('admin::app.dashboard.title') }}
 @stop
 
-@section('content-wrapper')
+@section('content')
 
     <div class="content full-page dashboard">
         <div class="page-header">

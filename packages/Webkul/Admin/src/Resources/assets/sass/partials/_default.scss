@@ -50,18 +50,22 @@ body {
     .navbar-top-right {
         width: 50%;
         height: 60px;
-        text-align: right;
+        text-align: -webkit-right;
+        text-align: -moz-right;
+        text-align: -o-right; 
+        text-align: -ms-right;
+      
         display: inline-block;
         vertical-align: middle;
 
         .profile-info {
-            display: inline-block;
+            display: table-cell;
             vertical-align: middle;
             text-align: left;
             min-width: 50px;
             position: relative;
-            padding: 12px 0px;
-            margin: 0px 25px 0px 30px;
+            padding: 12px 12px 0px 0px;
+            margin: 0px 0px 0px 30px;
             font-size: 15px;
             cursor: pointer;
             position: relative;
@@ -103,14 +107,15 @@ body {
     position: fixed;
     left: 0;
     top: 60px;
-    width: 90px;
+    width: 0px;
     padding-top: 20px;
     border-right: 1px solid rgba(162, 162, 162, 0.2);
     height: auto;
+    overflow-x: hidden;
     bottom: 0;
-    z-index: 2;
+    z-index: 999;
     background-color: $white;
-
+    transition: 0.5s;
     ul.menubar {
         // padding-bottom: 60px;
         li.menu-item {
@@ -120,13 +125,15 @@ body {
             text-transform: uppercase;
 
             a {
-                color: $link-color;
+                padding: 10px;
+                display: block;
+                color: #000311;
+                transition: 0.3s;
+                
             }
 
-            &.active {
-                a {
-                    color: #0041ff;
-                }
+            .active {
+                color: #0041ff;
             }
 
             span {
@@ -135,10 +142,15 @@ body {
             }
         }
     }
+    .dropdown-container {
+        display: none;
+        padding-left: 8px;
+        background-color: $background-color;
+    }
+    
 }
-
+  
 .content-container {
-    padding-left: 90px;
     position: absolute;
     margin-top: 60px;
     top: 0px;
@@ -147,7 +159,7 @@ body {
     bottom: 0px;
     height: calc(100% - 60px);
     width: 100%;
-
+    max-width: 100%;
     .inner-section {
         height: 100%;
     }
@@ -172,6 +184,7 @@ body {
             padding: 15px;
             display: block;
             color: #000311;
+            transition: 0.3s;
         }
 
         .active {
@@ -186,10 +199,16 @@ body {
             }
         }
     }
-
+    .close-nav-aside {
+        position: absolute;
+        top: 0;
+        right: 25px;
+        font-size: 36px;
+        margin-left: 50px;
+    }
     .content-wrapper {
         padding: 25px 25px 25px 15px;
-        margin-left: 280px;
+        transition: margin-left .5s;
         margin-top:1px;
         background-color: $white;
     }

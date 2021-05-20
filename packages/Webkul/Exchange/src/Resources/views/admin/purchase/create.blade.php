@@ -39,11 +39,7 @@
                             <div class="col-5">
                                 <select v-model="form.user" name="user" class="form-control" aria-label="User">
                                 @foreach ($users as $user)
-                                    @if (auth()->guard('admin')->user()->id == $user->id)
-                                        <option value="{{ $user->id }}" selected>{{ $user->name }}</option>
-                                    @else
                                         <option value="{{ $user->id }}">{{ $user->name }}</option>
-                                    @endif
                                 @endforeach
                                 </select>
                             </div>
