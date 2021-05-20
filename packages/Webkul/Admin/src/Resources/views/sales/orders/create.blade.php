@@ -248,8 +248,7 @@
                         price_total: 0,
                         price_total_show: '0',
                         type: 'receipt',
-                        receipt_date: new Date(),
-                        created_date: new Date(),
+                        created_date: null,
                         user: 0,
                         customer: "",
                         supplier: null,
@@ -505,6 +504,14 @@
                     
                     
                 }
+            },
+            mounted(){
+                    month = new Date().getMonth()+1;
+                    if(month <10){
+                        this.form.created_date =  new Date().getFullYear()+'-'+'0'+(new Date().getMonth()+1)+'-'+new Date().getDate()
+                    }else{
+                        this.form.created_date =  new Date().getFullYear()+'-'+(new Date().getMonth()+1)+'-'+new Date().getDate()
+                    }
             }
         });
     </script>

@@ -25,7 +25,7 @@
                     $qty = old('inventories[' . $inventorySource->id . ']') ?: $qty;
                 }        
             ?>
-            <div class="control-group" :class="[errors.has('inventories[{{ $inventorySource->id }}]') ? 'has-error' : '']" style="display:flex; flex-direction: row; justify-content: center; align-items: center" >
+            <div class="control-group" :class="[errors.has('inventories[{{ $inventorySource->id }}]') ? 'has-error' : '']" style="display:flex; flex-direction: row; justify-content: center; align-items: center; margin-bottom:5px !important" >
                 <label>{{ $inventorySource->name }}</label>
 
                 <input style="width: 200px;margin-right:200px;" type="text" v-validate="'numeric|min:0'" name="inventories[{{ $inventorySource->id }}]" class="control" value="{{ $qty }}" data-vv-as="&quot;{{ $inventorySource->name }}&quot;"/>

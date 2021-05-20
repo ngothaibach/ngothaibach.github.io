@@ -321,6 +321,10 @@ Route::group(['middleware' => ['web', 'admin_locale']], function () {
                     'view' => 'admin::catalog.products.index',
                 ])->name('admin.catalog.products.index');
 
+                Route::get('/products/show_detail_product', 'Webkul\Product\Http\Controllers\ProductController@show_detail_product')->defaults('_config', [
+                    'view' => 'admin::catalog.products.show_detail_product',
+                ])->name('admin.catalog.products.show_detail_product');
+
                 Route::get('/products/inventory/{id}', 'Webkul\Product\Http\Controllers\ProductController@inventory')->defaults('_config', [
                     'view' => 'admin::catalog.products.inventory',
                 ])->name('admin.catalog.products.inventory');
@@ -340,6 +344,11 @@ Route::group(['middleware' => ['web', 'admin_locale']], function () {
                 Route::get('products/copy/{id}', 'Webkul\Product\Http\Controllers\ProductController@copy')->defaults('_config', [
                     'view' => 'admin::catalog.products.edit',
                 ])->name('admin.catalog.products.copy');
+
+                Route::get('/products/edit', 'Webkul\Product\Http\Controllers\ProductController@edit_product')->defaults('_config', [
+                    'view' => 'admin::catalog.products.edit_product',
+                ])->name('admin.catalog.products.edit_product');
+
 
                 Route::get('/products/edit/{id}', 'Webkul\Product\Http\Controllers\ProductController@edit')->defaults('_config', [
                     'view' => 'admin::catalog.products.edit',

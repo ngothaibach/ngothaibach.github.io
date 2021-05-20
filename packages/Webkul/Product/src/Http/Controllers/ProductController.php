@@ -18,6 +18,11 @@ use Webkul\Product\Repositories\ProductDownloadableLinkRepository;
 use Webkul\Product\Repositories\ProductDownloadableSampleRepository;
 use Webkul\Product\Repositories\ProductAttributeValueRepository;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
+use Webkul\Sales\Models\OrderAddress;
+use Webkul\Sales\Repositories\OrderAddressRepository;
+use Webkul\Admin\Helpers\FilterCollection;
+use Session;
 class ProductController extends Controller
 {
     /**
@@ -131,7 +136,80 @@ class ProductController extends Controller
      */
     public function index()
     {
-        return view($this->_config['view']);
+        $searchfields = [
+            ['key'=> 'product_id', 'columnType'=> 'number', 'value' => 'product_flat.product_id'],
+            ['key'=> 'product_sku', 'columnType'=> 'string', 'value' => 'products.sku'],
+            ['key'=> 'product_name', 'columnType'=> 'string', 'value'=>'product_flat.name'], 
+            ['key'=> 'price', 'columnType'=> 'number','value' =>'product_flat.price'],
+            ['key'=>'status', 'columnType'=> 'string','value'=>'product_flat.status']
+        ];
+        if(Session::get('inventory') == 0){
+            $query = DB::table('product_flat')
+                    ->leftJoin('products', 'product_flat.product_id', '=', 'products.id')
+                    ->leftJoin('attribute_families', 'products.attribute_family_id', '=', 'attribute_families.id')
+                    ->leftJoin('product_inventories', 'product_flat.product_id', '=', 'product_inventories.product_id')
+                    ->leftJoin('product_images', 'product_flat.product_id', '=', 'product_images.product_id')
+                    ->select(
+                        'product_flat.locale',
+                        'product_flat.channel',
+                        'product_flat.product_id',
+                        'products.sku as product_sku',
+                        'product_flat.product_number',
+                        'product_flat.name as product_name',
+                        'products.type as product_type',
+                        'product_flat.status',
+                        'product_flat.price',
+                        'product_flat.created_at',
+                        'product_flat.short_description',
+                        'product_flat.brand_label',
+                        'product_flat.weight',
+                        'attribute_families.name as attribute_family',
+                        'product_images.path as product_image',
+                        DB::raw('SUM( product_inventories.qty) as quantity')
+                    )->groupBy('product_flat.product_id');
+        }else{
+            $query = DB::table('product_flat')
+            ->leftJoin('products', 'product_flat.product_id', '=', 'products.id')
+            ->leftJoin('attribute_families', 'products.attribute_family_id', '=', 'attribute_families.id')
+            ->leftJoin('product_inventories', 'product_flat.product_id', '=', 'product_inventories.product_id')
+            ->leftJoin('product_images', 'product_flat.product_id', '=', 'product_images.product_id')
+            ->Join('product_inventories', function($join)use($inventory_id){
+                $join->on('product_flat.product_id', '=', 'product_inventories.product_id')
+                    ->where('product_inventories.inventory_source_id', '=', $inventory_id )
+                    ->where('product_inventories.qty','!=',0);
+            })  
+            ->select(
+                'product_flat.locale',
+                'product_flat.channel',
+                'product_flat.product_id',
+                'products.sku as product_sku',
+                'product_flat.product_number',
+                'product_flat.name as product_name',
+                'products.type as product_type',
+                'product_flat.status',
+                'product_flat.price',
+                'product_flat.created_at',
+                'product_flat.short_description',
+                'product_flat.brand_label',
+                'product_flat.weight',
+                'attribute_families.name as attribute_family',
+                'product_images.path as product_image',
+                DB::raw('SUM( product_inventories.qty) as quantity')
+            )->groupBy('product_flat.product_id');
+        };
+        if($_GET){
+            $filter = new FilterCollection();
+            $query = $filter->filterCollection($query,$searchfields);
+        }
+        $product = $query->get()->toArray();
+        return view($this->_config['view'], compact('product'));
+        /* query builder */
+             
+
+    // return response()->json([
+    //     'success' => true,
+    //     'message' => $queryBuilder,
+    // ]);
     }
 
     /**
@@ -290,6 +368,38 @@ class ProductController extends Controller
         }
 
         return view($this->_config['view'], compact('product', 'categories', 'inventorySources','attributes'));
+    }
+
+    public function edit_product()
+    {
+        $id = request()->input('id');
+        $product = $this->productRepository->with(['variants', 'variants.inventories'])->findOrFail($id);
+        $categories = $this->categoryRepository->getCategoryTree();
+        $attributes = $this->attributeRepository->findWhere(['is_filterable' =>  1]);
+        if(auth()->guard('admin')->user()->role['id'] == 1){
+            $inventorySources = $this->inventorySourceRepository->findWhere(['status' => 1]);
+        }else{
+            $inventorySources = $this->inventorySourceRepository->findWhere(['status' => 1])->find(['id'=>auth()->guard('admin')->user()->inventory_id]);
+        }
+
+        return view($this->_config['view'], compact('product', 'categories', 'inventorySources','attributes'));
+    }
+
+    public function show_detail_product()
+    {
+        $id = request()->input('product_id');
+        $product = DB::table('product_flat')
+        ->where('product_id', '=', $id)
+        ->orderBy('id', 'desc')
+        ->get()-> toArray();
+
+        // $order_money = $this->orderRepository->findOrFail($id);
+        return response()->json(
+            [
+                'success' => True,
+                'order_product' => $product,
+            ]
+        );
     }
 
     /**

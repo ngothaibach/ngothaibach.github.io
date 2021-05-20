@@ -26,7 +26,7 @@
 
             <div class="control-group" :class="[errors.has('state') ? 'has-error' : '']">
                 <label for="state" class="required">
-                    {{ __('admin::app.customers.customers.state') }}
+                    Tỉnh
                 </label>
 
                 <input type="text" v-validate="'required'" class="control" id="state" name="state" v-model="state" v-if="!haveStates()" data-vv-as="&quot;{{ __('admin::app.customers.customers.state') }}&quot;"/>
