@@ -1,5 +1,5 @@
 <template>
-    <div >
+    <div class="product-live-search">
         <input class="form-control" type="text" v-on:input="onChangeKeywords($event.target.value)"  ref="button"  v-on:click="showPopup = true" >
         <ul class="list-group" v-if="results.length > 0"  v-show="showPopup"
             v-closable="{
@@ -45,8 +45,26 @@
         <table class="table">
             <thead>
             <tr>
-                <th v-for="table_header in table_headers" class="grid_head">
-                    <p v-text="table_header"></p>
+                <th class="grid_head th-sku">
+                    <p >Mã</p>
+                </th>
+                <th class="grid_head th-image">
+                    <p >Ảnh</p>
+                </th>
+                <th class="grid_head th-name">
+                    <p >Tên</p>
+                </th>
+                <th class="grid_head th-price">
+                    <p >Giá</p>
+                </th>
+                <th class="grid_head th-qty">
+                    <p >Số lượng</p>
+                </th>
+                <th class="grid_head th-inven">
+                    <p>Tồn kho</p>
+                </th>
+                <th class="grid_head th-del">
+                    <p >Xoá</p>
                 </th>
             </tr>
             </thead>
@@ -55,15 +73,15 @@
                 <td>Không có dữ liệu</td>
             </tr>
             <tr v-else v-for="item in added_products">
-                <td v-text="item.sku"></td>
-                <td><img style="width: 60xp; height: 60px;" v-bind:src="'/cache/small/' + item.featured_image"/></td>
-                <td v-text="item.name"></td>
-                <td v-text="formatPrice(item.price)"></td>
-                <td>
+                <td class="td-sku" v-text="item.sku"></td>
+                <td class="td-image"><img style="width: 60xp; height: 60px;" v-bind:src="'/cache/small/' + item.featured_image"/></td>
+                <td class="td-name" v-text="item.name"></td>
+                <td class="td-price" v-text="formatPrice(item.price)"></td>
+                <td class="td-qty">
                     <input type="text" class="form-control" v-model="item.qty" v-on:change="update_price">
                 </td>
-                <td v-text="item.in_stock"></td>
-                <td><button v-on:click="remove_product(item)" type="button" class="btn btn-danger">Xoá</button></td>
+                <td class="td-inven" v-text="item.in_stock"></td>
+                <td class="td-del"><button v-on:click="remove_product(item)" type="button" class="btn btn-danger">Xoá</button></td>
             </tr>
             </tbody>
         </table>
@@ -117,15 +135,6 @@
                 pageOfItems: [],
                 perPage: 10,
                 added_products: [],
-                table_headers: [
-                    "Mã",
-                    "Ảnh",
-                    "Tên",
-                    "Giá",
-                    "Số lượng",
-                    "Tồn kho",
-                    "Xoá"
-                ],
                 price_total: 0,
                 total_of_qty: 0,
 
@@ -283,5 +292,94 @@
     }
 </script>
 <style lang="scss" scoped>
+.product-live-search{
+    word-wrap: break-word;
+    width:auto;
+}
+.table {
+    table-layout: fixed;
+    width: 100%;  
+}
+.th-sku, .td-sku,.th-image, .td-image,.th-name, .td-name,.th-price, .td-price,.th-qty, .td-qty,.th-inven, .td-inven,.th-del, .td-del{
+    overflow-x: hidden;
+    word-wrap: break-word;
+}
+@media only screen and (max-width: 600px) {
+    .product-live-search{
+        width:600px;
+    }
+    .th-sku, .td-sku{
+        width:100px;
+    }
+    .th-name, .td-name{
+        width:150px;
+    }
+    .th-image, .td-image{
+        width:75px;
+    }
+    .table th{
+        padding:0px;
+    }
+}
 
+/* Medium devices (landscape tablets, 768px and up) */
+@media only screen and (min-width: 768px) {
+    .product-live-search{
+        width:500px;
+        overflow-x:scroll ;
+    }
+     .th-sku, .td-sku{
+        width:75px;
+    }
+    .th-name, .td-name{
+        width:100px;
+    }
+    .th-image, .td-image{
+        width:75px;
+    }
+    .th-del, .td-del{
+        width:50px;
+    }
+    .table th{
+        padding:0px;
+    }
+}
+
+/* Large devices (laptops/desktops, 992px and up) */
+@media only screen and (min-width: 992px) {
+     .product-live-search{
+        width:650px;
+    }
+     .th-sku, .td-sku{
+        width:100px;
+    }
+    .th-name, .td-name{
+        width:200px;
+    }
+    .th-image, .td-image{
+        width:100px;
+    }
+    .th-del, .td-del{
+        width:60px;
+    }
+    .table th{
+        padding:0.75rem;
+    }
+}
+
+/* Extra large devices (large laptops and desktops, 1200px and up) */
+@media only screen and (min-width: 1200px) {
+     .product-live-search{
+        width:100%;
+    }
+     .th-sku, .td-sku{
+        width:100px;
+    }
+    .th-name, .td-name{
+        width:200px;
+    }
+    .th-image, .td-image{
+        width:100px;
+    }
+}
 </style>
