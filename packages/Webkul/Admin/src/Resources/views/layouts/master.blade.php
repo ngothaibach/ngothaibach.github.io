@@ -146,19 +146,6 @@
                     });
                 }
 
-            });
-            function onChangeInventory(value) {
-                    window.location.href = "{{route('admin.changeInventory')}}" + '?inventory=' + value;
-            }
-            function openNav() {
-            document.getElementById("navbar-left").style.width = "150px";
-            }
-
-            function closeNav() {
-            document.getElementById("navbar-left").style.width = "0";
-            }
-            window.addEventListener('load',
-            function() {
                 var menuicon = document.getElementsByClassName("menu-item-icon");
                 var dropdown = document.getElementsByClassName("menu-item-name");
                 var i;
@@ -185,6 +172,16 @@
                     });
                 }
             });
+            function onChangeInventory(value) {
+                    window.location.href = "{{route('admin.changeInventory')}}" + '?inventory=' + value;
+            }
+            function openNav() {
+            document.getElementById("navbar-left").style.width = "150px";
+            }
+
+            function closeNav() {
+            document.getElementById("navbar-left").style.width = "0";
+            }
         </script>
         @stack('scripts')
 
