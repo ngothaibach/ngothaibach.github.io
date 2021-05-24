@@ -182,6 +182,28 @@
             function closeNav() {
             document.getElementById("navbar-left").style.width = "0";
             }
+            function onClickMenuIcon(target) {
+                
+                target.classList.toggle("active");
+                let menuiconContent = target.nextElementSibling.nextElementSibling;
+                if (menuiconContent.style.display === "block") {
+                menuiconContent.style.display = "none";
+                } else {
+                menuiconContent.style.display = "block";
+                }
+            }
+            function onClickMenuName(target) {
+                target.classList.toggle("active");
+                let menuiconContent = target.nextElementSibling;
+                if (menuiconContent.style.display === "block") {
+                menuiconContent.style.display = "none";
+                } else {
+                menuiconContent.style.display = "block";
+                }
+            }
+        </script>
+        <script>
+
         </script>
         @stack('scripts')
 
