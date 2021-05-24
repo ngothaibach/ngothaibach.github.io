@@ -166,7 +166,7 @@
     /* Extra small devices (phones, 600px and down) */
 @media only screen and (max-width: 600px) {
     .pagination{
-        max-width: 400px;
+        max-width: 100vw;
         overflow-x: auto;
     }
 }

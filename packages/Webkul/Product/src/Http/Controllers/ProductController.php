@@ -136,6 +136,7 @@ class ProductController extends Controller
      */
     public function index()
     {
+        $inventory_id = Session::get('inventory');
         $searchfields = [
             ['key'=> 'product_id', 'columnType'=> 'number', 'value' => 'product_flat.product_id'],
             ['key'=> 'product_sku', 'columnType'=> 'string', 'value' => 'products.sku'],
@@ -143,7 +144,7 @@ class ProductController extends Controller
             ['key'=> 'price', 'columnType'=> 'number','value' =>'product_flat.price'],
             ['key'=>'status', 'columnType'=> 'string','value'=>'product_flat.status']
         ];
-        if(Session::get('inventory') == 0){
+        if($inventory_id == 0){
             $query = DB::table('product_flat')
                     ->leftJoin('products', 'product_flat.product_id', '=', 'products.id')
                     ->leftJoin('attribute_families', 'products.attribute_family_id', '=', 'attribute_families.id')
@@ -171,7 +172,6 @@ class ProductController extends Controller
             $query = DB::table('product_flat')
             ->leftJoin('products', 'product_flat.product_id', '=', 'products.id')
             ->leftJoin('attribute_families', 'products.attribute_family_id', '=', 'attribute_families.id')
-            ->leftJoin('product_inventories', 'product_flat.product_id', '=', 'product_inventories.product_id')
             ->leftJoin('product_images', 'product_flat.product_id', '=', 'product_images.product_id')
             ->Join('product_inventories', function($join)use($inventory_id){
                 $join->on('product_flat.product_id', '=', 'product_inventories.product_id')

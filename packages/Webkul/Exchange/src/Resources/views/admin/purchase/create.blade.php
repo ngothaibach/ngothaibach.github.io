@@ -22,7 +22,7 @@
     <script type="text/x-template" id="vpt-receipt-note-form-template">
         <form action="#" class="form newtopic" @submit.prevent="save">
             <div class="row" style="margin-top: 20px;">
-                <div class="col-lg-8 col-md-8 col-sm-12" style="align-self: baseline;">
+                <div class="col-lg-8 col-md-8 col-sm-12 product-live-search" style="align-self: baseline;">
                     <h2>Tạo phiếu nhập hàng</h2>
                     <div>
                         <product-live-search

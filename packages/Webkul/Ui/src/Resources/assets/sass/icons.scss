@@ -57,11 +57,16 @@
 }
 
 .arrow-down-icon {
-    background-image: url("../images/Arrow-Down-Light.svg");
+    background-image: url("../images/Arrow-Down.svg");
     width: 14px;
     height: 8px;
 }
-
+.arrow-up-icon {
+    background-image: url("../images/Arrow-Down.svg");
+    width: 14px;
+    height: 8px;
+    transform: scaleY(-1);
+}
 .arrow-right-icon {
     background-image: url("../images/Arrow-Right.svg");
     width: 18px;
