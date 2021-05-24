@@ -145,32 +145,6 @@
                             }
                     });
                 }
-
-                var menuicon = document.getElementsByClassName("menu-item-icon");
-                var dropdown = document.getElementsByClassName("menu-item-name");
-                var i;
-                for (i = 0; i < menuicon.length; i++) {
-                    menuicon[i].addEventListener("click", function() {
-                        this.classList.toggle("active");
-                        var menuiconContent = this.nextElementSibling.nextElementSibling;
-                        if (menuiconContent.style.display === "block") {
-                        menuiconContent.style.display = "none";
-                        } else {
-                        menuiconContent.style.display = "block";
-                        }
-                    });
-                }
-                for (i = 0; i < dropdown.length; i++) {
-                    dropdown[i].addEventListener("click", function() {
-                        this.classList.toggle("active");
-                        var dropdownContent = this.nextElementSibling;
-                        if (dropdownContent.style.display === "block") {
-                        dropdownContent.style.display = "none";
-                        } else {
-                        dropdownContent.style.display = "block";
-                        }
-                    });
-                }
             });
             function onChangeInventory(value) {
                     window.location.href = "{{route('admin.changeInventory')}}" + '?inventory=' + value;
