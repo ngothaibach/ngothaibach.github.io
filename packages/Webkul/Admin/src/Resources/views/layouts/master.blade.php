@@ -46,13 +46,13 @@
 
 
             <div class="content-container">
-                
+
                 {!! view_render_event('bagisto.admin.layout.content.before') !!}
 
                 @yield('content-wrapper')
 
                 {!! view_render_event('bagisto.admin.layout.content.after') !!}
-                
+
             </div>
 
         </div>
@@ -145,7 +145,7 @@
                             }
                     });
                 }
-                
+
             });
             function onChangeInventory(value) {
                     window.location.href = "{{route('admin.changeInventory')}}" + '?inventory=' + value;
@@ -157,11 +157,8 @@
             function closeNav() {
             document.getElementById("navbar-left").style.width = "0";
             }
-        </script>
-        <script>
-
-        window.addEventListener('load', 
-            function() { 
+            window.addEventListener('load',
+            function() {
                 var menuicon = document.getElementsByClassName("menu-item-icon");
                 var dropdown = document.getElementsByClassName("menu-item-name");
                 var i;
