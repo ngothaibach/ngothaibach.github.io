@@ -38,6 +38,32 @@
 
                         {{ __('admin::app.catalog.products.add-title') }}
                     </h1>
+                    <div class="control-group" style="display:none;">
+                        <select class="control" id="channel-switcher" name="channel">
+                            @foreach (core()->getAllChannels() as $channelModel)
+
+                                <option
+                                    value="{{ $channelModel->code }}" {{ ($channelModel->code) == $channel ? 'selected' : '' }}>
+                                    {{ $channelModel->name }}
+                                </option>
+
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="control-group" style="display:none;">
+                        <select class="control" id="locale-switcher" name="locale">
+                            @foreach (core()->getAllLocales() as $localeModel)
+
+                                <option
+                                    value="{{ $localeModel->code }}" {{ ($localeModel->code) == $locale ? 'selected' : '' }}>
+                                    {{ $localeModel->name }}
+                                </option>
+
+                            @endforeach
+                        </select>
+                    </div>
+
                     </div>
                 <div>
                 </div>

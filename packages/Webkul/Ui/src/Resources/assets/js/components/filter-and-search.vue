@@ -391,7 +391,7 @@
 /* Extra small devices (phones, 600px and down) */
 @media only screen and (max-width: 600px) {
     .datagrid-filters{
-        width:500px;
+        max-width:100vw;
     }
 }
 

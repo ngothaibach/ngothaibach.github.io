@@ -1,7 +1,7 @@
 <div class="navbar-top">
 
     <div class="navbar-top-left">
-    <span style="font-size:30px;cursor:pointer;float:left;" onclick="openNav()">&#9776;MENU</span>
+    <span class="navbar-span" onclick="openNav()">&#9776;</span>
         <div class="brand-logo">
             <a href="{{ route('admin.dashboard.index') }}">
                 @if (core()->getConfigData('general.design.admin_logo.logo_image', core()->getCurrentChannelCode()))

@@ -110,7 +110,7 @@
                                     </div>
                                     <div class="tabs-content" style="margin-top:20px;">
                                         <div class="row">
-                                            <div class="col-4" style="align-self: baseline;">
+                                            <div class="col-lg-4 col-md-4 col-sm-12" style="align-self: baseline;">
                                                 <div class="mb-3">
                                                     <div class="form-group row">
                                                         <label class="col-sm-4 col-form-label">Mã đặt hàng</label>
@@ -148,7 +148,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-4" style="align-self: baseline;">
+                                            <div class="col-lg-4 col-md-4 col-sm-12" style="align-self: baseline;">
                                                 <div class="mb-3">
                                                     <div class="form-group row">
                                                         <label class="col-sm-4 col-form-label">Chi nhánh                                          </label>
@@ -186,7 +186,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-4" style="align-self: baseline;">
+                                            <div class="col-lg-4 col-md-4 col-sm-12" style="align-self: baseline;">
                                                 <div class="mb-3">
                                                     <label class="col-sm-4 col-form-label">Ghi chú</label>
                                                     <div class="form-group row">
@@ -198,6 +198,7 @@
                                             </div>
                                         </div>
                                         <h4>Danh sách sản phẩm</h4>
+                                        <div class="table-outter">
                                         <table class="table table-bordered">
                                             <thead>
                                             <tr>
@@ -261,7 +262,7 @@
                                             </tr>
                                         </tbody>
                                         </table>
-                                        
+                                        </div>
                                         {{-- <span class="font-weight-bold">Tổng tiền hàng:</span> <span class="text-danger font-weight-bold" v-text="price_total"></span><br>
                                     <span class="font-weight-bold">Phí Ship:</span> <span class="text-danger font-weight-bold" v-text="price_total"></span><br>
                                     <span class="font-weight-bold">Tổng tiền hóa đơn mua:</span> <span class="text-danger font-weight-bold" v-text="price_total"></span><br>
@@ -283,6 +284,7 @@
                             </tr>
                         </tbody>
                     </table>
+
                     <div class="card-footer pb-0 pt-3">
                         <sort-pagination 
                         v-bind:items="form.invoice_note"

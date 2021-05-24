@@ -1,40 +1,107 @@
+.table{
+    table-layout: fixed;
+    word-wrap: break-word;
+}
+.content-container {
+    max-width: 100vw;
+    overflow-x: hidden;
+}
+.content-container .content .page-header{
+    width: 100vw;
+    position:unset;
+}
+.content-container .content-wrapper {
+    width: 100vw;
+}
+.product-live-search{
+    overflow-x:auto;
+}
+.table-outter{
+    overflow-x: scroll;
+}
 /* Extra small devices (phones, 600px and down) */
 @media only screen and (max-width: 600px) {
-    .content-container {
-        max-width: 100%;
-    }
-    .content-container .content .page-header{
-        width: 450px;
-    }
     .content-container .content-wrapper {
-        width: 150%;
+        padding: 0%;
+    }
+    .card-footer {
+        padding: 0%;
+    }
+    .table{
+        th, td {
+            padding: 2px;
+            font-size:14px;
+        }
+        .form-control{
+            width: 90%;
+        }
+        .table{
+            width: 150%;
+            th, td {
+                padding: 0px;
+                font-size:14px;
+            }
+        }
+    }
+    ::-webkit-scrollbar {
+        display:none;
+    }
+    .navbar-top .navbar-top-left{
+        width:40vw;
+    }
+    .navbar-top .navbar-top-right{
+        width: 60vw;
+    }
+    .content-container .content.full-page{
+        padding:0px;
+    }
+    .dashboard .graph-stats{
+        display: grid !important;
+        .left-card-container {
+            width: 100% !important;
+            padding-right: 0px !important;
+        }
+
+        .right-card-container {
+            width: 100% !important;
+            padding-left: 0px !important;
+        }
+    }
+    .dashboard .card .card-info ul li{
+        width: 80% !important;
     }
 }
 
 /* Small devices (portrait tablets and large phones, 600px and up) */
 @media only screen and (min-width: 600px) {
-    .content-container {
-        max-width: 100%;
+    .content-container .content-wrapper {
+        padding: 0%;
+    }
+    ::-webkit-scrollbar {
+        display:none;
     }
 }
 
 /* Medium devices (landscape tablets, 768px and up) */
 @media only screen and (min-width: 768px) {
-    .content-container {
-        max-width: 100%;
+    ::-webkit-scrollbar {
+        display:unset;
+        width: 4px;
+        height: 4px;
     }
 }
 
 /* Large devices (laptops/desktops, 992px and up) */
 @media only screen and (min-width: 992px) {
     .content-container {
-        max-width: 100%;
+        overflow-x: unset;
+    }
+    .content-container .content .page-header{
+        position: sticky;
     }
 }
 
 /* Extra large devices (large laptops and desktops, 1200px and up) */
 @media only screen and (min-width: 1200px) {
-    .content-container {
-        max-width: 100%;
-    }
+
 }

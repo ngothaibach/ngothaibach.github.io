@@ -134,7 +134,7 @@
                         }
                     });
 
-                    $("body").css({minHeight: $(".menubar").outerHeight() + 100 + "px"});
+                    // $("body").css({minHeight: $(".menubar").outerHeight() + 100 + "px"});
 
                     window.addEventListener('scroll', function() {
                         documentScrollWhenScrolled = $(document).scrollTop();
@@ -160,33 +160,34 @@
         </script>
         <script>
 
-        window.onload = function changedrop(){
-            var menuicon = document.getElementsByClassName("menu-item-icon");
-            var dropdown = document.getElementsByClassName("menu-item-name");
-            var i;
-            for (i = 0; i < menuicon.length; i++) {
-                menuicon[i].addEventListener("click", function() {
-                    this.classList.toggle("active");
-                    var menuiconContent = this.nextElementSibling.nextElementSibling;
-                    if (menuiconContent.style.display === "block") {
-                    menuiconContent.style.display = "none";
-                    } else {
-                    menuiconContent.style.display = "block";
-                    }
-                });
-            }
-            for (i = 0; i < dropdown.length; i++) {
-                dropdown[i].addEventListener("click", function() {
-                    this.classList.toggle("active");
-                    var dropdownContent = this.nextElementSibling;
-                    if (dropdownContent.style.display === "block") {
-                    dropdownContent.style.display = "none";
-                    } else {
-                    dropdownContent.style.display = "block";
-                    }
-                });
-            }
-        }
+        window.addEventListener('load', 
+            function() { 
+                var menuicon = document.getElementsByClassName("menu-item-icon");
+                var dropdown = document.getElementsByClassName("menu-item-name");
+                var i;
+                for (i = 0; i < menuicon.length; i++) {
+                    menuicon[i].addEventListener("click", function() {
+                        this.classList.toggle("active");
+                        var menuiconContent = this.nextElementSibling.nextElementSibling;
+                        if (menuiconContent.style.display === "block") {
+                        menuiconContent.style.display = "none";
+                        } else {
+                        menuiconContent.style.display = "block";
+                        }
+                    });
+                }
+                for (i = 0; i < dropdown.length; i++) {
+                    dropdown[i].addEventListener("click", function() {
+                        this.classList.toggle("active");
+                        var dropdownContent = this.nextElementSibling;
+                        if (dropdownContent.style.display === "block") {
+                        dropdownContent.style.display = "none";
+                        } else {
+                        dropdownContent.style.display = "block";
+                        }
+                    });
+                }
+            });
         </script>
         @stack('scripts')
 

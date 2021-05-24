@@ -294,7 +294,7 @@
 <style lang="scss" scoped>
 .product-live-search{
     word-wrap: break-word;
-    width:auto;
+    width: 600px;
 }
 .table {
     table-layout: fixed;
@@ -305,9 +305,6 @@
     word-wrap: break-word;
 }
 @media only screen and (max-width: 600px) {
-    .product-live-search{
-        width:600px;
-    }
     .th-sku, .td-sku{
         width:100px;
     }
@@ -324,10 +321,6 @@
 
 /* Medium devices (landscape tablets, 768px and up) */
 @media only screen and (min-width: 768px) {
-    .product-live-search{
-        width:500px;
-        overflow-x:scroll ;
-    }
      .th-sku, .td-sku{
         width:75px;
     }
@@ -347,9 +340,6 @@
 
 /* Large devices (laptops/desktops, 992px and up) */
 @media only screen and (min-width: 992px) {
-     .product-live-search{
-        width:650px;
-    }
      .th-sku, .td-sku{
         width:100px;
     }
@@ -365,13 +355,13 @@
     .table th{
         padding:0.75rem;
     }
+    .product-live-search{
+        width: unset;
+    }
 }
 
 /* Extra large devices (large laptops and desktops, 1200px and up) */
 @media only screen and (min-width: 1200px) {
-     .product-live-search{
-        width:100%;
-    }
      .th-sku, .td-sku{
         width:100px;
     }

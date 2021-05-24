@@ -91,7 +91,7 @@
                                 </div>
                                 <div class="tabs-content" style="margin-top:20px;">
                                     <div class="row">
-                                        <div class="col-4" style="align-self: baseline;">
+                                        <div class="col-lg-4 col-md-4 col-sm-12" style="align-self: baseline;">
                                             <div class="mb-3">
                                                 <div class="form-group row">
                                                     <label class="col-sm-4 col-form-label">Mã đặt hàng</label>
@@ -128,7 +128,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-4" style="align-self: baseline;">
+                                        <div class="col-lg-4 col-md-4 col-sm-12" style="align-self: baseline;">
                                             {{-- <div class="mb-3">
                                                 <div class="form-group row">
                                                     <label class="col-sm-4 col-form-label">Khách hàng                                             </label>
@@ -163,7 +163,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-4" style="align-self: baseline;">
+                                        <div class="col-lg-4 col-md-4 col-sm-12" style="align-self: baseline;">
                                             <div class="mb-3">
                                                 <label class="col-sm-4 col-form-label">Ghi chú</label>
                                                 <div class="form-group row">
@@ -175,26 +175,28 @@
                                         </div>
                                     </div>
                                     <h4>Danh sách sản phẩm</h4>
-                                    <table class="table table-bordered">
-                                        <thead>
-                                        <tr>
-                                            <th v-for="product_table_header in product_table_headers" class="grid_head">
-                                                <p v-text="product_table_header"></p>
-                                            </th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr v-for="(product,index1) in product_list">
-                                                <td v-text="product.sku" style="color : #056bd3;"></td>
-                                                <td v-text="product.name"></td>
-                                                <td v-text="parseFloat(product.base_price).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')+ ' ₫'"></td>
-                                                <td v-text="product.qty"></td>
-                                                <td v-text="parseFloat(product.base_total).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')+ ' ₫'"></td>
-                                                <td v-text="parseFloat(product.base_tax_amount).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')+ ' ₫'"></td>
-                                                <td v-text="getTotal(product.base_total,product.base_tax_amount)"></td>
+                                    <div class="table-outter">
+                                        <table class="table table-bordered">
+                                            <thead>
+                                            <tr>
+                                                <th v-for="product_table_header in product_table_headers" class="grid_head">
+                                                    <p v-text="product_table_header"></p>
+                                                </th>
                                             </tr>
-                                        </tbody>
-                                    </table>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="(product,index1) in product_list">
+                                                    <td v-text="product.sku" style="color : #056bd3;"></td>
+                                                    <td v-text="product.name"></td>
+                                                    <td v-text="parseFloat(product.base_price).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')+ ' ₫'"></td>
+                                                    <td v-text="product.qty"></td>
+                                                    <td v-text="parseFloat(product.base_total).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')+ ' ₫'"></td>
+                                                    <td v-text="parseFloat(product.base_tax_amount).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')+ ' ₫'"></td>
+                                                    <td v-text="getTotal(product.base_total,product.base_tax_amount)"></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                     <table class="sale-summary" >
                                         <tbody>
                                         <tr>

@@ -74,7 +74,7 @@
                                 </div>
                                 <div class="tabs-content" style="margin-top:20px;">
                                     <div class="row">
-                                        <div class="col-4" style="align-self: baseline;">
+                                        <div class="col-lg-4 col-md-4 col-sm-12" style="align-self: baseline;">
                                             <div class="mb-3">
                                                 <div class="form-group row">
                                                     <label class="col-sm-4 col-form-label">Mã chuyển</label>
@@ -100,7 +100,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-4" style="align-self: baseline;">
+                                        <div class="col-lg-4 col-md-4 col-sm-12" style="align-self: baseline;">
                                             <div class="mb-3">
                                                 <div class="form-group row">
                                                     <label class="col-sm-4 col-form-label">Trạng thái</label>
@@ -130,7 +130,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-4" style="align-self: baseline;">
+                                        <div class="col-lg-4 col-md-4 col-sm-12" style="align-self: baseline;">
                                             <div class="mb-3">
                                                     <div class="form-group row">
                                                         <label class="col-sm-4 col-form-label">Người tạo</label>
@@ -150,28 +150,30 @@
                                         </div>    
                                     </div>
                                     <h4>Danh sách sản phẩm chuyển</h4>
-                                    <table class="table table-bordered">
-                                        <thead>
-                                        <tr>
-                                            <th v-for="product_table_header in product_table_headers" class="grid_head">
-                                                <p v-text="product_table_header"></p>
-                                            </th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr v-for="(product,index1) in product_list">
-                                                <td v-text="product.product_id"></td>
-                                                <td><img style="width: 60xp; height: 60px;" v-bind:src="'/cache/small/' + product.featured_image"/></td>
-                                                <td v-text="product.name"></td>
-                                                <td v-text="formatPrice(product.price)"></td>
-                                                <td>
-                                                    <div class="col-sm-8">
-                                                        <input type="text" :value="product.transfer_qty" @change.lazy="update_total_price(parseInt($event.target.value),product.transfer_qty,product.price,index1)" class="form-control" :disabled="!updatePermission ? true : form.oldListReceip[index].status == 'temporary' ? false : true " >
-                                                    </div>
-                                                </td>
+                                    <div class="table-outter">
+                                        <table class="table table-bordered">
+                                            <thead>
+                                            <tr>
+                                                <th v-for="product_table_header in product_table_headers" class="grid_head">
+                                                    <p v-text="product_table_header"></p>
+                                                </th>
                                             </tr>
-                                        </tbody>
-                                    </table>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="(product,index1) in product_list">
+                                                    <td v-text="product.product_id"></td>
+                                                    <td><img style="width: 60xp; height: 60px;" v-bind:src="'/cache/small/' + product.featured_image"/></td>
+                                                    <td v-text="product.name"></td>
+                                                    <td v-text="formatPrice(product.price)"></td>
+                                                    <td>
+                                                        <div>
+                                                            <input type="text" :value="product.transfer_qty" @change.lazy="update_total_price(parseInt($event.target.value),product.transfer_qty,product.price,index1)" class="form-control" :disabled="!updatePermission ? true : form.oldListReceip[index].status == 'temporary' ? false : true " >
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    <div>
                                     <span class="font-weight-bold">Tổng giá trị:</span> <span class="text-danger font-weight-bold" v-text="formatPrice(price_total)"></span>
                                     <div class="text-right">
                                         <button type="button" class="btn btn-success" v-on:click="save_inventory(item.id,item.note,item.status,item.importer,item.type,item.from_inventory_id,item.receipt_date,price_total)" :disabled="!updatePermission ? true : form.oldListReceip[index].status == 'temporary' ? false : form.oldListReceip[index].status == 'transfering' ? false : true" >Lưu</button>

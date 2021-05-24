@@ -47,8 +47,7 @@
                     <thead>
                     <tr>
                         <th v-for="(table_header,index) in table_headers" >
-                            <p  v-text="table_header" v-on:click = "sort(sort_list[index]);showArrow(index)" ></p><p :class="arrow" v-if="currentArrow == index" ></p>
-                        </p>
+                            <p  v-text="table_header" v-on:click = "sort(sort_list[index]);showArrow(index)" ></p><i :class="arrow" v-if="currentArrow == index" ></i>
                         </th>
                     </tr>
                     </thead>
@@ -75,7 +74,7 @@
                                 </div>
                                 <div class="tabs-content" style="margin-top:20px;">
                                     <div class="row">
-                                        <div class="col-4" style="align-self: baseline;">
+                                        <div class="col-lg-4 col-md-4 col-sm-12" style="align-self: baseline;">
                                             <div class="mb-3">
                                                 <div class="form-group row">
                                                     <label class="col-sm-4 col-form-label">Mã nhập hàng</label>
@@ -101,7 +100,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-4" style="align-self: baseline;">
+                                        <div class="col-lg-4 col-md-4 col-sm-12" style="align-self: baseline;">
                                             <div class="mb-3">
                                                 <div class="form-group row">
                                                     <label class="col-sm-4 col-form-label">Trạng thái</label>
@@ -122,7 +121,7 @@
                                                 </div>
                                             </div>                                                                                                                  
                                         </div>                                                                                                     
-                                        <div class="col-4" style="align-self: baseline;">
+                                        <div class="col-lg-4 col-md-4 col-sm-12" style="align-self: baseline;">
                                             <div class="mb-3">
                                                 <div class="form-group row">
                                                     <label class="col-sm-4 col-form-label" >Người nhập</label>
@@ -158,28 +157,30 @@
                                         </div>    
                                     </div>
                                     <h4>Danh sách sản phẩm nhập</h4>
-                                    <table class="table table-bordered">
-                                        <thead>
-                                        <tr>
-                                            <th v-for="product_table_header in product_table_headers" class="grid_head">
-                                                <p v-text="product_table_header"></p>
-                                            </th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr v-for="(product,index1) in product_list">
-                                                <td v-text="product.id"></td>
-                                                <td><img style="width: 60xp; height: 60px;" v-bind:src="'/cache/small/' + product.featured_image"/></td>
-                                                <td v-text="product.name"></td>
-                                                <td v-text="formatPrice(product.price)"></td>
-                                                <td>
-                                                    <div class="col-sm-8">
-                                                    <input type="text" :value="product.receipt_qty" @change.lazy="update_total_price(parseInt($event.target.value),product.receipt_qty,product.price,index1)" class="form-control" :disabled="!updatePermission ? true : form.oldListReceip[index].status == 'temporary' ? false : true " >
-                                                    </div>
-                                                </td>
+                                    <div class="table-outter">
+                                        <table class="table table-bordered">
+                                            <thead>
+                                            <tr>
+                                                <th v-for="product_table_header in product_table_headers" class="grid_head">
+                                                    <p v-text="product_table_header"></p>
+                                                </th>
                                             </tr>
-                                        </tbody>
-                                    </table>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="(product,index1) in product_list">
+                                                    <td v-text="product.id"></td>
+                                                    <td><img style="width: 60xp; height: 60px;" v-bind:src="'/cache/small/' + product.featured_image"/></td>
+                                                    <td v-text="product.name"></td>
+                                                    <td v-text="formatPrice(product.price)"></td>
+                                                    <td>
+                                                        <div >
+                                                        <input type="text" :value="product.receipt_qty" @change.lazy="update_total_price(parseInt($event.target.value),product.receipt_qty,product.price,index1)" class="form-control" :disabled="!updatePermission ? true : form.oldListReceip[index].status == 'temporary' ? false : true " >
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                     <span class="font-weight-bold">Tổng giá trị:</span> <span class="text-danger font-weight-bold" v-text="formatPrice(price_total)"></span>
                                     <div class="text-right">
                                         <button type="button" class="btn btn-success" v-on:click="save_inventory(item.id,item.note,item.status,item.importer,item.type,item.inventoryID,price_total)" :disabled="!updatePermission ? true : form.oldListReceip[index].status == 'temporary' ? false : true " >Lưu</button>
@@ -220,7 +221,7 @@
                     sortBy: "id",
                     pageOfItems: [],
                     perPage: 10,
-                    arrow: "custom-arrow-icon-down",
+                    arrow: "icon arrow-down-icon",
                     currentArrow : 0,
                     //pagination
                     //check permission
@@ -343,11 +344,11 @@
                     if(this.sortBy != name){
                         this.sortBy = name;
                         this.currentSortDir = 'desc';
-                        this.arrow = 'custom-arrow-icon-down';
+                        this.arrow = 'icon arrow-down-icon';
                         
                     }else{
                         this.currentSortDir = this.currentSortDir==='asc'?'desc':'asc';
-                        this.arrow = this.arrow=== 'custom-arrow-icon-down' ? 'custom-arrow-icon-up' : 'custom-arrow-icon-down';
+                        this.arrow = this.arrow=== 'icon arrow-down-icon' ? 'icon arrow-up-icon' : 'icon arrow-down-icon';
                     }
                 },
                 showArrow(number) {

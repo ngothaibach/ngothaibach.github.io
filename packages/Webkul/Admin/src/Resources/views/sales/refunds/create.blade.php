@@ -25,7 +25,7 @@ Trả hàng
     <script type="text/x-template" id="refund-items-template">
         <form action="#" class="form newtopic" @submit.prevent="save">    
             <div class="row" style="margin-top: 5px;">
-                <div class="col-9" style="align-self: baseline;">
+                <div class="col-lg-8 col-md-8 col-sm-12 product-live-search" style="align-self: baseline;">
                     <h3>Hàng trả</h3>
                     <div>
                         <table class="table">
@@ -76,7 +76,7 @@ Trả hàng
                     </div>
                 </div>
 
-                <div class="col-3" style="position: absolute; right: -12px; top: 2px;">
+                <div class="col-lg-4 col-md-4 col-sm-12" style="position: relative; top: 2px;">
                     <h2>Trả hàng <a href="{{ route('admin.sales.orders.view', $order->id) }}">{{ $order->increment_id }}</a> - {{ $order->customer_full_name }}</h2>
                 <div>
                     <div class="mb-3">

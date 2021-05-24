@@ -6,7 +6,7 @@ body {
     font-weight: 500;
     position: static;
     height: 100%;
-    width: 100%;
+    width: 100vw;
     background-color: $body-background;
 }
 
@@ -34,7 +34,15 @@ body {
     left: 0;
     right: 0;
     z-index: 5;
-
+    width: 100vw;
+    .navbar-span{
+        width: 40px;
+        display: inline-block;
+        height: 60px;
+        font-size: 40px;
+        cursor: pointer;
+        vertical-align: bottom;
+    }
     .navbar-top-left {
         width: 50%;
         height: 60px;
@@ -44,6 +52,7 @@ body {
 
         .brand-logo {
             padding: 10px;
+            display:inline-block;
         }
     }
 
@@ -275,7 +284,7 @@ body {
         }
 
         .page-content {
-            width: 100%;
+            width: 100vw;
             display: inline-block;
         }
     }
