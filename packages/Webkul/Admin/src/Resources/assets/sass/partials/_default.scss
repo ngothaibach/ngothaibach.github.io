@@ -35,14 +35,6 @@ body {
     right: 0;
     z-index: 5;
     width: 100vw;
-    .navbar-span{
-        width: 40px;
-        display: inline-block;
-        height: 60px;
-        font-size: 40px;
-        cursor: pointer;
-        vertical-align: bottom;
-    }
     .navbar-top-left {
         width: 50%;
         height: 60px;
@@ -53,6 +45,10 @@ body {
         .brand-logo {
             padding: 10px;
             display:inline-block;
+        }
+        .navtop-menu{
+            display: inline-block;
+            font-size: 40px;
         }
     }
 

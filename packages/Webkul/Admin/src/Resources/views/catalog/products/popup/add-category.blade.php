@@ -111,7 +111,7 @@
 
                                         {!! view_render_event('bagisto.admin.catalog.category.create_form_accordian.parent_category.controls.before') !!}
 
-                                        <parent-category></parent-category>
+                                        <parent-category namefield="parent_id"></parent-category>
 
                                         {!! view_render_event('bagisto.admin.catalog.category.create_form_accordian.parent_category.controls.after') !!}
 
@@ -193,7 +193,6 @@
                 </div>
 <!-- popup add category -->
 @push('scripts')
-    @parent
 <script>
         $(document).ready(function () {
             $('.label .cross-icon').on('click', function(e) {

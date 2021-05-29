@@ -1,7 +1,9 @@
 <div class="navbar-top">
 
     <div class="navbar-top-left">
-    <span class="navbar-span" onclick="openNav()">&#9776;</span>
+        <div class ="navtop-menu">
+            <span id="menu-span" style="vertical-align: text-bottom;" onclick="openNav()">&#9776;</span>
+        </div>
         <div class="brand-logo">
             <a href="{{ route('admin.dashboard.index') }}">
                 @if (core()->getConfigData('general.design.admin_logo.logo_image', core()->getCurrentChannelCode()))
