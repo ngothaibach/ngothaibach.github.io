@@ -110,7 +110,7 @@ return [
     ],
     [
         'key'   => 'reports.staff',
-        'name'  => 'Báo cáo theo nhân viên bán hàng',
+        'name'  => 'Báo cáo nhân viên',
         'route' => 'reports.admin.staff',
         'sort'  => 3,
         'icon-class' => '',
