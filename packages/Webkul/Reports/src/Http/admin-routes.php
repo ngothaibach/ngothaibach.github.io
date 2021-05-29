@@ -18,5 +18,8 @@ Route::group(['middleware' => ['web', 'admin']], function () {
     Route::get('/admin/reports_staff', 'Webkul\Reports\Http\Controllers\Admin\ReportsController@index_staff')->defaults('_config', [
         'view' => 'reports::admin.staff',
     ])->name('reports.admin.staff');
+    Route::post('admin/reports_staff/export', 'Webkul\Reports\Http\Controllers\Admin\ReportsController@export_staff_report')->defaults('_config', [
+        'view' => 'reports::admin.staff',
+    ])->name('reports.admin.export_staff_report');
 
 });
