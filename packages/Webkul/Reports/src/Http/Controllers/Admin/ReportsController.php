@@ -133,7 +133,29 @@ class ReportsController extends Controller
     }
 
     public function index_customer() {
-        return view($this->_config['view']);
+        $user_sale = DB::table('admins')
+        ->select('id','name')
+        ->get()->toArray();
+
+        $inventory_sources = DB::table('inventory_sources')->select('id', 'name')->get();
+
+        return view($this->_config['view'], compact('user_sale', 'inventory_sources'));
+    }
+
+    public function export_customers_report() {
+        $gridName = 'Báo cáo theo khách hàng';
+
+        $path = '\Webkul\Admin\DataGrids\\ReportCustomersDataGrid';
+
+        $gridInstance = new $path;
+        
+        $records = $gridInstance->export();
+        if (! count($records)) {
+            session()->flash('warning', trans('admin::app.export.no-records'));
+
+            return redirect()->back();
+        }
+        return Excel::download(new DataGridExport($records), $gridName.'.xlsx');
     }
 
     public function index_staff() {
