@@ -21,7 +21,6 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Webkul\Sales\Models\OrderAddress;
 use Webkul\Sales\Repositories\OrderAddressRepository;
-use Webkul\Admin\Helpers\FilterCollection;
 use Session;
 class ProductController extends Controller
 {
@@ -137,13 +136,6 @@ class ProductController extends Controller
     public function index()
     {
         $inventory_id = Session::get('inventory');
-        $searchfields = [
-            ['key'=> 'product_id', 'columnType'=> 'number', 'value' => 'product_flat.product_id'],
-            ['key'=> 'product_sku', 'columnType'=> 'string', 'value' => 'products.sku'],
-            ['key'=> 'product_name', 'columnType'=> 'string', 'value'=>'product_flat.name'], 
-            ['key'=> 'price', 'columnType'=> 'number','value' =>'product_flat.price'],
-            ['key'=>'status', 'columnType'=> 'string','value'=>'product_flat.status']
-        ];
         if($inventory_id == 0){
             $query = DB::table('product_flat')
                     ->leftJoin('products', 'product_flat.product_id', '=', 'products.id')
@@ -197,10 +189,6 @@ class ProductController extends Controller
                 DB::raw('SUM( product_inventories.qty) as quantity')
             )->groupBy('product_flat.product_id');
         };
-        if($_GET){
-            $filter = new FilterCollection();
-            $query = $filter->filterCollection($query,$searchfields);
-        }
         $product = $query->get()->toArray();
         return view($this->_config['view'], compact('product'));
         /* query builder */

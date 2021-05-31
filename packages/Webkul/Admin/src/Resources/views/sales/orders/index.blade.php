@@ -32,25 +32,7 @@
         </div>
         <div class="page-content">
             <div class="page-content">
-            <filter-and-search 
-                :searchfields = "[
-                {name: 'Id hoá đơn', key: 'order_id', columnType: 'number' },
-                {name: 'Thời gian', key: 'updated_at', columnType: 'datetime'}, 
-                {name: 'Họ Khách hàng', key: 'customer_first_name', columnType: 'string'},
-                {name: 'Tên Khách hàng', key: 'customer_last_name', columnType: 'string'},
-                {name: 'Tổng tiền hàng', key:'base_sub_total', columnType: 'number'},
-                {name: 'Tổng sau giảm giá', key:'base_grand_total', columnType: 'number'},
-                {name: 'Trạng thái', key:'status', columnType: 'custom'},
-                ]"
-                :customfields = "[
-                {name: 'Lưu tạm', key: 'temporary' },
-                {name: 'Đang xử lý', key: 'processing'}, 
-                {name: 'Đã đóng', key: 'closed'},
-                {name: 'Đang chờ', key: 'pending'},
-                {name: 'Hoàn thành', key: 'completed'},
-                {name: 'Đã hủy', key: 'canceled'},
-                ]"
-            ></filter-and-search>
+            
                 <vpt-list-receipt-notes></vpt-list-receipt-notes>
             </div>
         </div>
@@ -72,6 +54,29 @@
 @push('scripts')
     <script type="text/x-template" id="vpt-list-receipt-notes-template">
         <form action="#" class="form newtopic" @submit.prevent="save">
+                <div>
+                <filter-and-search 
+                :searchfields = "[
+                {name: 'Id hoá đơn', key: 'order_id', columnType: 'number' },
+                {name: 'Thời gian', key: 'updated_at', columnType: 'datetime'}, 
+                {name: 'Họ Khách hàng', key: 'customer_first_name', columnType: 'string'},
+                {name: 'Tên Khách hàng', key: 'customer_last_name', columnType: 'string'},
+                {name: 'Tổng tiền hàng', key:'base_sub_total', columnType: 'number'},
+                {name: 'Tổng sau giảm giá', key:'base_grand_total', columnType: 'number'},
+                {name: 'Trạng thái', key:'status', columnType: 'custom'},
+                ]"
+                :customfields = "[
+                {name: 'Lưu tạm', key: 'temporary' },
+                {name: 'Đang xử lý', key: 'processing'}, 
+                {name: 'Đã đóng', key: 'closed'},
+                {name: 'Đang chờ', key: 'pending'},
+                {name: 'Hoàn thành', key: 'completed'},
+                {name: 'Đã hủy', key: 'canceled'},
+                ]"
+                :items="form.invoice_note"
+                @changeFilter="onChangeFilter"
+            ></filter-and-search>
+                </div>
                 <div>
                     <table class="table table-bordered">
                         <thead>
@@ -287,7 +292,7 @@
 
                     <div class="card-footer pb-0 pt-3">
                         <sort-pagination 
-                        v-bind:items="form.invoice_note"
+                        v-bind:items="filteredItems"
                         v-bind:pageSize = "perPage"
                         v-bind:sortBy ="sortBy"
                         v-bind:currentSortDir ="currentSortDir"
@@ -320,6 +325,7 @@
                     perPage: 10,
                     arrow: "custom-arrow-icon-down",
                     currentArrow: 0,
+                    filteredItems:{!! json_encode($invoice_note) !!},
                     //pagination
                     form: new Form({
                         canInvoice: false,
@@ -500,6 +506,9 @@
                 onChangePage(pageOfItems) {
                     // update page of items
                     this.pageOfItems = pageOfItems;
+                },
+                onChangeFilter(filteredItems){
+                    this.filteredItems = filteredItems;
                 },
                 sort(name) {
                     if (this.sortBy != name) {

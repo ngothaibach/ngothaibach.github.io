@@ -76,6 +76,9 @@
             sortBy: {
                 type: String
             },
+            sortFieldType: {
+                type: String
+            },
             currentSortDir: {
                 type: String
             }
@@ -133,7 +136,16 @@
                 this.setPage(this.initialPage);
             },
             changeSort(){
-                return this.items.sort((a,b) => {
+                if(this.sortFieldType == "number"){
+                    return this.items.sort((a,b) => {
+                        if(this.currentSortDir === 'asc'){
+                            return a[this.sortBy]-b[this.sortBy];
+                        }else{
+                            return b[this.sortBy]-a[this.sortBy];
+                        }
+                    })
+                }else{
+                    return this.items.sort((a,b) => {
                     let modifier = 1;
 
                     if(this.currentSortDir === 'desc') modifier = -1;
@@ -141,6 +153,8 @@
                     if(a[this.sortBy] > b[this.sortBy]) return 1 * modifier;
                     return 0;
                 })    
+                }
+                
             }
         }
     }

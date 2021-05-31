@@ -27,7 +27,25 @@
             {!! $orderInvoicesGrid->render() !!}
         </div> --}}
         <div class="page-content">
-        <filter-and-search 
+        
+            <vpt-list-receipt-notes></vpt-list-receipt-notes>
+        </div>
+    </div>
+
+    <modal id="downloadDataGrid" :is-open="modalIds.downloadDataGrid">
+        <h3 slot="header">{{ __('admin::app.export.download') }}</h3>
+        <div slot="body">
+            <export-form></export-form>
+        </div>
+    </modal>
+
+@stop
+
+@push('scripts')
+    <script type="text/x-template" id="vpt-list-receipt-notes-template">
+        <form action="#" class="form newtopic" @submit.prevent="save">
+            <div>
+            <filter-and-search 
                 :searchfields = "[
                 {name: 'Id hoá đơn', key: 'id', columnType: 'number' },
                 {name: 'Thời gian', key: 'created_at', columnType: 'datetime'}, 
@@ -45,23 +63,10 @@
                 {name: 'Hoàn thành', key: 'completed'},
                 {name: 'Đã hủy', key: 'canceled'},
                 ]"
+                :items="form.invoice_note"
+                @changeFilter="onChangeFilter"
             ></filter-and-search>
-            <vpt-list-receipt-notes></vpt-list-receipt-notes>
-        </div>
-    </div>
-
-    <modal id="downloadDataGrid" :is-open="modalIds.downloadDataGrid">
-        <h3 slot="header">{{ __('admin::app.export.download') }}</h3>
-        <div slot="body">
-            <export-form></export-form>
-        </div>
-    </modal>
-
-@stop
-
-@push('scripts')
-    <script type="text/x-template" id="vpt-list-receipt-notes-template">
-        <form action="#" class="form newtopic" @submit.prevent="save">
+            </div>
             <div>
                 <table class="table table-bordered">
                     <thead>
@@ -250,7 +255,7 @@
                 </table>
                 <div class="card-footer pb-0 pt-3">
                     <sort-pagination 
-                    v-bind:items="form.invoice_note"
+                    v-bind:items="filteredItems"
                     v-bind:pageSize = "perPage"
                     v-bind:sortBy ="sortBy"
                     v-bind:currentSortDir ="currentSortDir"
@@ -281,6 +286,7 @@
                     perPage: 10,
                     arrow: "custom-arrow-icon-down",
                     currentArrow : 0,
+                    filteredItems: {!! json_encode($invoice_note) !!},
                     //pagination
                     form: new Form({
                         invoice_note : {!! json_encode($invoice_note) !!},
@@ -428,6 +434,9 @@
                     // update page of items
                     this.pageOfItems = pageOfItems;
                 },    
+                onChangeFilter(filteredItems){
+                    this.filteredItems = filteredItems;
+                },
                 // thêm nếu muốn sort
                 sort(name){
                     if(this.sortBy != name){

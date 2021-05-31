@@ -20,8 +20,6 @@
                                         disabled>Chọn điều khiện</option>
                                 <option value="like">Chứa</option>
                                 <option value="nlike">Không chứa</option>
-                                <option value="eq">Bằng</option>
-                                <option value="neqs">Khác</option>
                             </select>
                         </div>
                     </li>
@@ -63,8 +61,8 @@
                             <select class="control" v-model="modelArray[index].condition">
                                 <option selected
                                         disabled>Chọn điều kiện</option>
-                                <option value="eq">Bằng</option>
-                                <option value="neqs">Khác</option>
+                                <option value="like">Bằng</option>
+                                <option value="nlike">Khác</option>
                             </select>
                         </div>
                     </li>
@@ -72,8 +70,8 @@
                         <div class="control-group">
                             <select class="control" v-model="modelArray[index].vmoel">
                                 <option selected disabled>Giá trị</option>
-                                <option value="1">True/ Active</option>
-                                <option value="0">False/ inActive</option>
+                                <option value="True">True/ Active</option>
+                                <option value="False">False/ inActive</option>
                             </select>
                         </div>
                     </li>
@@ -85,8 +83,8 @@
                             <select class="control" v-model="modelArray[index].condition">
                                 <option selected
                                         disabled>Chọn điều kiện</option>
-                                <option value="eq">Bằng</option>
-                                <option value="neqs">Khác</option>
+                                <option value="like">Bằng</option>
+                                <option value="nlike">Khác</option>
                             </select>
                         </div>
                     </li>
@@ -125,19 +123,18 @@
             </ul>
         </div>
     </div>
-    <button class="btn btn-sm btn-primary apply-filter" v-on:click="getResponse">Tìm</button>
+    <button type="button" class="btn btn-sm btn-primary apply-filter" v-on:click="changeFilter">Tìm</button>
+    <button type="button" class="btn btn-sm btn-primary apply-filter" v-on:click="defaultFilter">Đặt lại</button>
 </div>
 
 <div class="filtered-tags">
     <span class="filter-tag" v-if="filters.length > 0" v-for="filter in filters" style="text-transform: capitalize;">
-        <span v-if="filter.column == 'perPage'">perPage</span>
-        <span v-else>{{ filter.label }}</span>
-        <span class="wrapper" v-if="filter.prettyValue">
-            {{ filter.prettyValue }}
-            <span class="icon cross-icon" v-on:click="removeFilter(filter)"></span>
+        <span >{{ filter.fieldname }}</span>
+        <span class="wrapper">
+            {{  displayCondition(filter.condition) }}
         </span>
-        <span class="wrapper" v-else>
-            {{ decodeURIComponent(filter.val) }}
+        <span class="wrapper" >
+            {{filter.value }}
             <span class="icon cross-icon" v-on:click="removeFilter(filter)"></span>
         </span>
     </span>
@@ -155,191 +152,213 @@
                 customfields:{
                     type:Array,
                     required: false
-                }
+                },
+                items: {
+                    type: Array,
+                    required: true
+                },
             },
             data() {
-                return{
-                    filterColumn: null,
-                    selectedType: null,
-                    selectedValue: '',
-                    stringCondition: null,
-                    booleanCondition: null,
-                    numberCondition: null,
-                    datetimeCondition: null,
-                    customCondition:null,
-                    stringValue: null,
-                    customValue: null,
-                    booleanValue: null,
-                    datetimeValue: '2000-01-01',
-                    numberValue: 0,
+                return{  
                     filters: [],
-                    parsedUrl : [],
-                    currentUrl:new URL(window.location.href),
                     modelArray:[],
-                    newParams : '',
-                    
+                    filteredItems:[],
+                    conditionName:[
+                        {name:"Bằng",value:"eq"},
+                        {name:"Lớn hơn",value:"gt"},
+                        {name:"Khác",value:"neqs"},
+                        {name:"Nhỏ hơn",value:"lt"},
+                        {name:"Lớn hơn hoặc bằng",value:"gte"},
+                        {name:"Bé hơn hoặc bằng",value:"lte"},
+                        {name:"Chứa",value:"like"},
+                        {name:"Không chứa",value:"nlike"},
+                        {name:"True",value:"True"},
+                        {name:"False",value:"False"},
+                    ]                    
                 }
             },
             mounted: function () {
-                this.setParamsAndUrl();
                 this.createModelArray();
+                this.defaultFilter();
             },
             methods: {
-                setParamsAndUrl: function () {
-                    let params = (new URL(window.location.href)).search;
-                    if (params.slice(1, params.length).length > 0) {
-                        let obj = {};
-                        const processedUrl = this.currentUrl.search.slice(1, this.currentUrl.length);
-                        let splitted = [];
-                        let moreSplitted = [];
-
-                        splitted = processedUrl.split('&');
-
-                        for (let i = 0; i < splitted.length; i++) {
-                            moreSplitted.push(splitted[i].split('='));
-                        }
-
-                        for (let i = 0; i < moreSplitted.length; i++) {
-                            const key = decodeURI(moreSplitted[i][0]);
-                            let value = decodeURI(moreSplitted[i][1]);
-
-                            if (value.includes('+')) {
-                                value = value.replace('+', ' ');
-                            }
-
-                            obj.column = key.replace(']', '').split('[')[0];
-                            obj.cond = key.replace(']', '').split('[')[1]
-                            obj.val = value;
- 
-                            for (let colIndex in this.columns) {
-                                if (this.columns[colIndex].index === obj.column) {
-                                    obj.label = this.columns[colIndex].label;
-                                    if (this.columns[colIndex].type === 'boolean') {
-                                        if (obj.val === '1') {
-                                            obj.val = 'true';
-                                        } else {
-                                            obj.val = 'false';
-                                        }
-                                    }
-                                }
-                            }
-                            if (obj.column !== undefined && obj.val !== undefined) {
-                                this.filters.push(obj);
-                            }
-
-                            obj = {};
-                        }
-                    }
-                },
-                getSelectedType(key){
-                    this.selectedValue = key;
-                    for (let index in this.searchfields) {
-                        if (this.searchfields[index].key === this.selectedValue) {
-                            this.selectedType = this.searchfields[index].columnType;
-                        }
-                    } 
-                },
                 createModelArray(){
-                    for(let index in this.searchfields){
-                        this.modelArray.push({ condition: null,vmodel:null,type: this.searchfields[index].columnType});
+                   for(let index in this.searchfields){
+                       this.modelArray.push({ condition: null,vmodel:null,type: this.searchfields[index].columnType});
+                   }
+                },
+                stringToASCII: function(str){
+                    try {
+                        return str.replace(/[àáảãạâầấẩẫậăằắẳẵặ]/g, 'a')
+                        .replace(/[èéẻẽẹêềếểễệ]/g, 'e')
+                        .replace(/[đ]/g, 'd')
+                        .replace(/[ìíỉĩị]/g, 'i')
+                        .replace(/[òóỏõọôồốổỗộơờớởỡợ]/g, 'o')
+                        .replace(/[ùúủũụưừứửữự]/g, 'u')
+                        .replace(/[ỳýỷỹỵ]/g, 'y')
+                        .replace(/\s/g, '')
+                    } catch {
+                        return 'no result'
                     }
+                },
+                defaultFilter(){
+                    this.filteredItems = this.items;
+                    this.$emit('changeFilter',this.filteredItems)
                 },
                 filterNumberInput: function(e){
                     this.numberValue = e.target.value.replace(/[^0-9\,\.]+/g, '');
                 },
-                getResponse: function() {
-                    for(let index in this.modelArray){
-                        if(this.modelArray[index].condition != null){
-                            if (this.modelArray[index].type === 'string' && this.modelArray[index].vmodel !== null) {
-                                this.formURL(this.searchfields[index].key, this.modelArray[index].condition, encodeURIComponent(this.modelArray[index].vmodel), this.searchfields[index].name)
-                            } else if (this.modelArray[index].type === 'number') {
-                                let indexConditions = true;
-                                if (this.filterIndex === this.searchfields[index].key
-                                    && (this.modelArray[index].vmodel === 0 || this.modelArray[index].vmodel < 0)) {
-                                    indexConditions = false;
-                                    alert('Index columns can have values greater than zero only');
-                                }
-                                if (indexConditions) {
-                                    this.formURL(this.searchfields[index].key, this.modelArray[index].condition, this.modelArray[index].vmodel, this.searchfields[index].name);
-                                }
-                            } else if (this.modelArray[index].type === 'boolean' || this.modelArray[index].type === 'datetime' || this.modelArray[index].type === 'price' || this.modelArray[index].type === 'custom') {
-                                this.formURL(this.searchfields[index].key, this.modelArray[index].condition, this.modelArray[index].vmodel, this.searchfields[index].name);
-                            }
-                        }  
-                    };
-                    var uri = window.location.href.toString();
-                    var clean_uri = uri.substring(0, uri.indexOf("?")).trim();
-                    window.location.href = clean_uri + this.newParams;   
-                },
-                formURL: function (column, condition, response, label) {
-                    var obj = {};
-                    if (column === "" || condition === "" || response === ""
-                        || column === null || condition === null || response === null) {
-                        alert('Some of the required field is null, please check column, condition and value properly');
-                        return false;
-                    } else {
-                        if (this.filters.length > 0) {
-                            if (column !== "sort" && column !== "search") {
-                                let filterRepeated = false;
-                                for (let j = 0; j < this.filters.length; j++) {
-                                    if (this.filters[j].column === column) {
-                                        if (this.filters[j].cond === condition && this.filters[j].val === response) {
-                                            filterRepeated = true;
-                                            return false;
-                                        } else if (this.filters[j].cond === condition && this.filters[j].val !== response) {
-                                            filterRepeated = true;
-                                            this.filters[j].val = response;
-                                            this.makeURL();
-                                        }
-                                    }
-                                }
-                                if (filterRepeated === false) {
-                                    obj.column = column;
-                                    obj.cond = condition;
-                                    obj.val = response;
-                                    obj.label = label;
-                                    this.filters.push(obj);
-                                    obj = {};
-                                    this.makeURL();
-                                }
-                            }
-                        } else {
-                            obj.column = column;
-                            obj.cond = condition;
-                            obj.val = encodeURIComponent(response);
-                            obj.label = label;
-                            this.filters.push(obj);
-                            obj = {};
-                            this.makeURL();
-                        }
+                filterString(condition,value,fieldname) {
+                    let keySearch = this.stringToASCII(value);
+                    if(condition == "like"){
+                        this.filteredItems =  this.filteredItems.filter((item)=>{
+                            return keySearch.toLowerCase().split(' ').every(v => this.stringToASCII(item[fieldname]).toLowerCase().includes(v))
+                        })
+                    }else{
+                         this.filteredItems =  this.filteredItems.filter((item)=>{
+                            return keySearch.toLowerCase().split(' ').every(v => !this.stringToASCII(item[fieldname]).toLowerCase().includes(v))
+                        })
                     }
                 },
-                makeURL: function () {
-                    for(let i = 0; i < this.filters.length; i++) {
-                        let condition = '';
-                        if (this.filters[i].cond !== undefined) {
-                            condition = '[' + this.filters[i].cond + ']';
+                filterCustom(condition,value,fieldname) {
+                    let keySearch = this.stringToASCII(value);
+                    if(condition == "like"){
+                        this.filteredItems =  this.filteredItems.filter((item)=>{
+                            return keySearch.toLowerCase().split(' ').every(v => this.stringToASCII(item[fieldname]).toLowerCase().includes(v))
+                        })
+                    }else{
+                         this.filteredItems =  this.filteredItems.filter((item)=>{
+                            return keySearch.toLowerCase().split(' ').every(v => !this.stringToASCII(item[fieldname]).toLowerCase().includes(v))
+                        })
+                    }
+                },
+                filterNumber(condition,value,fieldname) {
+                    let input = parseInt(value)
+                    if(condition == "eq"){
+                        this.filteredItems =this.filteredItems.filter(function(item){
+                            return parseInt(item[fieldname]) == input
+                        })
+                    }else if(condition == "neqs"){
+                        this.filteredItems =this.filteredItems.filter(function(item){
+                            return parseInt(item[fieldname]) != input
+                        })
+                    }else if(condition == "gt"){
+                        this.filteredItems =this.filteredItems.filter(function(item){
+                            return parseInt(item[fieldname]) > input
+                        })
+                    }else if(condition == "lt"){
+                        this.filteredItems =this.filteredItems.filter(function(item){
+                            return parseInt(item[fieldname]) < input
+                        })
+                    }else if(condition == "gte"){
+                        this.filteredItems =this.filteredItems.filter(function(item){
+                            return parseInt(item[fieldname]) >= input
+                        })
+                    }else if(condition == "lte"){
+                        this.filteredItems =this.filteredItems.filter(function(item){
+                            return parseInt(item[fieldname]) <= input
+                        })
+                    }
+                },
+                filterDatetime(condition,value,fieldname){
+                    let input = new Date(value).getTime()
+                    if(condition == "eq"){
+                        this.filteredItems =this.filteredItems.filter(function(item){
+                            return new Date(item[fieldname]).getTime() == input
+                        })
+                    }else if(condition == "neqs"){
+                        this.filteredItems =this.filteredItems.filter(function(item){
+                            return new Date(item[fieldname]).getTime() != input
+                        })
+                    }else if(condition == "gt"){
+                        this.filteredItems =this.filteredItems.filter(function(item){
+                            return new Date(item[fieldname]).getTime() > input
+                        })
+                    }else if(condition == "lt"){
+                        this.filteredItems =this.filteredItems.filter(function(item){
+                            return new Date(item[fieldname]).getTime() < input
+                        })
+                    }else if(condition == "gte"){
+                        this.filteredItems =this.filteredItems.filter(function(item){
+                            return new Date(item[fieldname]).getTime() >= input
+                        })
+                    }else if(condition == "lte"){
+                        this.filteredItems =this.filteredItems.filter(function(item){
+                            return new Date(item[fieldname]).getTime() <= input
+                        })
+                    }
+                },
+                changeFilter(){
+                    for(let index in this.modelArray){
+                        if(this.modelArray[index].condition != null){
+                            this.addToFilter(this.modelArray[index].condition,this.modelArray[index].vmodel,this.searchfields[index].name,index);
                         }
-                        if (i == 0) {
-                            this.newParams = '?' + this.filters[i].column + condition + '=' + this.filters[i].val;
-                        } else {
-                            this.newParams = this.newParams + '&' + this.filters[i].column + condition + '=' + this.filters[i].val;
+                    }
+                    this.searchByFilter();
+                },
+                searchByFilter(){
+                    this.filteredItems = this.items;
+                    for (let i in this.filters) {
+                        this.modelArray[this.filters[i].position].condition = this.filters[i].condition;
+                        this.modelArray[this.filters[i].position].vmodel = this.filters[i].value;
+                        this.filterItems(this.filters[i].position)
+                    }
+                    this.$emit('changeFilter',this.filteredItems);
+                },
+                filterItems: function(index) {
+                    if (this.modelArray[index].type === 'string' || this.modelArray[index].type === 'custom' || this.modelArray[index].type === 'boolean' && this.modelArray[index].vmodel !== null) {
+                        this.filterString(this.modelArray[index].condition,this.modelArray[index].vmodel,this.searchfields[index].key)
+                    } else if (this.modelArray[index].type === 'number') {
+                        let indexConditions = true;
+                        if (this.filterIndex === this.searchfields[index].key
+                            && (this.modelArray[index].vmodel === 0 || this.modelArray[index].vmodel < 0)) {
+                            indexConditions = false;
+                            alert('Index columns can have values greater than zero only');
                         }
+                        if (indexConditions) {
+                            this.filterNumber(this.modelArray[index].condition,this.modelArray[index].vmodel,this.searchfields[index].key)
+                        }
+                    }else if(this.modelArray[index].type === 'datetime'){
+                        this.filterDatetime(this.modelArray[index].condition,this.modelArray[index].vmodel,this.searchfields[index].key)
+                    }
+                },
+                addToFilter(condition,value,fieldname,position){
+                    let filterRepeated = false;
+                    for(let item of this.filters){
+                        if(item.condition === condition && item.value === value && item.fieldname === fieldname ){
+                            filterRepeated = true;
+                            break;
+                        }
+                    };
+                    if(!filterRepeated){
+                        let obj={};
+                        obj.condition = condition;
+                        obj.value = value;
+                        obj.fieldname = fieldname;
+                        obj.position = position;
+                        this.filters.push(obj);
                     }
                 },
                 removeFilter: function (filter) {
                     for (let i in this.filters) {
-                        if (this.filters[i].column === filter.column
-                            && this.filters[i].cond === filter.cond
-                            && this.filters[i].val === filter.val) {
+                        if (this.filters[i].fieldname === filter.fieldname
+                            && this.filters[i].condition === filter.condition
+                            && this.filters[i].value === filter.value) {
                             this.filters.splice(i, 1);
-                            this.makeURL();
-                            var uri = window.location.href.toString();
-                            var clean_uri = uri.substring(0, uri.indexOf("?")).trim();
-                            window.location.href = clean_uri + this.newParams;   
+                            this.modelArray[filter.position].condition = null;
+                            this.modelArray[filter.position].vmodel = null;
+                            break;
                         }
                     }
+                    this.searchByFilter();
                 },
+                displayCondition(con){
+                    for(let condition of this.conditionName){
+                        if(condition.value == con){
+                            return condition.name
+                        }
+                    }
+                }
             },
             
            

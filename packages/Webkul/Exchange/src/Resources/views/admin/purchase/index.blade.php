@@ -20,7 +20,17 @@
             @endif
         </div>
         <div class="page-content">
-                <filter-and-search 
+               
+            <vpt-list-receipt-notes></vpt-list-receipt-notes>
+        </div>
+    </div>
+@stop
+
+@push('scripts')
+    <script type="text/x-template" id="vpt-list-receipt-notes-template">
+        <form action="#" class="form newtopic">
+            <div>
+            <filter-and-search 
                 :searchfields = "[
                 {name: 'Mã nhập hàng', key: 'id', columnType: 'number' },
                 {name: 'Thời gian', key: 'created_date', columnType: 'datetime'}, 
@@ -33,15 +43,10 @@
                 {name: 'Đã nhận', key: 'received'}, 
                 {name: 'Hủy', key: 'cancel'},
                 ]"
+                :items="form.listReceiptNotes"
+                @changeFilter="onChangeFilter"
                 ></filter-and-search>
-            <vpt-list-receipt-notes></vpt-list-receipt-notes>
-        </div>
-    </div>
-@stop
-
-@push('scripts')
-    <script type="text/x-template" id="vpt-list-receipt-notes-template">
-        <form action="#" class="form newtopic" @submit.prevent="save">
+            </div>
             <div>                                               
                 <table class="table table-bordered">
                     <thead>
@@ -193,9 +198,10 @@
                 </table>
                     <div class="card-footer pb-0 pt-3">
                         <sort-pagination 
-                        v-bind:items="form.listReceiptNotes"
+                        v-bind:items="filteredItems"
                         v-bind:pageSize = "perPage"
                         v-bind:sortBy ="sortBy"
+                        v-bind:sortFieldType="sortFieldType"
                         v-bind:currentSortDir ="currentSortDir"
                         @changePage="onChangePage">
                         </sort-pagination>
@@ -211,18 +217,20 @@
                 return {
                     //pagination
                     sort_list: [
-                        "id",
-                        "created_date",
-                        "supplier",
-                        "total",
-                        "status"
+                        {name:"id",type:"number"},
+                        {name:"created_date",type:"string"},
+                        {name:"supplier",type:"string"},
+                        {name:"total",type:"number"},
+                        {name:"status",type:"string"},
                     ],
                     currentSortDir: "desc",
                     sortBy: "id",
+                    sortFieldType:"number",
                     pageOfItems: [],
                     perPage: 10,
                     arrow: "icon arrow-down-icon",
                     currentArrow : 0,
+                    filteredItems:{!! json_encode($receipt_notes) !!},
                     //pagination
                     //check permission
                     updatePermission: Boolean(Number('{{checkPermission('exchange.list_purchases.update')}}')),
@@ -340,9 +348,13 @@
                     // update page of items
                     this.pageOfItems = pageOfItems;
                 },    
-                sort(name){
-                    if(this.sortBy != name){
-                        this.sortBy = name;
+                onChangeFilter(filteredItems){
+                    this.filteredItems = filteredItems;
+                },
+                sort(column){
+                    if(this.sortBy != column.name){
+                        this.sortBy = column.name;
+                        this.sortFieldType = column.type;
                         this.currentSortDir = 'desc';
                         this.arrow = 'icon arrow-down-icon';
                         

@@ -88,19 +88,6 @@
                         this.listInventories = this.fullList;
                     }
                     }, 600),
-            fetch() {
-                axios.get("{{ route('admin.catalog.categories.live_search_category') }}", {
-                        params: {
-                            key: this.keywords
-                        }
-                    })
-                    .then(response => {
-                        this.listCategories = response.data;
-                        console.log('response.data', response.data);
-                    })
-                    .catch(error => {});
-                console.error(this.listCategories);
-            },
             defaultList() { 
                 
             },
