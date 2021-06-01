@@ -20,7 +20,17 @@
             @endif
         </div>
         <div class="page-content">
-        <filter-and-search 
+       
+            <vpt-list-receipt-notes></vpt-list-receipt-notes>
+        </div>
+    </div>
+@stop
+
+@push('scripts')
+    <script type="text/x-template" id="vpt-list-receipt-notes-template">
+        <form action="#" class="form newtopic" @submit.prevent="save">
+            <div>
+             <filter-and-search 
                 :searchfields = "[
                 {name: 'Mã chuyển hàng', key: 'id', columnType: 'number' },
                 {name: 'Thời gian', key: 'transfer_date', columnType: 'datetime'}, 
@@ -33,15 +43,10 @@
                 {name: 'Đã nhận', key: 'received'}, 
                 {name: 'Hủy', key: 'cancel'},
                 ]"
+                :items="form.listReceiptNotes"
+                @changeFilter="onChangeFilter"
                 ></filter-and-search>
-            <vpt-list-receipt-notes></vpt-list-receipt-notes>
-        </div>
-    </div>
-@stop
-
-@push('scripts')
-    <script type="text/x-template" id="vpt-list-receipt-notes-template">
-        <form action="#" class="form newtopic" @submit.prevent="save">
+            </div>
             <div>
                 <table class="table table-bordered">
                     <thead>
@@ -51,7 +56,7 @@
                         </th>
                     </tr>
                     </thead>
-                    <tbody v-for="(item,index) in form.listReceiptNotes">
+                    <tbody v-for="(item,index) in pageOfItems">
                         <tr :class="[selected_transfer ===  item.id ? 'table-info' : '']" v-on:click="load_product(item.id)">
                             <td v-text="'MCH' + item.id"></td>
                             <td v-text="item.transfer_date"></td>
@@ -64,7 +69,6 @@
                         </tr>
                         <tr v-if="selected_transfer == item.id">
                             <td style="border: 1px solid #b3d7f5;" colspan="5">
-                            <div>
                                 <div class="tabs">
                                     <ul>
                                         <li class="active">
@@ -179,6 +183,7 @@
                                         <button type="button" class="btn btn-success" v-on:click="save_inventory(item.id,item.note,item.status,item.importer,item.type,item.from_inventory_id,item.receipt_date,price_total)" :disabled="!updatePermission ? true : form.oldListReceip[index].status == 'temporary' ? false : form.oldListReceip[index].status == 'transfering' ? false : true" >Lưu</button>
                                     </div>
                                 </div>
+                                </div>
                             </div>
                             </td>
                         </tr>
@@ -186,7 +191,7 @@
                 </table>
                 <div class="card-footer pb-0 pt-3">
                     <sort-pagination 
-                    v-bind:items="form.listReceiptNotes"
+                    v-bind:items="filteredItems"
                     v-bind:pageSize = "perPage"
                     v-bind:sortBy ="sortBy"
                     v-bind:currentSortDir ="currentSortDir"
@@ -216,6 +221,7 @@
                     perPage: 10,
                     arrow: "custom-arrow-icon-down",
                     currentArrow : 0,
+                    filteredItems:{!! json_encode($receipt_notes) !!},
                     //pagination
                     //check permission
                     updatePermission: Boolean(Number('{{checkPermission('exchange.list_transfer.update')}}')),
@@ -351,6 +357,9 @@
                     // update page of items
                     this.pageOfItems = pageOfItems;
                 },    
+                onChangeFilter(filteredItems){
+                    this.filteredItems = filteredItems;
+                },
                 sort(name){
                     if(this.sortBy != name){
                         this.sortBy = name;

@@ -70,25 +70,25 @@
 
                             <div class="control-group" :class="[errors.has('contact_name') ? 'has-error' : '']">
                                 <label for="contact_name" class="required">Tên người liên hệ</label>
-                                <input class="control" v-validate="'required'" class="required" id="contact_name" name="contact_name" data-vv-as="&quot;{{ __('admin::app.settings.inventory_sources.contact_name') }}&quot;" value="{{ old('contact_name') }}"/>
+                                <input class="control" v-validate="'required'" id="contact_name" name="contact_name" data-vv-as="&quot;{{ __('admin::app.settings.inventory_sources.contact_name') }}&quot;" value="{{ old('contact_name') }}"/>
                                 <span class="control-error" v-if="errors.has('contact_name')">@{{ errors.first('contact_name') }}</span>
                             </div>
 
                             <div class="control-group" :class="[errors.has('contact_email') ? 'has-error' : '']">
                                 <label for="contact_email" class="required">{{ __('admin::app.settings.inventory_sources.contact_email') }}</label>
-                                <input class="control" v-validate="'required|email'" class="required" id="contact_email" name="contact_email" data-vv-as="&quot;{{ __('admin::app.settings.inventory_sources.contact_email') }}&quot;" value="{{ old('contact_email') }}"/>
+                                <input class="control" v-validate="'required|email'" id="contact_email" name="contact_email" data-vv-as="&quot;{{ __('admin::app.settings.inventory_sources.contact_email') }}&quot;" value="{{ old('contact_email') }}"/>
                                 <span class="control-error" v-if="errors.has('contact_email')">@{{ errors.first('contact_email') }}</span>
                             </div>
 
                             <div class="control-group" :class="[errors.has('contact_number') ? 'has-error' : '']">
                                 <label for="contact_number" class="required">Số điện thoại</label>
-                                <input class="control" v-validate="'required'" class="required" id="contact_number" name="contact_number" data-vv-as="&quot;{{ __('admin::app.settings.inventory_sources.contact_number') }}&quot;" value="{{ old('contact_number') }}"/>
+                                <input class="control" v-validate="'required'" id="contact_number" name="contact_number" data-vv-as="&quot;{{ __('admin::app.settings.inventory_sources.contact_number') }}&quot;" value="{{ old('contact_number') }}"/>
                                 <span class="control-error" v-if="errors.has('contact_number')">@{{ errors.first('contact_number') }}</span>
                             </div>
 
                             <div class="control-group">
                                 <label for="contact_fax">{{ __('admin::app.settings.inventory_sources.contact_fax') }}</label>
-                                <input class="control" class="required" id="country" name="contact_fax" value="{{ old('contact_fax') }}"/>
+                                <input class="control required" id="country" name="contact_fax" value="{{ old('contact_fax') }}"/>
                             </div>
 
                         </div>
@@ -134,7 +134,6 @@
                 </div>
 <!-- popup add inventory -->
 @push('scripts')
-    @parent
 <script>
         $(document).ready(function () {
             $('.label .cross-icon').on('click', function(e) {

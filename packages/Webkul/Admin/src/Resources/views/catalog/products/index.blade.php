@@ -31,19 +31,7 @@
         </div>
         <div class="page-content">
             <div class="page-content">
-                <filter-and-search 
-                :searchfields = "[
-                {name: 'ID', key: 'product_id', columnType: 'number' },
-                {name: 'Mã hàng hóa', key: 'product_sku', columnType: 'string' },
-                {name: 'Tên', key: 'product_name', columnType: 'string'}, 
-                {name: 'Giá', key: 'price', columnType: 'number'},
-                {name: 'Trạng thái', key:'status', columnType: 'custom'}
-                ]"
-                :customfields = "[
-                {name: 'chưa kích hoạt', key: '0' },
-                {name: 'Đã kích hoạt', key: '1'}, 
-                ]"
-                ></filter-and-search>
+               
                 <vpt-list-receipt-notes></vpt-list-receipt-notes>
             </div>
         </div>
@@ -80,6 +68,23 @@
 @push('scripts')
     <script type="text/x-template" id="vpt-list-receipt-notes-template">
         <form action="#" class="form newtopic" @submit.prevent="save">
+                <div>
+                <filter-and-search 
+                :searchfields = "[
+                {name: 'ID', key: 'product_id', columnType: 'number' },
+                {name: 'Mã hàng hóa', key: 'product_sku', columnType: 'string' },
+                {name: 'Tên', key: 'product_name', columnType: 'string'}, 
+                {name: 'Giá', key: 'price', columnType: 'number'},
+                {name: 'Trạng thái', key:'status', columnType: 'custom'}
+                ]"
+                :customfields = "[
+                {name: 'chưa kích hoạt', key: '0' },
+                {name: 'Đã kích hoạt', key: '1'}, 
+                ]"
+                :items="form.product"
+                @changeFilter="onChangeFilter"
+                ></filter-and-search>
+                </div>
                 <div>
                     <table class="table table-bordered">
                         <thead>
@@ -245,7 +250,7 @@
                     </table>
                     <div class="card-footer pb-0 pt-3">
                         <sort-pagination 
-                        v-bind:items="form.product"
+                        v-bind:items="filteredItems"
                         v-bind:pageSize = "perPage"
                         v-bind:sortBy ="sortBy"
                         v-bind:currentSortDir ="currentSortDir"
@@ -279,6 +284,7 @@
                     currentTab : 0,
                     isActiveInfo : true,
                     isActiveInven : false,
+                    filteredItems: {!! json_encode($product) !!},
                     //pagination
                     form: new Form({
                         product: {!! json_encode($product) !!},
@@ -336,6 +342,9 @@
                 onChangePage(pageOfItems) {
                     // update page of items
                     this.pageOfItems = pageOfItems;
+                },
+                onChangeFilter(filteredItems){
+                    this.filteredItems = filteredItems;
                 },
                 sort(name) {
                     if (this.sortBy != name) {

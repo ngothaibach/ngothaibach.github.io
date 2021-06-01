@@ -21,7 +21,6 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Webkul\Sales\Models\OrderAddress;
 use Webkul\Sales\Repositories\OrderAddressRepository;
-use Webkul\Admin\Helpers\FilterCollection;
 use Session;
 class ProductController extends Controller
 {
@@ -137,13 +136,6 @@ class ProductController extends Controller
     public function index()
     {
         $inventory_id = Session::get('inventory');
-        $searchfields = [
-            ['key'=> 'product_id', 'columnType'=> 'number', 'value' => 'product_flat.product_id'],
-            ['key'=> 'product_sku', 'columnType'=> 'string', 'value' => 'products.sku'],
-            ['key'=> 'product_name', 'columnType'=> 'string', 'value'=>'product_flat.name'], 
-            ['key'=> 'price', 'columnType'=> 'number','value' =>'product_flat.price'],
-            ['key'=>'status', 'columnType'=> 'string','value'=>'product_flat.status']
-        ];
         if($inventory_id == 0){
             $query = DB::table('product_flat')
                     ->leftJoin('products', 'product_flat.product_id', '=', 'products.id')
@@ -197,10 +189,6 @@ class ProductController extends Controller
                 DB::raw('SUM( product_inventories.qty) as quantity')
             )->groupBy('product_flat.product_id');
         };
-        if($_GET){
-            $filter = new FilterCollection();
-            $query = $filter->filterCollection($query,$searchfields);
-        }
         $product = $query->get()->toArray();
         return view($this->_config['view'], compact('product'));
         /* query builder */
@@ -237,10 +225,12 @@ class ProductController extends Controller
         $configurableFamily = null;
         $categories = $this->categoryRepository->getCategoryTree();
         $attributes = $this->attributeRepository->findWhere(['is_filterable' =>  1]);
-        if(auth()->guard('admin')->user()->role['id'] == 1){
+        $inventory_id = Session::get('inventory');
+        if(Session::get('inventory') == 0){
             $inventorySources = $this->inventorySourceRepository->findWhere(['status' => 1]);
         }else{
-            $inventorySources = $this->inventorySourceRepository->findWhere(['status' => 1])->find(['id'=>auth()->guard('admin')->user()->inventory_id]);
+            $inventorySource=[];
+            $inventorySources[0] = $this->inventorySourceRepository->findWhere(['status' => 1])->find($inventory_id);
         }
         if ($familyId = request()->get('family')) {
             $configurableFamily = $this->attributeFamilyRepository->find($familyId);
@@ -361,12 +351,13 @@ class ProductController extends Controller
         $product = $this->productRepository->with(['variants', 'variants.inventories'])->findOrFail($id);
         $categories = $this->categoryRepository->getCategoryTree();
         $attributes = $this->attributeRepository->findWhere(['is_filterable' =>  1]);
-        if(auth()->guard('admin')->user()->role['id'] == 1){
+        $inventory_id = Session::get('inventory');
+        if(Session::get('inventory') == 0){
             $inventorySources = $this->inventorySourceRepository->findWhere(['status' => 1]);
         }else{
-            $inventorySources = $this->inventorySourceRepository->findWhere(['status' => 1])->find(['id'=>auth()->guard('admin')->user()->inventory_id]);
+            $inventorySource=[];
+            $inventorySources[0] = $this->inventorySourceRepository->findWhere(['status' => 1])->find($inventory_id);
         }
-
         return view($this->_config['view'], compact('product', 'categories', 'inventorySources','attributes'));
     }
 

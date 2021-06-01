@@ -99,6 +99,17 @@
     .content-container .content .page-header{
         position: sticky;
     }
+    .group-inventory{
+        display:flex; 
+        flex-direction: row; 
+        justify-content: center; 
+        align-items: center; 
+        margin-bottom:5px !important;
+        .input-inventory{
+            width: 200px;
+            margin-right:200px;
+        }
+    }
 }
 
 /* Extra large devices (large laptops and desktops, 1200px and up) */

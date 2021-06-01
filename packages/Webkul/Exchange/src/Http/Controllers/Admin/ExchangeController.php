@@ -31,9 +31,7 @@ use Excel;
 use Webkul\Exchange\Http\Models\ImportProduct;
 use Webkul\Exchange\Models\ExchangeNote;
 use Webkul\Exchange\Models\ProductExchangeNote;
-use Webkul\Admin\Helpers\FilterCollection;
 use Session;
-
 
 class ExchangeController extends Controller
 {
@@ -169,13 +167,6 @@ class ExchangeController extends Controller
     {
         $users = DB::table('admins')->select('id', 'name','inventory_id')->get();
         $role_id = auth()->guard('admin')->user()->role['id'];
-        $searchfields = [
-                ['key'=> 'id', 'columnType'=> 'number', 'value' => 'exchange_notes.id'],
-                ['key'=> 'created_date', 'columnType'=> 'datetime', 'value'=>'exchange_notes.created_date'], 
-                ['key'=> 'supplier', 'columnType'=> 'string','value' => 'suppliers.name'],
-                ['key'=>'total', 'columnType'=> 'number','value' =>'exchange_notes.total'],
-                ['key'=>'status', 'columnType'=> 'string','value'=>'exchange_notes.status']
-        ];
         $query = DB::table('exchange_notes')
         ->join('suppliers', 'suppliers.id', '=', 'exchange_notes.supplier_id')
         ->join('inventory_sources', 'inventory_sources.id', '=', 'exchange_notes.to_inventory_source_id')
@@ -184,10 +175,6 @@ class ExchangeController extends Controller
         ->where('type', '=', 'receipt');
         if( Session::get('inventory') != 0){
             $query = $query->where('to_inventory_source_id','=',Session::get('inventory'));
-        }
-        if($_GET){
-            $filter = new FilterCollection();
-            $query = $filter->filterCollection($query,$searchfields);
         }
         $query = $query->orderBy('id', 'desc');
         $receipt_notes=$query->get()->toArray();
@@ -210,13 +197,6 @@ class ExchangeController extends Controller
     public function list_transfers()
     {
         $role_id = auth()->guard('admin')->user()->role['id'];
-        $searchfields = [
-            ['name'=> 'Mã đơn hàng', 'key'=> 'id', 'columnType'=> 'number', 'value' => 'exchange_notes.id'],
-            ['name'=> 'Thời gian', 'key'=> 'transfer_date', 'columnType'=> 'datetime', 'value'=>'exchange_notes.transfer_date'], 
-            ['name'=> 'Từ chi nhánh', 'key'=> 'from_inventory', 'columnType'=> 'string','value' => 'from_inventory_sources.name'],
-            ['name'=> 'Tới Chi Nhánh', 'key'=>'to_inventory', 'columnType'=> 'string','value' =>'to_inventory_sources.name'],
-            ['name'=> 'Trạng thái', 'key'=>'status', 'columnType'=> 'string','value'=>'exchange_notes.status']
-        ];
         $query = DB::table('exchange_notes')
         // ->join('suppliers', 'suppliers.id', '=', 'exchange_notes.supplier_id')
         ->leftJoin('inventory_sources as to_inventory_sources', 'to_inventory_sources.id', '=', 'exchange_notes.to_inventory_source_id')
@@ -227,10 +207,6 @@ class ExchangeController extends Controller
         if(Session::get('inventory') != 0){
             $query = $query->where('from_inventory_source_id','=',Session::get('inventory'))
             ->orwhere('to_inventory_source_id','=',Session::get('inventory'));
-        }
-        if($_GET){
-            $filter = new FilterCollection();
-            $query = $filter->filterCollection($query,$searchfields);
         }
         $query = $query->orderBy('id', 'desc');
         $receipt_notes=$query->get()->toArray();

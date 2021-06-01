@@ -7,9 +7,7 @@ use Webkul\Sales\Repositories\OrderRepository;
 use Webkul\Sales\Repositories\InvoiceRepository;
 use PDF;
 use Illuminate\Support\Facades\DB;
-use Webkul\Admin\Helpers\FilterCollection;
 use Session;
-
 
 class InvoiceController extends Controller
 {
@@ -62,15 +60,6 @@ class InvoiceController extends Controller
      */
     public function index()
     {   
-        $searchfields = [
-            ['key'=> 'id', 'columnType'=> 'number', 'value' => 'invoices.id'],
-            ['key'=> 'updated_at', 'columnType'=> 'datetime', 'value'=>'invoices.created_at'], 
-            ['key'=> 'first_name', 'columnType'=> 'string','value' => 'ors.customer_first_name'],
-            ['key'=> 'last_name', 'columnType'=> 'string','value' => 'ors.customer_last_name'],
-            ['key'=>'base_sub_total', 'columnType'=> 'number','value' =>'ors.base_sub_total'],
-            ['key'=>'base_grand_total', 'columnType'=> 'number','value' =>'invoices.base_grand_total'],
-            ['key'=>'status', 'columnType'=> 'string','value'=>'ors.status']
-        ];
         $query = DB::table('invoices')
             ->leftJoin('orders as ors', 'invoices.order_id', '=', 'ors.id')
             ->leftJoin('order_comments as comments','invoices.order_id','=','comments.order_id')
@@ -82,10 +71,6 @@ class InvoiceController extends Controller
             'invoices.state as state', 'invoices.base_discount_amount as base_discount_amount', 'invoices.created_at as created_at');
         if( Session::get('inventory') != 0){
             $query = $query->where('ors.inventory_id','=',Session::get('inventory'));
-        }
-        if($_GET){
-            $filter = new FilterCollection();
-            $query = $filter->filterCollection($query,$searchfields);
         }
         $invoice_note = $query->get()-> toArray();
         $role_id = auth()->guard('admin')->user()->role['id'];      

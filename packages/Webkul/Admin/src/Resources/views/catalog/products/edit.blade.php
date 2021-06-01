@@ -251,6 +251,7 @@
     <script src="{{ asset('vendor/webkul/admin/assets/js/tinyMCE/tinymce.min.js') }}"></script>
 
     <script>
+        document.getElementById("menu-span").style.verticalAlign= "super";
         $(document).ready(function () {
             tinymce.init({
                 selector: 'textarea#description, textarea#short_description,textarea#categoryDescription',

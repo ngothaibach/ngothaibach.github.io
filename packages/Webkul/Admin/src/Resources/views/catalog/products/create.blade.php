@@ -18,9 +18,13 @@
         }
     </style>
 @stop
-
 @section('content')
-    <div class="content">
+<vpt-product-create></vpt-product-create>
+@stop
+
+@push('scripts')
+<script type="text/x-template" id="vpt-product-create-template">
+<div class="content">
         <?php $locale = request()->get('locale') ?: app()->getLocale(); ?>
         <?php $channel = request()->get('channel') ?: core()->getDefaultChannelCode(); ?>
 <!-- popup add category -->
@@ -276,23 +280,85 @@
         </form>
     </div>
     
-@stop
+</script> 
 
-@push('scripts')
+    <script>
+        Vue.component('vpt-product-create', {
+            template: '#vpt-product-create-template',
+            data() {
+                return {
+                };
+            },
+            watch: {},
+            methods: {
+                save_inventory(exchange_note_id, note, status, importer, type, inventoryID,price_total) {
+                    this.form.idExchange = exchange_note_id;
+                    this.form.note = note;
+                    this.form.importer = importer;
+                    this.form.status = status;
+                    this.form.type = type;
+                    this.form.inventoryID = inventoryID;
+                    this.form.total = price_total;
+
+                    console.log('dataSource', this.form.inventoryID);
+
+                    this.form.post("{{ route('admin.exchange.update') }}")
+                        .then((response) => {
+                            if (response.data.success == true) {
+                                window.location.href =
+                                    "{{ route('admin.exchange.purchase-order.list') }}";
+                            } else {
+                                console.error("save exchange NOT successfull");
+                            }
+                        })
+                },
+                load_product(exchange_note_id) {
+                    this.product_list = [];
+                    
+                    if(this.selected_transfer == exchange_note_id){
+                        this.selected_transfer = null
+                    }else{
+                        this.selected_transfer = exchange_note_id;
+                        axios.get("{{ route('exchange.admin.get_transfered_products') }}", {
+                                params: {
+                                    transfer_id: exchange_note_id
+                                }
+                            })
+                            .then(response => {
+                                this.product_list = response.data.transfered_products;
+                                this.form.product_list = response.data.transfered_products;
+                                this.price_total = 0;
+                                for (product of this.product_list) {
+                                    this.price_total += product.price * product.receipt_qty;
+                                }
+                            });
+                    }
+                },
+                formatPrice(value) {
+                    var formatter = new Intl.NumberFormat('en-US', {
+                        minimumFractionDigits: 0
+                    });
+                    return formatter.format(value);
+                },
+            },
+        });
+
+    </script>
 <script src="{{ asset('vendor/webkul/admin/assets/js/tinyMCE/tinymce.min.js') }}"></script>
 
     <script>
-            $(document).ready(function () {
-                tinymce.init({
-                selector: 'textarea#description,textarea#short_description,textarea#categoryDescription',
-                height: 200,
-                width: "100%",
-                plugins: 'image imagetools media wordcount save fullscreen code table lists link hr',
-                toolbar1: 'formatselect | bold italic strikethrough forecolor backcolor link hr | alignleft aligncenter alignright alignjustify | numlist bullist outdent indent  | removeformat | code | table',
-                image_advtab: true
-                });
+        document.getElementById("menu-span").style.verticalAlign= "super";
+        $(document).ready(function () {
+            tinymce.init({
+            selector: 'textarea#description,textarea#short_description,textarea#categoryDescription',
+            height: 200,
+            width: "100%",
+            plugins: 'image imagetools media wordcount save fullscreen code table lists link hr',
+            toolbar1: 'formatselect | bold italic strikethrough forecolor backcolor link hr | alignleft aligncenter alignright alignjustify | numlist bullist outdent indent  | removeformat | code | table',
+            image_advtab: true
             });
-       
+        });
+    
     </script>
     <!-- template description -->
     <script src="{{ asset('vendor/webkul/admin/assets/js/tinyMCE/tinymce.min.js') }}"></script>

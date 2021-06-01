@@ -30,6 +30,7 @@
 
 @push('scripts')
     <script>
+        document.getElementById("menu-span").style.verticalAlign= "super";
         $(document).ready(function(){
             $("input[type='checkbox']").change(deleteFunction);
         });

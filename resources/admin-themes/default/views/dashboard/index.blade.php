@@ -457,6 +457,7 @@
                 }
             });
         });
+        document.getElementById("menu-span").style.verticalAlign= "super";
     </script>
 
 @endpush
