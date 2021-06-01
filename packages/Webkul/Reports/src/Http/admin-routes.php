@@ -25,4 +25,12 @@ Route::group(['middleware' => ['web', 'admin']], function () {
         'view' => 'reports::admin.staff',
     ])->name('reports.admin.export_staff_report');
 
+       //báo cáo xuất nhập hàng
+       Route::get('/admin/reports_exchange', 'Webkul\Reports\Http\Controllers\Admin\ReportsController@index_exchange')->defaults('_config', [
+        'view' => 'reports::admin.exchange',
+    ])->name('reports.admin.exchange');
+    Route::post('admin/reports_exchange/export', 'Webkul\Reports\Http\Controllers\Admin\ReportsController@export_exchange_report')->defaults('_config', [
+        'view' => 'reports::admin.exchange',
+    ])->name('reports.admin.export_exchange_report');
+
 });
