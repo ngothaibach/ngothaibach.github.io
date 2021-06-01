@@ -225,10 +225,12 @@ class ProductController extends Controller
         $configurableFamily = null;
         $categories = $this->categoryRepository->getCategoryTree();
         $attributes = $this->attributeRepository->findWhere(['is_filterable' =>  1]);
-        if(auth()->guard('admin')->user()->role['id'] == 1){
+        $inventory_id = Session::get('inventory');
+        if(Session::get('inventory') == 0){
             $inventorySources = $this->inventorySourceRepository->findWhere(['status' => 1]);
         }else{
-            $inventorySources = $this->inventorySourceRepository->findWhere(['status' => 1])->find(['id'=>auth()->guard('admin')->user()->inventory_id]);
+            $inventorySource=[];
+            $inventorySources[0] = $this->inventorySourceRepository->findWhere(['status' => 1])->find($inventory_id);
         }
         if ($familyId = request()->get('family')) {
             $configurableFamily = $this->attributeFamilyRepository->find($familyId);
@@ -349,12 +351,13 @@ class ProductController extends Controller
         $product = $this->productRepository->with(['variants', 'variants.inventories'])->findOrFail($id);
         $categories = $this->categoryRepository->getCategoryTree();
         $attributes = $this->attributeRepository->findWhere(['is_filterable' =>  1]);
-        if(auth()->guard('admin')->user()->role['id'] == 1){
+        $inventory_id = Session::get('inventory');
+        if(Session::get('inventory') == 0){
             $inventorySources = $this->inventorySourceRepository->findWhere(['status' => 1]);
         }else{
-            $inventorySources = $this->inventorySourceRepository->findWhere(['status' => 1])->find(['id'=>auth()->guard('admin')->user()->inventory_id]);
+            $inventorySource=[];
+            $inventorySources[0] = $this->inventorySourceRepository->findWhere(['status' => 1])->find($inventory_id);
         }
-
         return view($this->_config['view'], compact('product', 'categories', 'inventorySources','attributes'));
     }
 

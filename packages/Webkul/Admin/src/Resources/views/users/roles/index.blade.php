@@ -24,3 +24,8 @@
         </div>
     </div>
 @stop
+@push('scripts')
+<script>
+document.getElementById("menu-span").style.verticalAlign= "super";
+</script>
+@endpush
