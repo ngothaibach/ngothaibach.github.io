@@ -183,4 +183,40 @@ class ReportsController extends Controller
         }
         return Excel::download(new DataGridExport($records), $gridName.'.xlsx');
     }
+
+    public function index_exchange() {
+        $user_sale = DB::table('admins')
+        ->select('id','name')
+        ->get()->toArray();
+        
+       $typeExchange =  DB::table('exchange_notes')
+                    ->select('type')
+                    ->distinct()
+                    ->get()->toArray();
+
+        $inventory_sources = DB::table('inventory_sources')->select('id', 'name')->get();
+
+        return view($this->_config['view'], compact('typeExchange', 'inventory_sources'));
+        // return response()->json(
+        //     [
+        //         'success' => $typeExchange,
+        //     ]
+        // );
+    }
+
+    public function export_exchange_report() {
+        $gridName = 'Báo cáo xuất nhập hàng';
+
+        $path = '\Webkul\Admin\DataGrids\\ReportExchangeDataGrid';
+
+        $gridInstance = new $path;
+        
+        $records = $gridInstance->export();
+        if (! count($records)) {
+            session()->flash('warning', trans('admin::app.export.no-records'));
+
+            return redirect()->back();
+        }
+        return Excel::download(new DataGridExport($records), $gridName.'.xlsx');
+    }
 }

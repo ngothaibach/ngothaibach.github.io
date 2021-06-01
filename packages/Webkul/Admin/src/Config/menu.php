@@ -115,6 +115,13 @@ return [
         'sort'  => 3,
         'icon-class' => '',
     ],
+    [
+        'key'   => 'reports.exchange',
+        'name'  => 'Báo cáo xuất nhập hàng',
+        'route' => 'reports.admin.exchange',
+        'sort'  => 4,
+        'icon-class' => '',
+    ],
     // [
     //     'key'        => 'configuration',
     //     'name'       => 'admin::app.layouts.configure',
