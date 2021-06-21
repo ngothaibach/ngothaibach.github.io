@@ -202,6 +202,11 @@
                     }
                 },
                 defaultFilter(){
+                    this.filters = [];
+                    for(let field of this.modelArray){
+                        field.condition = null;
+                        field.vmodel = null;
+                    }
                     this.filteredItems = this.items;
                     this.$emit('changeFilter',this.filteredItems)
                 },
@@ -344,9 +349,9 @@
                         if (this.filters[i].fieldname === filter.fieldname
                             && this.filters[i].condition === filter.condition
                             && this.filters[i].value === filter.value) {
-                            this.filters.splice(i, 1);
                             this.modelArray[filter.position].condition = null;
                             this.modelArray[filter.position].vmodel = null;
+                            this.filters.splice(i, 1);
                             break;
                         }
                     }
