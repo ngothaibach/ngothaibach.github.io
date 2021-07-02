@@ -498,9 +498,11 @@ Route::group(['middleware' => ['web', 'admin_locale']], function () {
             Route::put('/users/edit/{id}', 'Webkul\User\Http\Controllers\UserController@update')->defaults('_config', [
                 'redirect' => 'admin.users.index',
             ])->name('admin.users.update');
+            
+            Route::post('/users', 'Webkul\User\Http\Controllers\UserController@quickUpdate')->name('admin.users.quickUpdate');
 
             //delete backend user
-            Route::get('/users/delete/{id}', 'Webkul\User\Http\Controllers\UserController@destroy')->name('admin.users.delete');
+            Route::get('/users/delete/', 'Webkul\User\Http\Controllers\UserController@destroy')->name('admin.users.delete');
 
             Route::get('/users/confirm/{id}', 'Webkul\User\Http\Controllers\UserController@confirm')->defaults('_config', [
                 'view' => 'admin::customers.confirm-password',
