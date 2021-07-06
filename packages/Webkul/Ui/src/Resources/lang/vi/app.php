@@ -2,20 +2,20 @@
 return [
     'datagrid' => [
         'actions' => 'Hành động',
-        'id' => 'Index columns have value greater than zero only',
+        'id' => 'Cột id chỉ được có giá trị lớn hơn 0',
 
         'massaction' => [
-            'mass-delete-confirm' => 'Do you really want to delete these selected :resource?',
-            'mass-update-status' => 'Do you really want to update status of these selected :resource?',
-            'delete' => 'Do you really want to perform this action?',
-            'edit' => 'Do you really want to edit this :resource?',
-            'delete-category-product' => 'The selected categories contains products. Performing this action will remove the related products. Do you really want to perform this action?'
+            'mass-delete-confirm' => 'Bạn có chắc chắn xoá các mục được chọn :resource?',
+            'mass-update-status' => 'Bạn có chắc chắn muốn cập nhập trạng thái của các mục được chọn :resource?',
+            'delete' => 'Bạn có chắc chắn muốn xoá?',
+            'edit' => 'Bạn có chắc chắn muốn sửa :resource?',
+            'delete-category-product' => 'Danh mục được chọn có chứa các sản phẩm. Xoá danh mục này sẽ xoá các sản phẩm có liên quan. Bạn có chắc chắn muốn thực hiện?'
         ],
 
-        'zero-index' => 'Index columns can have values greater than zero only',
-        'no-records' => 'No Records Found',
-        'filter-fields-missing' => 'Some of the required field is null, please check column, condition and value properly',
-        'click_on_action' => 'Do you really want to perform this action?',
+        'zero-index' => 'Cột thứ tự chỉ có thể có giá trị lớn hơn 0',
+        'no-records' => 'Không tìm thấy bản ghi',
+        'filter-fields-missing' => 'Một số trường thông tin bắt buộc còn trống, vui lòng kiểm tra các cột, điều kiện và giá trị',
+        'click_on_action' => 'Bạn có chắc chắn muốn thực hiện hành động này?',
         'search' => 'Tìm kiếm...',
         'filter' => 'Lọc',
         'column' => 'Chọn cột',
@@ -31,7 +31,7 @@ return [
         'value' => 'Giá trị',
         'true' => 'True / Active',
         'false' => 'False / Inactive',
-        'between' => 'Is between',
+        'between' => 'Nằm giữa',
         'apply' => 'Apply',
         'items-per-page' => 'Số dòng trên trang',
         'value-here' => 'Giá trị',

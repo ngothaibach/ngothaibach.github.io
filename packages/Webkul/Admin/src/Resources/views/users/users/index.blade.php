@@ -259,9 +259,18 @@
                                     id: this.selectedDeleteID
                                 }
                             })
-                            .then(response => {
-                                location.reload()
+                            .then(function (response) {
+                                this.result = response;
+
+                                if (response.data.redirect) {
+                                    window.location.href = response.data.redirect;
+                                } else {
+                                    location.reload();
+                                }
+                            }).catch(function (error) {
+                                location.reload();
                             });
+                    
                 },
                 openModal(id,name){
                     this.modalOpen = true;
