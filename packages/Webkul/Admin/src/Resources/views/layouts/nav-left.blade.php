@@ -2,7 +2,7 @@
     <ul class="menubar">
         @foreach ($menu->items as $menuItem)
             <li class="menu-item {{ $menu->getActive($menuItem) }}">
-                    <span class="icon {{ $menuItem['icon-class'] }} menu-item-icon" onclick="onClickMenuIcon()"></span>
+                    <span class="icon {{ $menuItem['icon-class'] }} menu-item-icon" onclick="onClickMenuIcon(event.target)"></span>
                     <span class="menu-item-name" onclick="onClickMenuName(event.target)">{{ trans($menuItem['name']) }}</span>
                     <div class="dropdown-container">
                         @foreach($menuItem['children'] as $item)

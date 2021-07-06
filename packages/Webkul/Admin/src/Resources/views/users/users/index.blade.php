@@ -35,24 +35,19 @@
 @push('scripts')
     <script type="text/x-template" id="vpt-list-users-template">
         <form action="#" class="form newtopic" @submit.prevent="save">
-                <div>
+                <div> 
                 <filter-and-search 
                 :searchfields = "[
-                {name: 'Id hoá đơn', key: 'order_id', columnType: 'number' },
-                {name: 'Thời gian', key: 'updated_at', columnType: 'datetime'}, 
-                {name: 'Họ Khách hàng', key: 'customer_first_name', columnType: 'string'},
-                {name: 'Tên Khách hàng', key: 'customer_last_name', columnType: 'string'},
-                {name: 'Tổng tiền hàng', key:'base_sub_total', columnType: 'number'},
-                {name: 'Tổng sau giảm giá', key:'base_grand_total', columnType: 'number'},
-                {name: 'Trạng thái', key:'status', columnType: 'custom'},
+                {name: 'ID', key: 'user_id', columnType: 'number' },
+                {name: 'Tên', key: 'user_name', columnType: 'string'}, 
+                {name: 'Trạng thái', key: 'status', columnType: 'custom'},
+                {name: 'email', key: 'email', columnType: 'string'},
+                {name: 'Role', key:'role_name', columnType: 'string'},
+                {name: 'Kho', key:'inventory_name', columnType: 'string'},
                 ]"
                 :customfields = "[
-                {name: 'Lưu tạm', key: 'temporary' },
-                {name: 'Đang xử lý', key: 'processing'}, 
-                {name: 'Đã đóng', key: 'closed'},
-                {name: 'Đang chờ', key: 'pending'},
-                {name: 'Hoàn thành', key: 'completed'},
-                {name: 'Đã hủy', key: 'canceled'},
+                {name: 'Kích hoạt', key: '0' },
+                {name: 'Chưa kích hoạt', key: '1'}, 
                 ]"
                 :items="users_list"
                 @changeFilter="onChangeFilter"
@@ -171,12 +166,12 @@
                     commission: 123456,
                     //pagination
                     sort_list: [
-                        "order_id",
-                        "updated_at",
-                        "customer_last_name",
-                        "base_sub_total",
-                        "base_grand_total",
-                        "status"
+                        "user_id",
+                        "user_name",
+                        "status",
+                        "email",
+                        "role_name",
+                        "inventory_name"
                     ],
                     currentSortDir: "desc",
                     sortBy: "id",

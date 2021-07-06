@@ -157,8 +157,9 @@
             document.getElementById("navbar-left").style.width = "0";
             }
             function onClickMenuIcon(target) {
-                
+                console.log(target);
                 target.classList.toggle("active");
+                target.nextElementSibling.classList.toggle("active");
                 let menuiconContent = target.nextElementSibling.nextElementSibling;
                 if (menuiconContent.style.display === "block") {
                 menuiconContent.style.display = "none";
@@ -167,6 +168,7 @@
                 }
             }
             function onClickMenuName(target) {
+                console.log(target);
                 target.classList.toggle("active");
                 let menuiconContent = target.nextElementSibling;
                 if (menuiconContent.style.display === "block") {
