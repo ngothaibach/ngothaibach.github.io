@@ -9,6 +9,7 @@ use Webkul\User\Http\Requests\UserForm;
 use Webkul\User\Repositories\RoleRepository;
 use Webkul\User\Repositories\AdminRepository;
 use Illuminate\Support\Facades\DB;
+use Session;
 
 class UserController extends Controller
 {
@@ -61,7 +62,19 @@ class UserController extends Controller
      */
     public function index()
     {
-        return view($this->_config['view']);
+        $query = DB::table('admins')
+            ->leftJoin('roles', 'admins.role_id', '=', 'roles.id')
+            ->leftJoin('inventory_sources', 'admins.inventory_id', '=', 'inventory_sources.id')
+            ->addSelect('admins.id as user_id', 'admins.name as user_name', 'admins.status', 'admins.email', 'roles.name as role_name','inventory_sources.name as inventory_name','admins.inventory_id as inventory_id');
+        if( Session::get('inventory') != 0){
+            $query = $query->where('admins.inventory_id','=',Session::get('inventory'));
+        };
+        $query = $query->orderBy('admins.id', 'desc');
+        $users_list=$query->get()->toArray();
+        $inventory_list = DB::table('inventory_sources')
+        ->orderBy('id', 'asc')
+        ->get()->toArray();
+        return view($this->_config['view'], compact('users_list','inventory_list'));
     }
 
     /**
@@ -73,8 +86,7 @@ class UserController extends Controller
     {
         $roles = $this->roleRepository->all();
         $inventory_list = DB::table('inventory_sources')
-        ->where('id', '!=', '1')
-        ->orderBy('id', 'desc')
+        ->orderBy('id', 'asc')
         ->get()->toArray();
 
         return view($this->_config['view'], compact('roles','inventory_list'));
@@ -166,14 +178,29 @@ class UserController extends Controller
         return redirect()->route($this->_config['redirect']);
     }
 
+    public function quickUpdate()
+    {
+        $status = request()->status;
+        $inventory_id = request()->inventory_id;
+        $user_id = request()->selected_user;
+        $productExchangeNote =  DB::table('admins')
+            ->where('id', $user_id)
+            ->update(['status' => $status,'inventory_id' => $inventory_id]);
+        return response()->json(
+            [
+                'success' => True,
+            ]
+        );
+    }
     /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response|\Illuminate\View\View
      */
-    public function destroy($id)
+    public function destroy()
     {
+        $id = request()->input('id');
         $user = $this->adminRepository->findOrFail($id);
         if ($this->adminRepository->count() == 1) {
             session()->flash('error', trans('admin::app.response.last-delete-error', ['name' => 'Admin']));

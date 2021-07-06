@@ -95,7 +95,7 @@
                         </tr>
                         </thead>
                         <tbody id='hover-row' v-for="(item,index) in pageOfItems">
-                            <tr :class="[selected_transfer ===  item.product_id ? 'table-info' : '']" v-on:click="load_product(item.product_id)">
+                            <tr :class="[selected_transfer ===  item.product_id ? 'table-info' : '']" v-on:click="load_product(item.product_id,item.product_image)">
                                 <td v-text="item.product_id"></td>
                                 <td v-text="item.product_sku"></td>
                                 <td v-text="item.product_name"></td>
@@ -135,8 +135,8 @@
                                                         <label class="col-sm-4 col-form-label">Hình ảnh</label>
 
                                                         <div class="col-sm-12">
-                                                            <img :src="item.product_image != null ? '{{Config::get('app.url')}}/storage/' + item.product_image : '{{Config::get('app.url')}}/' + 'noimage.png'" style="position: relative;height: 250px;width: 200px;">    
-                                                                                                            </div>
+                                                            <img :src="item.product_image != null ? '{{Config::get('app.url')}}/storage/' + productImageUrl : '{{Config::get('app.url')}}/' + 'noimage.png'" v-on:error="onImageLoadFailure($event)" style="position: relative;height: 250px;width: 200px;">    
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -210,6 +210,7 @@
                                             </div>
                                           
                                         </div>
+                                        <div>
                                             <button type="button" class="btn btn-primary" style="width: 120px;" v-on:click="update_orders(item.product_id)" >Chỉnh sửa</button>
                                         </div>
                                     </div>
@@ -309,6 +310,7 @@
                     ],
                     product_list: null,
                     selected_transfer: null,
+                    productImageUrl:null,
                 };
             },
             watch: {},
@@ -321,22 +323,25 @@
                     let link = "{{ route('admin.catalog.products.edit_product') }}";
                     window.open(link + '/' + get_order_id);
                 },
-                load_product(get_order_id) {
+                load_product(id,image) {
                     this.product_list = [];
-                    
-                    if(this.selected_transfer == get_order_id){
+                    this.productImageUrl= image;
+                    if(this.selected_transfer == id){
                         this.selected_transfer = null
                     }else{
-                        this.selected_transfer = get_order_id;
+                        this.selected_transfer = id;
                         axios.get("{{ route('admin.catalog.products.show_detail_product') }}", {
                                 params: {
-                                    product_id: get_order_id
+                                    product_id: id
                                 }
                             })
                             .then(response => {
                                 this.product_list = response.data.transfered_products;
                             });
                     }
+                },
+                onImageLoadFailure (event) {
+                    event.target.src = '{{Config::get('app.url')}}/' + 'noimage.png'   
                 },
                 //pagination
                 onChangePage(pageOfItems) {

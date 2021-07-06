@@ -6,6 +6,9 @@ use Webkul\Admin\Http\Controllers\Controller;
 use Webkul\Sales\Repositories\OrderRepository;
 use Webkul\Sales\Repositories\OrderItemRepository;
 use Webkul\Sales\Repositories\RefundRepository;
+use Webkul\Sales\Models\OrderAddress;
+use Illuminate\Support\Facades\DB;
+use Session;
 
 class RefundController extends Controller
 {
@@ -69,7 +72,20 @@ class RefundController extends Controller
      */
     public function index()
     {
-        return view($this->_config['view']);
+        $query = DB::table('refunds')
+            ->select('refunds.id', 'orders.increment_id', 'refunds.state', 'refunds.base_grand_total', 'refunds.created_at')
+            ->leftJoin('orders', 'refunds.order_id', '=', 'orders.id')
+            ->leftJoin('addresses as order_address_billing', function($leftJoin) {
+                $leftJoin->on('order_address_billing.order_id', '=', 'orders.id')
+                         ->where('order_address_billing.address_type', OrderAddress::ADDRESS_TYPE_BILLING);
+            })
+            ->addSelect(DB::raw('CONCAT(' . DB::getTablePrefix() . 'order_address_billing.first_name, " ", ' . DB::getTablePrefix() . 'order_address_billing.last_name) as billed_to'));
+        if( Session::get('inventory') != 0){
+            $query = $query->where('orders.inventory_id','=',Session::get('inventory'));
+        };
+        $query = $query->orderBy('increment_id', 'desc');
+        $refunds_list=$query->get()->toArray();
+        return view($this->_config['view'], compact('refunds_list'));
     }
 
     /**
